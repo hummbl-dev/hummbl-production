@@ -1,0 +1,5 @@
+name = "hummbl-api"
+main = "src/index.ts"
+compatibility_date = "2026-01-24"
+
+# Deploy to hummbl-api.hummbl.workers.dev

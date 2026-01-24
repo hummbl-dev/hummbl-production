@@ -1,0 +1,18 @@
+{
+  "name": "hummbl-api",
+  "version": "1.0.0",
+  "description": "HUMMBL Base120 API - Mental models for AI agents",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": ["mental-models", "ai", "api"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "hono": "^4.11.5",
+    "wrangler": "^4.60.0"
+  }
+}

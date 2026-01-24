@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Wrangler
+.wrangler/
+wrangler.toml.local
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

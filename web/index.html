@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUMMBL Base120 - Mental Models for AI Agents</title>
+    <meta name="description" content="120 mental models your AI agents can call. Working API, zero setup.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        
+        .code-box {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .code-box pre {
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .copy-btn:hover {
+            background: #444;
+        }
+        
+        .cta {
+            text-align: center;
+            margin: 60px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #0070f3;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            background: #0051bb;
+        }
+        
+        .btn-secondary {
+            background: #666;
+        }
+        
+        .btn-secondary:hover {
+            background: #555;
+        }
+        
+        section {
+            margin: 60px 0;
+        }
+        
+        h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            font-size: 20px;
+            margin: 24px 0 12px;
+        }
+        
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+        
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="badge">For AI Agent Builders</div>
+        <h1>Mental models your agents can call.</h1>
+        <p class="tagline">120 structured reasoning patterns. API works right now. No signup.</p>
+    </header>
+
+    <section>
+        <div class="code-box">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre id="curl-code">curl https://hummbl-api.hummbl.workers.dev/v1/models/P1</pre>
+        </div>
+        
+        <div class="cta">
+            <a href="https://cal.com/yourname/30min" class="btn">Book a Demo Call</a>
+            <a href="#setup" class="btn btn-secondary">Quick Setup</a>
+        </div>
+    </section>
+
+    <section id="setup">
+        <h2>Add to Claude Desktop (30 seconds)</h2>
+        <p>Install the MCP server to give Claude access to all 120 models:</p>
+        
+        <h3>1. Install</h3>
+        <div class="code-box">
+            <button class="copy-btn" onclick="copyMcpInstall()">Copy</button>
+            <pre id="mcp-install">npm install -g @hummbl/mcp-server</pre>
+        </div>
+        
+        <h3>2. Add to config</h3>
+        <p>Edit <code>claude_desktop_config.json</code>:</p>
+        <div class="code-box">
+            <button class="copy-btn" onclick="copyMcpConfig()">Copy</button>
+            <pre id="mcp-config">{
+  "mcpServers": {
+    "hummbl": {
+      "command": "npx",
+      "args": ["@hummbl/mcp-server"]
+    }
+  }
+}</pre>
+        </div>
+        
+        <h3>3. Restart Claude</h3>
+        <p>The tools appear in Claude's attachment menu.</p>
+        
+        <ul>
+            <li><code>hummbl_search</code> - Find models by problem</li>
+            <li><code>hummbl_get_model</code> - Get model details</li>
+            <li><code>hummbl_recommend</code> - Get recommendations</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>What is Base120?</h2>
+        <p>A validated framework of 120 mental models organized across 6 transformations:</p>
+        <ul>
+            <li><strong>P (Perspective)</strong> - Frame and anchor viewpoint</li>
+            <li><strong>IN (Inversion)</strong> - Flip to see what avoiding failure reveals</li>
+            <li><strong>CO (Composition)</strong> - Combine for emergent properties</li>
+            <li><strong>DE (Decomposition)</strong> - Break complexity down</li>
+            <li><strong>RE (Recursion)</strong> - Apply patterns at multiple scales</li>
+            <li><strong>SY (Systems)</strong> - Understand governing rules</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Who is this for?</h2>
+        <p>You're building AI agents that need to think better. Your agents use LangChain, CrewAI, or custom frameworks. You want structured reasoning, not just LLM autocomplete.</p>
+        <p><strong>Book a call to see how Base120 makes your agents smarter.</strong></p>
+        <div class="cta">
+            <a href="https://cal.com/yourname/30min" class="btn">Schedule Discovery Call</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>HUMMBL Base120 &copy; 2026</p>
+        <p>MCP Server: <a href="https://www.npmjs.com/package/@hummbl/mcp-server">@hummbl/mcp-server</a></p>
+    </footer>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById('curl-code').textContent;
+            navigator.clipboard.writeText(code);
+            event.target.textContent = '✓ Copied';
+            setTimeout(() => event.target.textContent = 'Copy', 2000);
+        }
+        
+        function copyMcpInstall() {
+            const code = document.getElementById('mcp-install').textContent;
+            navigator.clipboard.writeText(code);
+            event.target.textContent = '✓ Copied';
+            setTimeout(() => event.target.textContent = 'Copy', 2000);
+        }
+        
+        function copyMcpConfig() {
+            const code = document.getElementById('mcp-config').textContent;
+            navigator.clipboard.writeText(code);
+            event.target.textContent = '✓ Copied';
+            setTimeout(() => event.target.textContent = 'Copy', 2000);
+        }
+    </script>
+</body>
+</html>
