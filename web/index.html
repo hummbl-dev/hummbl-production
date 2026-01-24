@@ -5,190 +5,674 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HUMMBL Base120 - Mental Models for AI Agents</title>
     <meta name="description" content="120 mental models your AI agents can call. Working API, zero setup.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-elevated: #1a1a1a;
+            --text-primary: #e8e8e8;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #666;
+            --accent-cyan: #00fff9;
+            --accent-warm: #ff6b35;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-prominent: rgba(0, 255, 249, 0.3);
+
+            --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+            --font-serif: 'Crimson Pro', Georgia, serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: var(--font-mono);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        
-        .badge {
-            display: inline-block;
-            background: #f0f0f0;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            font-size: 48px;
-            margin-bottom: 16px;
-            font-weight: 700;
-        }
-        
-        .tagline {
-            font-size: 20px;
-            color: #666;
-            margin-bottom: 40px;
-        }
-        
-        .code-box {
-            background: #1a1a1a;
-            color: #e0e0e0;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 40px 0;
+            overflow-x: hidden;
             position: relative;
         }
-        
-        .code-box pre {
-            overflow-x: auto;
-            font-size: 14px;
-            line-height: 1.5;
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0, 255, 249, 0.03) 49px, rgba(0, 255, 249, 0.03) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0, 255, 249, 0.03) 49px, rgba(0, 255, 249, 0.03) 50px);
+            pointer-events: none;
+            z-index: 0;
+            animation: gridPulse 8s ease-in-out infinite;
         }
-        
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Subtle scan line effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            animation: scan 4s linear infinite;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 80px 0 120px;
+            position: relative;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 60px;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .status-indicator {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent-cyan);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        h1 .highlight {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 30px rgba(0, 255, 249, 0.5);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        /* Terminal-style code block */
+        .terminal {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin: 80px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0.6;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+        }
+
+        .terminal-dot:nth-child(1) { background: #ff5f56; }
+        .terminal-dot:nth-child(2) { background: #ffbd2e; }
+        .terminal-dot:nth-child(3) { background: #27c93f; }
+
+        .terminal-title {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-left: auto;
+        }
+
+        .terminal-content {
+            padding: 24px;
+            position: relative;
+        }
+
+        .terminal-prompt {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .prompt-symbol {
+            color: var(--accent-cyan);
+            user-select: none;
+        }
+
+        .terminal-code {
+            color: var(--text-primary);
+            flex: 1;
+            word-break: break-all;
+        }
+
         .copy-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #333;
-            color: #fff;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            top: 24px;
+            right: 24px;
+            background: rgba(0, 255, 249, 0.1);
+            border: 1px solid var(--border-prominent);
+            color: var(--accent-cyan);
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             cursor: pointer;
-            font-size: 12px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
         }
-        
+
         .copy-btn:hover {
-            background: #444;
+            background: rgba(0, 255, 249, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 249, 0.3);
         }
-        
-        .cta {
-            text-align: center;
+
+        /* CTAs */
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
             margin: 60px 0;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
         }
-        
+
         .btn {
-            display: inline-block;
-            background: #0070f3;
-            color: white;
-            padding: 16px 32px;
-            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 18px;
-            margin: 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .btn:hover {
-            background: #0051bb;
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
-        
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border: 1px solid var(--accent-cyan);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 249, 0.4);
+            transform: translateY(-2px);
+        }
+
         .btn-secondary {
-            background: #666;
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-prominent);
         }
-        
+
         .btn-secondary:hover {
-            background: #555;
+            background: rgba(0, 255, 249, 0.05);
+            border-color: var(--accent-cyan);
         }
-        
+
+        /* Section styling */
         section {
-            margin: 60px 0;
-        }
-        
-        h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-        
-        h3 {
-            font-size: 20px;
-            margin: 24px 0 12px;
-        }
-        
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        li {
-            padding: 8px 0;
-            padding-left: 24px;
+            padding: 100px 0;
+            border-top: 1px solid var(--border-subtle);
             position: relative;
         }
-        
-        li:before {
-            content: "→";
+
+        section::before {
+            content: attr(data-section);
             position: absolute;
+            top: 40px;
             left: 0;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            font-family: var(--font-mono);
         }
-        
-        footer {
-            text-align: center;
-            margin-top: 80px;
-            padding-top: 40px;
-            border-top: 1px solid #eee;
-            color: #666;
+
+        h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 600;
+            margin-bottom: 32px;
+            line-height: 1.2;
+            color: var(--text-primary);
         }
-        
-        code {
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 3px;
+
+        h3 {
+            font-family: var(--font-mono);
             font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-cyan);
+            margin: 48px 0 16px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 700px;
+            margin-bottom: 20px;
+        }
+
+        /* Framework grid */
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin: 60px 0;
+        }
+
+        .framework-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            padding: 32px 24px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .framework-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--accent-cyan);
+            transition: height 0.4s ease;
+        }
+
+        .framework-card:hover {
+            border-color: var(--border-prominent);
+            transform: translateX(8px);
+        }
+
+        .framework-card:hover::before {
+            height: 100%;
+        }
+
+        .framework-code {
+            font-family: var(--font-mono);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .framework-name {
+            font-family: var(--font-serif);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .framework-desc {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+
+        /* Tools list */
+        .tools-list {
+            list-style: none;
+            margin: 32px 0;
+        }
+
+        .tools-list li {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tools-list code {
+            font-family: var(--font-mono);
+            background: rgba(0, 255, 249, 0.1);
+            color: var(--accent-cyan);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid rgba(0, 255, 249, 0.2);
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            padding: 60px 0;
+            margin: 60px 0;
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: var(--font-mono);
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            display: block;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(0, 255, 249, 0.3);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        footer a:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 24px;
+            }
+
+            header {
+                padding: 60px 0 80px;
+            }
+
+            h1 {
+                font-size: 48px;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .framework-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="badge">For AI Agent Builders</div>
-        <h1>Mental models your agents can call.</h1>
-        <p class="tagline">120 structured reasoning patterns. API works right now. No signup.</p>
-    </header>
+    <div class="container">
+        <header>
+            <div class="status-bar">
+                <span class="status-indicator"></span>
+                <span>System Online</span>
+                <span style="margin-left: auto; color: var(--text-tertiary);">Base120 v1.0</span>
+            </div>
 
-    <section>
-        <div class="code-box">
-            <button class="copy-btn" onclick="copyCode()">Copy</button>
-            <pre id="curl-code">curl https://hummbl-api.hummbl.workers.dev/v1/models/P1</pre>
-        </div>
-        
-        <div class="cta">
-            <a href="https://cal.com/hummbl/30min" class="btn">Book a Demo Call</a>
-            <a href="#setup" class="btn btn-secondary">Quick Setup</a>
-        </div>
-    </section>
+            <h1>Structured reasoning<br>for <span class="highlight">AI agents</span></h1>
+            <p class="tagline">120 validated mental models your agents can call via API. No signup. No complexity. Just working infrastructure for building agents that think.</p>
 
-    <section id="setup">
-        <h2>Add to Claude Desktop (30 seconds)</h2>
-        <p>Install the MCP server to give Claude access to all 120 models:</p>
-        
-        <h3>1. Install</h3>
-        <div class="code-box">
-            <button class="copy-btn" onclick="copyMcpInstall()">Copy</button>
-            <pre id="mcp-install">npm install -g @hummbl/mcp-server</pre>
+            <div class="cta-group">
+                <a href="https://cal.com/hummbl/30min" class="btn btn-primary">
+                    <span>Book Discovery Call</span>
+                    <span>→</span>
+                </a>
+                <a href="#setup" class="btn btn-secondary">
+                    <span>Quick Setup</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+                <span class="terminal-title">api.hummbl.workers.dev</span>
+            </div>
+            <div class="terminal-content">
+                <button class="copy-btn" onclick="copyCode()">Copy</button>
+                <div class="terminal-prompt">
+                    <span class="prompt-symbol">$</span>
+                    <code class="terminal-code" id="curl-code">curl https://hummbl-api.hummbl.workers.dev/v1/models/P1</code>
+                </div>
+            </div>
         </div>
-        
-        <h3>2. Add to config</h3>
-        <p>Edit <code>claude_desktop_config.json</code>:</p>
-        <div class="code-box">
-            <button class="copy-btn" onclick="copyMcpConfig()">Copy</button>
-            <pre id="mcp-config">{
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-number">120</span>
+                <span class="stat-label">Mental Models</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">6</span>
+                <span class="stat-label">Transformations</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">0ms</span>
+                <span class="stat-label">Setup Time</span>
+            </div>
+        </div>
+
+        <section data-section="// 01" id="framework">
+            <h2>The Framework</h2>
+            <p>Base120 organizes cognitive tools across 6 transformation types. Each provides a different lens for problem-solving.</p>
+
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <span class="framework-code">P</span>
+                    <div class="framework-name">Perspective</div>
+                    <div class="framework-desc">Frame and anchor viewpoint. Change how you see the problem.</div>
+                </div>
+
+                <div class="framework-card">
+                    <span class="framework-code">IN</span>
+                    <div class="framework-name">Inversion</div>
+                    <div class="framework-desc">Flip to see what avoiding failure reveals. Think backwards.</div>
+                </div>
+
+                <div class="framework-card">
+                    <span class="framework-code">CO</span>
+                    <div class="framework-name">Composition</div>
+                    <div class="framework-desc">Combine for emergent properties. Build complexity from simplicity.</div>
+                </div>
+
+                <div class="framework-card">
+                    <span class="framework-code">DE</span>
+                    <div class="framework-name">Decomposition</div>
+                    <div class="framework-desc">Break complexity down. Understand the parts.</div>
+                </div>
+
+                <div class="framework-card">
+                    <span class="framework-code">RE</span>
+                    <div class="framework-name">Recursion</div>
+                    <div class="framework-desc">Apply patterns at multiple scales. Iterate and refine.</div>
+                </div>
+
+                <div class="framework-card">
+                    <span class="framework-code">SY</span>
+                    <div class="framework-name">Systems</div>
+                    <div class="framework-desc">Understand governing rules. See the meta-patterns.</div>
+                </div>
+            </div>
+        </section>
+
+        <section data-section="// 02" id="setup">
+            <h2>Claude Desktop Setup</h2>
+            <p>Install the MCP server to give Claude direct access to all 120 models.</p>
+
+            <h3>Step 1: Install</h3>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-title">terminal</span>
+                </div>
+                <div class="terminal-content">
+                    <button class="copy-btn" onclick="copyMcpInstall()">Copy</button>
+                    <div class="terminal-prompt">
+                        <span class="prompt-symbol">$</span>
+                        <code class="terminal-code" id="mcp-install">npm install -g @hummbl/mcp-server</code>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Step 2: Configure</h3>
+            <p>Add to <code style="background: rgba(0, 255, 249, 0.1); color: var(--accent-cyan); padding: 4px 8px; border-radius: 3px; font-family: var(--font-mono); font-size: 13px;">claude_desktop_config.json</code></p>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-title">claude_desktop_config.json</span>
+                </div>
+                <div class="terminal-content">
+                    <button class="copy-btn" onclick="copyMcpConfig()">Copy</button>
+                    <pre class="terminal-code" id="mcp-config" style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">{
   "mcpServers": {
     "hummbl": {
       "command": "npx",
@@ -196,44 +680,45 @@
     }
   }
 }</pre>
-        </div>
-        
-        <h3>3. Restart Claude</h3>
-        <p>The tools appear in Claude's attachment menu.</p>
-        
-        <ul>
-            <li><code>hummbl_search</code> - Find models by problem</li>
-            <li><code>hummbl_get_model</code> - Get model details</li>
-            <li><code>hummbl_recommend</code> - Get recommendations</li>
-        </ul>
-    </section>
+                </div>
+            </div>
 
-    <section>
-        <h2>What is Base120?</h2>
-        <p>A validated framework of 120 mental models organized across 6 transformations:</p>
-        <ul>
-            <li><strong>P (Perspective)</strong> - Frame and anchor viewpoint</li>
-            <li><strong>IN (Inversion)</strong> - Flip to see what avoiding failure reveals</li>
-            <li><strong>CO (Composition)</strong> - Combine for emergent properties</li>
-            <li><strong>DE (Decomposition)</strong> - Break complexity down</li>
-            <li><strong>RE (Recursion)</strong> - Apply patterns at multiple scales</li>
-            <li><strong>SY (Systems)</strong> - Understand governing rules</li>
-        </ul>
-    </section>
+            <h3>Step 3: Available Tools</h3>
+            <ul class="tools-list">
+                <li>
+                    <code>hummbl_search</code>
+                    <span style="color: var(--text-secondary); font-size: 14px;">Find models by problem description</span>
+                </li>
+                <li>
+                    <code>hummbl_get_model</code>
+                    <span style="color: var(--text-secondary); font-size: 14px;">Get full model details by code</span>
+                </li>
+                <li>
+                    <code>hummbl_recommend</code>
+                    <span style="color: var(--text-secondary); font-size: 14px;">Get ranked recommendations</span>
+                </li>
+            </ul>
+        </section>
 
-    <section>
-        <h2>Who is this for?</h2>
-        <p>You're building AI agents that need to think better. Your agents use LangChain, CrewAI, or custom frameworks. You want structured reasoning, not just LLM autocomplete.</p>
-        <p><strong>Book a call to see how Base120 makes your agents smarter.</strong></p>
-        <div class="cta">
-            <a href="https://cal.com/hummbl/30min" class="btn">Schedule Discovery Call</a>
-        </div>
-    </section>
+        <section data-section="// 03">
+            <h2>Who This Is For</h2>
+            <p style="max-width: none; font-size: 16px; margin-bottom: 32px;">You're building AI agents with LangChain, CrewAI, or custom frameworks. Your agents need structured reasoning, not just LLM autocomplete. You want cognitive tools your agents can invoke programmatically.</p>
 
-    <footer>
-        <p>HUMMBL Base120 &copy; 2026</p>
-        <p>MCP Server: <a href="https://www.npmjs.com/package/@hummbl/mcp-server">@hummbl/mcp-server</a></p>
-    </footer>
+            <p style="max-width: none; font-size: 16px; color: var(--text-primary); font-weight: 500;">Book a call to see how Base120 makes your agents think better.</p>
+
+            <div class="cta-group" style="margin-top: 48px;">
+                <a href="https://cal.com/hummbl/30min" class="btn btn-primary">
+                    <span>Schedule Discovery Call</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <p style="margin-bottom: 12px;">HUMMBL Base120 © 2026</p>
+            <p>MCP Server: <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank">@hummbl/mcp-server</a></p>
+        </footer>
+    </div>
 
     <script>
         function copyCode() {
@@ -242,20 +727,38 @@
             event.target.textContent = '✓ Copied';
             setTimeout(() => event.target.textContent = 'Copy', 2000);
         }
-        
+
         function copyMcpInstall() {
             const code = document.getElementById('mcp-install').textContent;
             navigator.clipboard.writeText(code);
             event.target.textContent = '✓ Copied';
             setTimeout(() => event.target.textContent = 'Copy', 2000);
         }
-        
+
         function copyMcpConfig() {
             const code = document.getElementById('mcp-config').textContent;
             navigator.clipboard.writeText(code);
             event.target.textContent = '✓ Copied';
             setTimeout(() => event.target.textContent = 'Copy', 2000);
         }
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = `fadeInUp 0.8s ease-out ${index * 0.1}s both`;
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
     </script>
 </body>
 </html>
