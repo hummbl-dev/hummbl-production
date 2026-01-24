@@ -19,10 +19,10 @@
             --text-primary: #e8e8e8;
             --text-secondary: #a0a0a0;
             --text-tertiary: #666;
-            --accent-cyan: #00fff9;
+            --accent-cyan: #00ff88;
             --accent-warm: #ff6b35;
             --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-prominent: rgba(0, 255, 249, 0.3);
+            --border-prominent: rgba(0, 255, 136, 0.3);
 
             --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
             --font-serif: 'Crimson Pro', Georgia, serif;
@@ -52,8 +52,8 @@
             width: 100%;
             height: 100%;
             background-image:
-                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0, 255, 249, 0.03) 49px, rgba(0, 255, 249, 0.03) 50px),
-                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0, 255, 249, 0.03) 49px, rgba(0, 255, 249, 0.03) 50px);
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0, 255, 136, 0.03) 49px, rgba(0, 255, 136, 0.03) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0, 255, 136, 0.03) 49px, rgba(0, 255, 136, 0.03) 50px);
             pointer-events: none;
             z-index: 0;
             animation: gridPulse 8s ease-in-out infinite;
@@ -147,7 +147,7 @@
 
         h1 .highlight {
             color: var(--accent-cyan);
-            text-shadow: 0 0 30px rgba(0, 255, 249, 0.5);
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
         }
 
         @keyframes fadeInUp {
@@ -245,7 +245,7 @@
             position: absolute;
             top: 24px;
             right: 24px;
-            background: rgba(0, 255, 249, 0.1);
+            background: rgba(0, 255, 136, 0.1);
             border: 1px solid var(--border-prominent);
             color: var(--accent-cyan);
             padding: 8px 16px;
@@ -259,8 +259,8 @@
         }
 
         .copy-btn:hover {
-            background: rgba(0, 255, 249, 0.2);
-            box-shadow: 0 0 20px rgba(0, 255, 249, 0.3);
+            background: rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
         }
 
         /* CTAs */
@@ -314,7 +314,7 @@
         }
 
         .btn-primary:hover {
-            box-shadow: 0 0 40px rgba(0, 255, 249, 0.4);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.4);
             transform: translateY(-2px);
         }
 
@@ -325,7 +325,7 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(0, 255, 249, 0.05);
+            background: rgba(0, 255, 136, 0.05);
             border-color: var(--accent-cyan);
         }
 
@@ -451,12 +451,12 @@
 
         .tools-list code {
             font-family: var(--font-mono);
-            background: rgba(0, 255, 249, 0.1);
+            background: rgba(0, 255, 136, 0.1);
             color: var(--accent-cyan);
             padding: 4px 12px;
             border-radius: 4px;
             font-size: 12px;
-            border: 1px solid rgba(0, 255, 249, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.2);
         }
 
         /* Stats bar */
@@ -481,7 +481,7 @@
             color: var(--accent-cyan);
             display: block;
             margin-bottom: 8px;
-            text-shadow: 0 0 20px rgba(0, 255, 249, 0.3);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
         }
 
         .stat-label {
@@ -662,7 +662,7 @@
             </div>
 
             <h3>Step 2: Configure</h3>
-            <p>Add to <code style="background: rgba(0, 255, 249, 0.1); color: var(--accent-cyan); padding: 4px 8px; border-radius: 3px; font-family: var(--font-mono); font-size: 13px;">claude_desktop_config.json</code></p>
+            <p>Add to <code style="background: rgba(0, 255, 136, 0.1); color: var(--accent-cyan); padding: 4px 8px; border-radius: 3px; font-family: var(--font-mono); font-size: 13px;">claude_desktop_config.json</code></p>
             <div class="terminal">
                 <div class="terminal-header">
                     <span class="terminal-dot"></span>
@@ -701,10 +701,37 @@
         </section>
 
         <section data-section="// 03">
-            <h2>Who This Is For</h2>
-            <p style="max-width: none; font-size: 16px; margin-bottom: 32px;">You're building AI agents with LangChain, CrewAI, or custom frameworks. Your agents need structured reasoning, not just LLM autocomplete. You want cognitive tools your agents can invoke programmatically.</p>
+            <h2>Use Cases</h2>
+            <p style="max-width: none; font-size: 16px; margin-bottom: 32px;">HUMMBL provides structured reasoning infrastructure for AI systems. Use it via API, Claude Desktop MCP integration, or direct framework integration:</p>
 
-            <p style="max-width: none; font-size: 16px; color: var(--text-primary); font-weight: 500;">Book a call to see how Base120 makes your agents think better.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin: 48px 0;">
+                <div>
+                    <h3 style="margin-top: 0;">Agent Frameworks</h3>
+                    <p style="font-size: 14px; line-height: 1.8;">LangChain, CrewAI, AutoGPT, Semantic Kernel - invoke mental models programmatically to guide agent reasoning.</p>
+                </div>
+                <div>
+                    <h3 style="margin-top: 0;">Claude Desktop</h3>
+                    <p style="font-size: 14px; line-height: 1.8;">MCP server gives Claude direct access to all 120 models. Search, retrieve, and apply cognitive frameworks in real-time.</p>
+                </div>
+                <div>
+                    <h3 style="margin-top: 0;">Custom Applications</h3>
+                    <p style="font-size: 14px; line-height: 1.8;">REST API for decision support tools, prompt engineering systems, or reasoning-enhanced workflows. No framework required.</p>
+                </div>
+                <div>
+                    <h3 style="margin-top: 0;">Prompt Engineering</h3>
+                    <p style="font-size: 14px; line-height: 1.8;">Retrieve relevant mental models based on problem context, then inject into system prompts for better LLM outputs.</p>
+                </div>
+                <div>
+                    <h3 style="margin-top: 0;">Knowledge Systems</h3>
+                    <p style="font-size: 14px; line-height: 1.8;">Build cognitive enhancement tools, decision support systems, or structured thinking applications on top of Base120.</p>
+                </div>
+                <div>
+                    <h3 style="margin-top: 0;">Research & Education</h3>
+                    <p style="font-size: 14px; line-height: 1.8;">Access validated mental models programmatically for cognitive science research, educational tools, or training systems.</p>
+                </div>
+            </div>
+
+            <p style="max-width: none; font-size: 16px; color: var(--text-primary); font-weight: 500; margin-top: 48px;">Book a call to see how Base120 fits your use case.</p>
 
             <div class="cta-group" style="margin-top: 48px;">
                 <a href="https://cal.com/hummbl/30min" class="btn btn-primary">
