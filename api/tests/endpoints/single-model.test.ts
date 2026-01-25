@@ -14,7 +14,7 @@ describe('Single Model Endpoint', () => {
     it('should return P1 model', async () => {
       const res = await app.request('/v1/models/P1');
       expect(res.status).toBe(200);
-      
+
       const data = await res.json();
       expect(data.success).toBe(true);
       expect(data.data.code).toBe('P1');
@@ -24,7 +24,7 @@ describe('Single Model Endpoint', () => {
     it('should return DE1 model', async () => {
       const res = await app.request('/v1/models/DE1');
       expect(res.status).toBe(200);
-      
+
       const data = await res.json();
       expect(data.success).toBe(true);
       expect(data.data.code).toBe('DE1');
@@ -35,7 +35,7 @@ describe('Single Model Endpoint', () => {
     it('should handle lowercase codes', async () => {
       const res = await app.request('/v1/models/p1');
       expect(res.status).toBe(200);
-      
+
       const data = await res.json();
       expect(data.success).toBe(true);
       expect(data.data.code).toBe('P1');
@@ -44,7 +44,7 @@ describe('Single Model Endpoint', () => {
     it('should return model with all required fields', async () => {
       const res = await app.request('/v1/models/P1');
       const data = await res.json();
-      
+
       expect(data.data).toHaveProperty('code');
       expect(data.data).toHaveProperty('name');
       expect(data.data).toHaveProperty('definition');
@@ -56,7 +56,7 @@ describe('Single Model Endpoint', () => {
     it('should return 404 for non-existent model', async () => {
       const res = await app.request('/v1/models/INVALID');
       expect(res.status).toBe(404);
-      
+
       const data = await res.json();
       expect(data.success).toBe(false);
       expect(data.error).toContain('Model not found');

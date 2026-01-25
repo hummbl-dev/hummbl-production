@@ -24,7 +24,10 @@ app.use('*', async (c, next) => {
   c.header('X-Frame-Options', 'DENY');
   c.header('X-XSS-Protection', '1; mode=block');
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
-  c.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev; frame-ancestors 'none'; form-action 'self';");
+  c.header(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev; frame-ancestors 'none'; form-action 'self';",
+  );
 });
 
 // Request logging
@@ -35,7 +38,8 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
 app.use('*', async (c, next) => {
   // Cleanup expired entries periodically
-  if (Math.random() < 0.01) { // 1% chance to cleanup on each request
+  if (Math.random() < 0.01) {
+    // 1% chance to cleanup on each request
     const now = Date.now();
     for (const [ip, data] of rateLimitMap.entries()) {
       if (now > data.resetTime) {
@@ -50,17 +54,20 @@ app.use('*', async (c, next) => {
   const maxRequests = 100;
 
   const rateLimitData = rateLimitMap.get(clientIP);
-  
+
   if (!rateLimitData || now > rateLimitData.resetTime) {
     rateLimitMap.set(clientIP, { count: 1, resetTime: now + windowMs });
     return await next();
   }
 
   if (rateLimitData.count >= maxRequests) {
-    return c.json({
-      success: false,
-      error: 'Rate limit exceeded. Please try again later.'
-    }, 429);
+    return c.json(
+      {
+        success: false,
+        error: 'Rate limit exceeded. Please try again later.',
+      },
+      429,
+    );
   }
 
   rateLimitData.count++;
@@ -80,9 +87,9 @@ app.get('/', (c) => {
       models: '/v1/models',
       model: '/v1/models/:code',
       transformations: '/v1/transformations',
-      recommend: '/v1/recommend'
+      recommend: '/v1/recommend',
     },
-    mcp_server: 'npm install -g @hummbl/mcp-server'
+    mcp_server: 'npm install -g @hummbl/mcp-server',
   });
 });
 
@@ -92,7 +99,7 @@ app.get('/', (c) => {
 app.get('/health', (c) => {
   const allModels = getAllModels();
   const uptime = Date.now() - (globalThis as any).startTime || 0;
-  
+
   return c.json({
     status: 'healthy',
     version: '1.0.0',
@@ -102,8 +109,8 @@ app.get('/health', (c) => {
     rate_limit_status: {
       active_ips: rateLimitMap.size,
       window_ms: 60 * 1000,
-      max_requests_per_minute: 100
-    }
+      max_requests_per_minute: 100,
+    },
   });
 });
 
@@ -111,16 +118,16 @@ app.get('/health', (c) => {
  * GET /v1/transformations - List all 6 transformations
  */
 app.get('/v1/transformations', (c) => {
-  const transformations = Object.values(TRANSFORMATIONS).map(t => ({
+  const transformations = Object.values(TRANSFORMATIONS).map((t) => ({
     key: t.key,
     name: t.name,
     description: t.description,
-    model_count: t.models.length
+    model_count: t.models.length,
   }));
 
   return c.json({
     success: true,
-    data: transformations
+    data: transformations,
   });
 });
 
@@ -133,7 +140,7 @@ app.get('/v1/models', (c) => {
   return c.json({
     success: true,
     data: allModels,
-    count: allModels.length
+    count: allModels.length,
   });
 });
 
@@ -148,15 +155,19 @@ app.get('/v1/models/:code', (c) => {
   if (result.ok) {
     return c.json({
       success: true,
-      data: result.value
+      data: result.value,
     });
   } else {
-    return c.json({
-      success: false,
-      error: result.error.type === 'NotFound' 
-        ? `Model not found: ${code}` 
-        : `Error: ${result.error.type}`
-    }, 404);
+    return c.json(
+      {
+        success: false,
+        error:
+          result.error.type === 'NotFound'
+            ? `Model not found: ${code}`
+            : `Error: ${result.error.type}`,
+      },
+      404,
+    );
   }
 });
 
@@ -169,10 +180,13 @@ app.post('/v1/recommend', async (c) => {
     const { problem, limit } = await c.req.json();
 
     if (!problem || typeof problem !== 'string') {
-      return c.json({
-        success: false,
-        error: 'Missing or invalid "problem" field'
-      }, 400);
+      return c.json(
+        {
+          success: false,
+          error: 'Missing or invalid "problem" field',
+        },
+        400,
+      );
     }
 
     const allModels = getAllModels();
@@ -183,8 +197,8 @@ app.post('/v1/recommend', async (c) => {
     if (result.models.length === 0) {
       return c.json({
         success: true,
-        data: allModels.filter(m => m.priority === 1).slice(0, maxResults),
-        message: 'No specific matches - showing high-priority models'
+        data: allModels.filter((m) => m.priority === 1).slice(0, maxResults),
+        message: 'No specific matches - showing high-priority models',
       });
     }
 
@@ -193,14 +207,17 @@ app.post('/v1/recommend', async (c) => {
       data: result.models,
       meta: {
         matchedPatterns: result.matchedPatterns,
-        keywordsAnalyzed: result.keywordsUsed.length
-      }
+        keywordsAnalyzed: result.keywordsUsed.length,
+      },
     });
-  } catch (error) {
-    return c.json({
-      success: false,
-      error: 'Invalid request body'
-    }, 400);
+  } catch (_error) {
+    return c.json(
+      {
+        success: false,
+        error: 'Invalid request body',
+      },
+      400,
+    );
   }
 });
 
@@ -208,10 +225,13 @@ app.post('/v1/recommend', async (c) => {
  * 404 handler
  */
 app.notFound((c) => {
-  return c.json({
-    success: false,
-    error: 'Endpoint not found'
-  }, 404);
+  return c.json(
+    {
+      success: false,
+      error: 'Endpoint not found',
+    },
+    404,
+  );
 });
 
 export default app;

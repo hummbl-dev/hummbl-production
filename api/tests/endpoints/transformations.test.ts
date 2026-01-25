@@ -13,7 +13,7 @@ describe('Transformations Endpoint', () => {
   it('should return all transformations', async () => {
     const res = await app.request('/v1/transformations');
     expect(res.status).toBe(200);
-    
+
     const data = await res.json();
     expect(data.success).toBe(true);
     expect(data.data).toBeInstanceOf(Array);
@@ -23,7 +23,7 @@ describe('Transformations Endpoint', () => {
   it('should return transformations with correct structure', async () => {
     const res = await app.request('/v1/transformations');
     const data = await res.json();
-    
+
     data.data.forEach((transformation: any) => {
       expect(transformation).toHaveProperty('key');
       expect(transformation).toHaveProperty('name');
@@ -37,11 +37,11 @@ describe('Transformations Endpoint', () => {
   it('should include all expected transformation keys', async () => {
     const res = await app.request('/v1/transformations');
     const data = await res.json();
-    
+
     const keys = data.data.map((t: any) => t.key);
     const expectedKeys = ['P', 'IN', 'CO', 'DE', 'RE', 'SY'];
-    
-    expectedKeys.forEach(key => {
+
+    expectedKeys.forEach((key) => {
       expect(keys).toContain(key);
     });
   });
@@ -49,7 +49,7 @@ describe('Transformations Endpoint', () => {
   it('should have transformation names', async () => {
     const res = await app.request('/v1/transformations');
     const data = await res.json();
-    
+
     data.data.forEach((transformation: any) => {
       expect(transformation.name).toBeTruthy();
       expect(typeof transformation.name).toBe('string');
@@ -60,7 +60,7 @@ describe('Transformations Endpoint', () => {
   it('should have descriptions', async () => {
     const res = await app.request('/v1/transformations');
     const data = await res.json();
-    
+
     data.data.forEach((transformation: any) => {
       expect(transformation.description).toBeTruthy();
       expect(typeof transformation.description).toBe('string');

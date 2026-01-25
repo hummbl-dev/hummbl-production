@@ -7,28 +7,206 @@ import type { MentalModel, TransformationType } from './types.js';
 
 // Common English stopwords to filter out
 const STOPWORDS = new Set([
-  'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your',
-  'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her',
-  'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs',
-  'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those',
-  'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
-  'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if',
-  'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with',
-  'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after',
-  'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over',
-  'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where',
-  'why', 'how', 'all', 'each', 'few', 'more', 'most', 'other', 'some', 'such',
-  'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's',
-  't', 'can', 'will', 'just', 'don', 'should', 'now', 'd', 'll', 'm', 'o', 're',
-  've', 'y', 'ain', 'aren', 'couldn', 'didn', 'doesn', 'hadn', 'hasn', 'haven',
-  'isn', 'ma', 'mightn', 'mustn', 'needn', 'shan', 'shouldn', 'wasn', 'weren',
-  'won', 'wouldn', 'im', 'ive', 'id', 'youre', 'youve', 'youll', 'youd',
-  'hes', 'shes', 'its', 'were', 'theyre', 'theyve', 'theyll', 'theyd',
-  'wont', 'dont', 'didnt', 'cant', 'couldnt', 'shouldnt', 'wouldnt',
-  'really', 'actually', 'basically', 'currently', 'always', 'never',
-  'sometimes', 'often', 'usually', 'maybe', 'perhaps', 'probably',
-  'need', 'want', 'like', 'get', 'got', 'getting', 'going', 'know',
-  'think', 'feel', 'feeling', 'try', 'trying', 'help', 'helping'
+  'i',
+  'me',
+  'my',
+  'myself',
+  'we',
+  'our',
+  'ours',
+  'ourselves',
+  'you',
+  'your',
+  'yours',
+  'yourself',
+  'yourselves',
+  'he',
+  'him',
+  'his',
+  'himself',
+  'she',
+  'her',
+  'hers',
+  'herself',
+  'it',
+  'its',
+  'itself',
+  'they',
+  'them',
+  'their',
+  'theirs',
+  'themselves',
+  'what',
+  'which',
+  'who',
+  'whom',
+  'this',
+  'that',
+  'these',
+  'those',
+  'am',
+  'is',
+  'are',
+  'was',
+  'were',
+  'be',
+  'been',
+  'being',
+  'have',
+  'has',
+  'had',
+  'having',
+  'do',
+  'does',
+  'did',
+  'doing',
+  'a',
+  'an',
+  'the',
+  'and',
+  'but',
+  'if',
+  'or',
+  'because',
+  'as',
+  'until',
+  'while',
+  'of',
+  'at',
+  'by',
+  'for',
+  'with',
+  'about',
+  'against',
+  'between',
+  'into',
+  'through',
+  'during',
+  'before',
+  'after',
+  'above',
+  'below',
+  'to',
+  'from',
+  'up',
+  'down',
+  'in',
+  'out',
+  'on',
+  'off',
+  'over',
+  'under',
+  'again',
+  'further',
+  'then',
+  'once',
+  'here',
+  'there',
+  'when',
+  'where',
+  'why',
+  'how',
+  'all',
+  'each',
+  'few',
+  'more',
+  'most',
+  'other',
+  'some',
+  'such',
+  'no',
+  'nor',
+  'not',
+  'only',
+  'own',
+  'same',
+  'so',
+  'than',
+  'too',
+  'very',
+  's',
+  't',
+  'can',
+  'will',
+  'just',
+  'don',
+  'should',
+  'now',
+  'd',
+  'll',
+  'm',
+  'o',
+  're',
+  've',
+  'y',
+  'ain',
+  'aren',
+  'couldn',
+  'didn',
+  'doesn',
+  'hadn',
+  'hasn',
+  'haven',
+  'isn',
+  'ma',
+  'mightn',
+  'mustn',
+  'needn',
+  'shan',
+  'shouldn',
+  'wasn',
+  'weren',
+  'won',
+  'wouldn',
+  'im',
+  'ive',
+  'id',
+  'youre',
+  'youve',
+  'youll',
+  'youd',
+  'hes',
+  'shes',
+  'its',
+  'were',
+  'theyre',
+  'theyve',
+  'theyll',
+  'theyd',
+  'wont',
+  'dont',
+  'didnt',
+  'cant',
+  'couldnt',
+  'shouldnt',
+  'wouldnt',
+  'really',
+  'actually',
+  'basically',
+  'currently',
+  'always',
+  'never',
+  'sometimes',
+  'often',
+  'usually',
+  'maybe',
+  'perhaps',
+  'probably',
+  'need',
+  'want',
+  'like',
+  'get',
+  'got',
+  'getting',
+  'going',
+  'know',
+  'think',
+  'feel',
+  'feeling',
+  'try',
+  'trying',
+  'help',
+  'helping',
 ]);
 
 // Problem patterns that map to specific transformations
@@ -41,85 +219,285 @@ interface ProblemPattern {
 const PROBLEM_PATTERNS: ProblemPattern[] = [
   // Perspective problems - need to see differently
   {
-    keywords: ['perspective', 'viewpoint', 'angle', 'frame', 'reframe', 'see', 'view', 'understand', 'interpret', 'meaning', 'context', 'stakeholder', 'audience', 'empathy', 'bias', 'assumption', 'blind', 'spot'],
+    keywords: [
+      'perspective',
+      'viewpoint',
+      'angle',
+      'frame',
+      'reframe',
+      'see',
+      'view',
+      'understand',
+      'interpret',
+      'meaning',
+      'context',
+      'stakeholder',
+      'audience',
+      'empathy',
+      'bias',
+      'assumption',
+      'blind',
+      'spot',
+    ],
     transformations: ['P'],
-    boost: 2.0
+    boost: 2.0,
   },
   // Inversion problems - stuck, need to flip thinking
   {
-    keywords: ['stuck', 'blocked', 'obstacle', 'barrier', 'cant', 'unable', 'fail', 'failure', 'wrong', 'mistake', 'error', 'avoid', 'prevent', 'risk', 'worst', 'opposite', 'reverse', 'flip', 'invert', 'negative', 'critique', 'devil', 'advocate', 'premortem', 'postmortem'],
+    keywords: [
+      'stuck',
+      'blocked',
+      'obstacle',
+      'barrier',
+      'cant',
+      'unable',
+      'fail',
+      'failure',
+      'wrong',
+      'mistake',
+      'error',
+      'avoid',
+      'prevent',
+      'risk',
+      'worst',
+      'opposite',
+      'reverse',
+      'flip',
+      'invert',
+      'negative',
+      'critique',
+      'devil',
+      'advocate',
+      'premortem',
+      'postmortem',
+    ],
     transformations: ['IN'],
-    boost: 2.0
+    boost: 2.0,
   },
   // Composition problems - need to combine/integrate
   {
-    keywords: ['combine', 'integrate', 'merge', 'synthesize', 'connect', 'link', 'bridge', 'unify', 'together', 'collaborate', 'team', 'synergy', 'holistic', 'whole', 'complete', 'network', 'ecosystem', 'platform'],
+    keywords: [
+      'combine',
+      'integrate',
+      'merge',
+      'synthesize',
+      'connect',
+      'link',
+      'bridge',
+      'unify',
+      'together',
+      'collaborate',
+      'team',
+      'synergy',
+      'holistic',
+      'whole',
+      'complete',
+      'network',
+      'ecosystem',
+      'platform',
+    ],
     transformations: ['CO'],
-    boost: 2.0
+    boost: 2.0,
   },
   // Decomposition problems - complex, need to break down
   {
-    keywords: ['complex', 'complicated', 'overwhelming', 'confusing', 'unclear', 'break', 'breakdown', 'analyze', 'analysis', 'dissect', 'separate', 'isolate', 'root', 'cause', 'why', 'factor', 'component', 'part', 'piece', 'simplify', 'prioritize', 'priority', 'important', 'critical', 'essential', 'pareto', '80/20'],
+    keywords: [
+      'complex',
+      'complicated',
+      'overwhelming',
+      'confusing',
+      'unclear',
+      'break',
+      'breakdown',
+      'analyze',
+      'analysis',
+      'dissect',
+      'separate',
+      'isolate',
+      'root',
+      'cause',
+      'why',
+      'factor',
+      'component',
+      'part',
+      'piece',
+      'simplify',
+      'prioritize',
+      'priority',
+      'important',
+      'critical',
+      'essential',
+      'pareto',
+      '80/20',
+    ],
     transformations: ['DE'],
-    boost: 2.0
+    boost: 2.0,
   },
   // Recursion problems - improvement, learning, iteration
   {
-    keywords: ['improve', 'improvement', 'better', 'iterate', 'iteration', 'learn', 'learning', 'feedback', 'loop', 'cycle', 'repeat', 'refine', 'optimize', 'continuous', 'progress', 'grow', 'growth', 'develop', 'evolve', 'adapt', 'calibrate', 'update', 'version'],
+    keywords: [
+      'improve',
+      'improvement',
+      'better',
+      'iterate',
+      'iteration',
+      'learn',
+      'learning',
+      'feedback',
+      'loop',
+      'cycle',
+      'repeat',
+      'refine',
+      'optimize',
+      'continuous',
+      'progress',
+      'grow',
+      'growth',
+      'develop',
+      'evolve',
+      'adapt',
+      'calibrate',
+      'update',
+      'version',
+    ],
     transformations: ['RE'],
-    boost: 2.0
+    boost: 2.0,
   },
   // Systems problems - coordination, strategy, big picture
   {
-    keywords: ['system', 'systems', 'strategy', 'strategic', 'coordinate', 'coordination', 'align', 'alignment', 'govern', 'governance', 'policy', 'incentive', 'leverage', 'scale', 'organization', 'organizational', 'structure', 'architecture', 'design', 'ecosystem', 'dynamics', 'equilibrium', 'tipping', 'threshold', 'emergent', 'emergence'],
+    keywords: [
+      'system',
+      'systems',
+      'strategy',
+      'strategic',
+      'coordinate',
+      'coordination',
+      'align',
+      'alignment',
+      'govern',
+      'governance',
+      'policy',
+      'incentive',
+      'leverage',
+      'scale',
+      'organization',
+      'organizational',
+      'structure',
+      'architecture',
+      'design',
+      'ecosystem',
+      'dynamics',
+      'equilibrium',
+      'tipping',
+      'threshold',
+      'emergent',
+      'emergence',
+    ],
     transformations: ['SY'],
-    boost: 2.0
+    boost: 2.0,
   },
   // Decision-making problems - span multiple transformations
   {
-    keywords: ['decide', 'decision', 'choice', 'choose', 'option', 'alternative', 'tradeoff', 'trade-off', 'evaluate', 'compare', 'weigh', 'uncertain', 'uncertainty', 'risk'],
+    keywords: [
+      'decide',
+      'decision',
+      'choice',
+      'choose',
+      'option',
+      'alternative',
+      'tradeoff',
+      'trade-off',
+      'evaluate',
+      'compare',
+      'weigh',
+      'uncertain',
+      'uncertainty',
+      'risk',
+    ],
     transformations: ['DE', 'IN', 'P'],
-    boost: 1.5
+    boost: 1.5,
   },
   // Communication problems
   {
-    keywords: ['communicate', 'communication', 'explain', 'present', 'presentation', 'convince', 'persuade', 'narrative', 'story', 'message', 'audience'],
+    keywords: [
+      'communicate',
+      'communication',
+      'explain',
+      'present',
+      'presentation',
+      'convince',
+      'persuade',
+      'narrative',
+      'story',
+      'message',
+      'audience',
+    ],
     transformations: ['P', 'CO'],
-    boost: 1.5
+    boost: 1.5,
   },
   // Planning problems
   {
-    keywords: ['plan', 'planning', 'roadmap', 'timeline', 'schedule', 'milestone', 'project', 'execute', 'execution', 'implement', 'implementation'],
+    keywords: [
+      'plan',
+      'planning',
+      'roadmap',
+      'timeline',
+      'schedule',
+      'milestone',
+      'project',
+      'execute',
+      'execution',
+      'implement',
+      'implementation',
+    ],
     transformations: ['DE', 'RE', 'SY'],
-    boost: 1.5
-  }
+    boost: 1.5,
+  },
 ];
 
 // Synonym mappings for better matching
 const SYNONYMS: Record<string, string[]> = {
-  'problem': ['issue', 'challenge', 'difficulty', 'trouble', 'obstacle'],
-  'solution': ['answer', 'fix', 'resolution', 'remedy'],
-  'analyze': ['examine', 'study', 'investigate', 'assess', 'evaluate'],
-  'understand': ['comprehend', 'grasp', 'fathom', 'perceive'],
-  'decide': ['choose', 'determine', 'select', 'pick'],
-  'improve': ['enhance', 'better', 'upgrade', 'optimize', 'refine'],
-  'break': ['decompose', 'divide', 'split', 'separate', 'dissect'],
-  'combine': ['merge', 'integrate', 'unite', 'synthesize', 'blend'],
-  'stuck': ['blocked', 'stalled', 'halted', 'trapped', 'gridlocked'],
-  'complex': ['complicated', 'intricate', 'convoluted', 'elaborate'],
-  'simple': ['basic', 'straightforward', 'elementary', 'fundamental'],
-  'strategy': ['plan', 'approach', 'tactic', 'method'],
-  'team': ['group', 'crew', 'squad', 'staff', 'colleagues'],
-  'goal': ['objective', 'target', 'aim', 'purpose', 'mission'],
-  'feedback': ['response', 'input', 'reaction', 'critique'],
-  'risk': ['danger', 'threat', 'hazard', 'peril'],
-  'opportunity': ['chance', 'possibility', 'opening', 'prospect']
+  problem: ['issue', 'challenge', 'difficulty', 'trouble', 'obstacle'],
+  solution: ['answer', 'fix', 'resolution', 'remedy'],
+  analyze: ['examine', 'study', 'investigate', 'assess', 'evaluate'],
+  understand: ['comprehend', 'grasp', 'fathom', 'perceive'],
+  decide: ['choose', 'determine', 'select', 'pick'],
+  improve: ['enhance', 'better', 'upgrade', 'optimize', 'refine'],
+  break: ['decompose', 'divide', 'split', 'separate', 'dissect'],
+  combine: ['merge', 'integrate', 'unite', 'synthesize', 'blend'],
+  stuck: ['blocked', 'stalled', 'halted', 'trapped', 'gridlocked'],
+  complex: ['complicated', 'intricate', 'convoluted', 'elaborate'],
+  simple: ['basic', 'straightforward', 'elementary', 'fundamental'],
+  strategy: ['plan', 'approach', 'tactic', 'method'],
+  team: ['group', 'crew', 'squad', 'staff', 'colleagues'],
+  goal: ['objective', 'target', 'aim', 'purpose', 'mission'],
+  feedback: ['response', 'input', 'reaction', 'critique'],
+  risk: ['danger', 'threat', 'hazard', 'peril'],
+  opportunity: ['chance', 'possibility', 'opening', 'prospect'],
 };
 
 // Simple stemming - reduce words to base forms
 function stem(word: string): string {
   // Remove common suffixes
-  const suffixes = ['ing', 'ed', 'ly', 'tion', 'sion', 'ness', 'ment', 'able', 'ible', 'ful', 'less', 'ous', 'ive', 'al', 'er', 'est', 's'];
+  const suffixes = [
+    'ing',
+    'ed',
+    'ly',
+    'tion',
+    'sion',
+    'ness',
+    'ment',
+    'able',
+    'ible',
+    'ful',
+    'less',
+    'ous',
+    'ive',
+    'al',
+    'er',
+    'est',
+    's',
+  ];
 
   let stemmed = word.toLowerCase();
 
@@ -139,8 +517,8 @@ function extractKeywords(text: string, applyStemming: boolean = true): string[] 
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, ' ')
     .split(/\s+/)
-    .filter(word => word.length > 2)
-    .filter(word => !STOPWORDS.has(word));
+    .filter((word) => word.length > 2)
+    .filter((word) => !STOPWORDS.has(word));
 
   return applyStemming ? words.map(stem) : words;
 }
@@ -154,7 +532,7 @@ function expandWithSynonyms(keywords: string[]): Set<string> {
     for (const [base, syns] of Object.entries(SYNONYMS)) {
       if (syns.includes(keyword) || base === keyword) {
         expanded.add(stem(base));
-        syns.forEach(s => expanded.add(stem(s)));
+        syns.forEach((s) => expanded.add(stem(s)));
       }
     }
   }
@@ -173,13 +551,14 @@ function detectPatterns(keywords: string[]): Map<TransformationType, number> {
     for (const pk of pattern.keywords) {
       const stemmedPk = stem(pk);
       // Check if any keyword matches (direct, stemmed, or partial)
-      const hasMatch = keywords.some(k =>
-        k === pk ||
-        k === stemmedPk ||
-        k.includes(stemmedPk) ||
-        stemmedPk.includes(k) ||
-        pk.includes(k) ||
-        k.includes(pk)
+      const hasMatch = keywords.some(
+        (k) =>
+          k === pk ||
+          k === stemmedPk ||
+          k.includes(stemmedPk) ||
+          stemmedPk.includes(k) ||
+          pk.includes(k) ||
+          k.includes(pk),
       );
       if (hasMatch) matchCount++;
     }
@@ -211,7 +590,7 @@ function getTransformationKey(code: string): TransformationType {
 function scoreModel(
   model: MentalModel,
   keywords: Set<string>,
-  patternBoosts: Map<TransformationType, number>
+  patternBoosts: Map<TransformationType, number>,
 ): number {
   const modelText = `${model.name} ${model.definition}`.toLowerCase();
   const modelKeywords = extractKeywords(modelText);
@@ -251,7 +630,7 @@ export interface RecommendationResult {
 export function recommendModels(
   problem: string,
   allModels: MentalModel[],
-  limit: number = 5
+  limit: number = 5,
 ): RecommendationResult {
   // Extract keywords - both raw (for pattern matching) and stemmed (for model matching)
   const rawKeywords = extractKeywords(problem, false); // unstemmed for pattern matching
@@ -266,46 +645,44 @@ export function recommendModels(
   for (const [trans, boost] of patternBoosts) {
     if (boost > 1.2) {
       const transNames: Record<TransformationType, string> = {
-        'P': 'Perspective',
-        'IN': 'Inversion',
-        'CO': 'Composition',
-        'DE': 'Decomposition',
-        'RE': 'Recursion',
-        'SY': 'Systems'
+        P: 'Perspective',
+        IN: 'Inversion',
+        CO: 'Composition',
+        DE: 'Decomposition',
+        RE: 'Recursion',
+        SY: 'Systems',
       };
       matchedPatterns.push(transNames[trans]);
     }
   }
 
   // Score all models
-  const scored = allModels.map(model => ({
+  const scored = allModels.map((model) => ({
     model,
-    score: scoreModel(model, expandedKeywords, patternBoosts)
+    score: scoreModel(model, expandedKeywords, patternBoosts),
   }));
 
   // Sort by score and take top results
   const recommendations = scored
-    .filter(s => s.score > 0)
+    .filter((s) => s.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
-    .map(s => s.model);
+    .map((s) => s.model);
 
   // Fallback to priority-1 models if no matches
   if (recommendations.length === 0) {
-    const fallback = allModels
-      .filter(m => m.priority === 1)
-      .slice(0, limit);
+    const fallback = allModels.filter((m) => m.priority === 1).slice(0, limit);
 
     return {
       models: fallback,
       matchedPatterns: [],
-      keywordsUsed: []
+      keywordsUsed: [],
     };
   }
 
   return {
     models: recommendations,
     matchedPatterns,
-    keywordsUsed: Array.from(expandedKeywords).slice(0, 10)
+    keywordsUsed: Array.from(expandedKeywords).slice(0, 10),
   };
 }

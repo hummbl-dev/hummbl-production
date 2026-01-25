@@ -13,7 +13,7 @@ describe('Models Endpoint', () => {
   it('should return all models', async () => {
     const res = await app.request('/v1/models');
     expect(res.status).toBe(200);
-    
+
     const data = await res.json();
     expect(data.success).toBe(true);
     expect(data.data).toBeInstanceOf(Array);
@@ -24,7 +24,7 @@ describe('Models Endpoint', () => {
   it('should return models with correct structure', async () => {
     const res = await app.request('/v1/models');
     const data = await res.json();
-    
+
     const firstModel = data.data[0];
     expect(firstModel).toHaveProperty('code');
     expect(firstModel).toHaveProperty('name');
@@ -37,9 +37,9 @@ describe('Models Endpoint', () => {
     // by checking the model codes which indicate their transformation
     const res = await app.request('/v1/models');
     const data = await res.json();
-    
+
     const modelCodes = data.data.map((m: any) => m.code);
-    
+
     // Check for models from each transformation type
     expect(modelCodes.some((code: string) => code.startsWith('P'))).toBe(true); // Perspective
     expect(modelCodes.some((code: string) => code.startsWith('IN'))).toBe(true); // Inversion
@@ -52,7 +52,7 @@ describe('Models Endpoint', () => {
   it('should have valid model codes', async () => {
     const res = await app.request('/v1/models');
     const data = await res.json();
-    
+
     data.data.forEach((model: any) => {
       expect(model.code).toMatch(/^[A-Z]{1,3}\d+$/);
     });
@@ -61,7 +61,7 @@ describe('Models Endpoint', () => {
   it('should have valid priority levels', async () => {
     const res = await app.request('/v1/models');
     const data = await res.json();
-    
+
     data.data.forEach((model: any) => {
       expect([1, 2, 3, 4, 5]).toContain(model.priority);
     });

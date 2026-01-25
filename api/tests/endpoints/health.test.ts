@@ -19,7 +19,7 @@ describe('Health Endpoint', () => {
   it('should return correct response structure', async () => {
     const res = await app.request('/health');
     const data = await res.json();
-    
+
     expect(data).toHaveProperty('status', 'healthy');
     expect(data).toHaveProperty('version', '1.0.0');
     expect(data).toHaveProperty('timestamp');
@@ -31,7 +31,7 @@ describe('Health Endpoint', () => {
   it('should include rate limit status', async () => {
     const res = await app.request('/health');
     const data = await res.json();
-    
+
     expect(data.rate_limit_status).toHaveProperty('active_ips');
     expect(data.rate_limit_status).toHaveProperty('window_ms', 60000);
     expect(data.rate_limit_status).toHaveProperty('max_requests_per_minute', 100);
@@ -40,7 +40,7 @@ describe('Health Endpoint', () => {
   it('should have valid timestamp', async () => {
     const res = await app.request('/health');
     const data = await res.json();
-    
+
     const timestamp = new Date(data.timestamp);
     expect(timestamp.getTime()).not.toBeNaN();
   });
@@ -48,7 +48,7 @@ describe('Health Endpoint', () => {
   it('should track uptime correctly', async () => {
     const res = await app.request('/health');
     const data = await res.json();
-    
+
     expect(data.uptime_ms).toBeGreaterThan(0);
     expect(typeof data.uptime_ms).toBe('number');
   });

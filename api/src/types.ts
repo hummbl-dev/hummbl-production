@@ -3,19 +3,19 @@
  * Core type definitions for mental models, transformations, and framework operations
  */
 
-export type TransformationType = "P" | "IN" | "CO" | "DE" | "RE" | "SY";
+export type TransformationType = 'P' | 'IN' | 'CO' | 'DE' | 'RE' | 'SY';
 
 export const TRANSFORMATION_TYPES: readonly TransformationType[] = [
-  "P",
-  "IN",
-  "CO",
-  "DE",
-  "RE",
-  "SY",
+  'P',
+  'IN',
+  'CO',
+  'DE',
+  'RE',
+  'SY',
 ] as const;
 
 export const isTransformationType = (value: unknown): value is TransformationType => {
-  if (typeof value !== "string") {
+  if (typeof value !== 'string') {
     return false;
   }
   return TRANSFORMATION_TYPES.includes(value as TransformationType);
@@ -56,11 +56,11 @@ export interface AnalysisGuide {
 }
 
 export type DialecticalStageId =
-  | "thesis"
-  | "antithesis"
-  | "synthesis"
-  | "convergence"
-  | "meta_reflection";
+  | 'thesis'
+  | 'antithesis'
+  | 'synthesis'
+  | 'convergence'
+  | 'meta_reflection';
 
 export interface StageModelMapping {
   stage: DialecticalStageId;
@@ -81,7 +81,7 @@ export interface DialecticalMethodology {
   metaModels: string[];
 }
 
-export type ModelReferenceIssueType = "NotFound" | "WrongTransformation" | "Duplicate" | "Unknown";
+export type ModelReferenceIssueType = 'NotFound' | 'WrongTransformation' | 'Duplicate' | 'Unknown';
 
 export interface ModelReferenceIssue {
   code: string;
@@ -104,11 +104,11 @@ export interface MethodologyAuditResult {
  * Domain-wide error type for HUMMBL Base120 operations.
  */
 export type DomainError =
-  | { type: "NotFound"; entity: string; code?: string }
-  | { type: "ValidationError"; field?: string; message: string }
-  | { type: "Conflict"; entity: string; message: string }
-  | { type: "Internal"; message: string }
-  | { type: "Unknown"; message: string };
+  | { type: 'NotFound'; entity: string; code?: string }
+  | { type: 'ValidationError'; field?: string; message: string }
+  | { type: 'Conflict'; entity: string; message: string }
+  | { type: 'Internal'; message: string }
+  | { type: 'Unknown'; message: string };
 
 /**
  * Result type for type-safe error handling (Railway-Oriented Programming).
@@ -141,15 +141,15 @@ export function isErr<T, E>(result: Result<T, E>): result is { ok: false; error:
 }
 
 export function isNotFoundError(
-  error: DomainError
-): error is Extract<DomainError, { type: "NotFound" }> {
-  return error.type === "NotFound";
+  error: DomainError,
+): error is Extract<DomainError, { type: 'NotFound' }> {
+  return error.type === 'NotFound';
 }
 
 /**
  * API Key tiers with rate limits and permissions
  */
-export type ApiKeyTier = "free" | "pro" | "enterprise";
+export type ApiKeyTier = 'free' | 'pro' | 'enterprise';
 
 export interface ApiKeyInfo {
   id: string;
@@ -173,18 +173,18 @@ export interface ApiKeyInfo {
 export type AuthResult = Result<ApiKeyInfo, AuthError>;
 
 export type AuthError =
-  | { type: "MISSING_AUTH"; message: string }
-  | { type: "INVALID_FORMAT"; message: string }
-  | { type: "KEY_NOT_FOUND"; message: string }
-  | { type: "KEY_INACTIVE"; message: string }
-  | { type: "RATE_LIMIT_EXCEEDED"; message: string }
-  | { type: "INTERNAL_ERROR"; message: string };
+  | { type: 'MISSING_AUTH'; message: string }
+  | { type: 'INVALID_FORMAT'; message: string }
+  | { type: 'KEY_NOT_FOUND'; message: string }
+  | { type: 'KEY_INACTIVE'; message: string }
+  | { type: 'RATE_LIMIT_EXCEEDED'; message: string }
+  | { type: 'INTERNAL_ERROR'; message: string };
 
 /**
  * Workflow types for guided multi-turn problem solving
  */
 
-export type WorkflowType = "root_cause_analysis" | "strategy_design" | "decision_making";
+export type WorkflowType = 'root_cause_analysis' | 'strategy_design' | 'decision_making';
 
 export interface WorkflowStep {
   stepNumber: number;

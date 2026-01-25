@@ -25,6 +25,14 @@ jobs:
       - name: Install dependencies
         working-directory: ./api
         run: npm ci
+
+      - name: Lint
+        working-directory: ./api
+        run: npm run lint
+
+      - name: Format check
+        working-directory: ./api
+        run: npm run format:check
         
       - name: Run tests
         working-directory: ./api

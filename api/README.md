@@ -18,6 +18,7 @@ npm run dev
 ```
 
 Test:
+
 ```bash
 curl http://localhost:8787/health
 curl http://localhost:8787/v1/models/P1
