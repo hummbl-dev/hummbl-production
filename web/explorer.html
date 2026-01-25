@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUMMBL Explorer - Browse 120 Mental Models</title>
+    <meta name="description" content="Explore and search 120 mental models. Get recommendations for your problems.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-elevated: #1a1a1a;
+            --text-primary: #e8e8e8;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #666;
+            --accent-cyan: #00ff88;
+            --accent-warm: #ff6b35;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-prominent: rgba(0, 255, 136, 0.3);
+
+            --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+            --font-serif: 'Crimson Pro', Georgia, serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-mono);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Subtle grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(0, 255, 136, 0.02) 49px, rgba(0, 255, 136, 0.02) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(0, 255, 136, 0.02) 49px, rgba(0, 255, 136, 0.02) 50px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-text {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .logo-badge {
+            font-size: 10px;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-cyan);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-prominent);
+        }
+
+        .header-links {
+            display: flex;
+            gap: 24px;
+            font-size: 13px;
+        }
+
+        .header-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .header-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Main layout */
+        main {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            padding: 40px 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 40px;
+            height: fit-content;
+        }
+
+        .search-box {
+            margin-bottom: 32px;
+        }
+
+        .search-box label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 14px 16px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        /* Problem input */
+        .problem-box {
+            margin-bottom: 32px;
+        }
+
+        .problem-box label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .problem-textarea {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 14px 16px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-primary);
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .problem-textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .problem-textarea::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .recommend-btn {
+            width: 100%;
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 6px;
+            padding: 14px 24px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .recommend-btn:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .recommend-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Transformation filters */
+        .filters {
+            margin-bottom: 32px;
+        }
+
+        .filters label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .filter-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--border-prominent);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .filter-btn .code {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .filter-btn .name {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .filter-all {
+            grid-column: span 2;
+            text-align: center;
+        }
+
+        /* Stats */
+        .stats {
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .stats-row span:last-child {
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        /* Main content */
+        .content {
+            min-width: 0;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .content-title {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover, .view-btn.active {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Recommendations section */
+        .recommendations {
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .recommendations.visible {
+            display: block;
+        }
+
+        .recommendations-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .recommendations-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-cyan);
+        }
+
+        .recommendations-close {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            font-size: 18px;
+            margin-left: auto;
+        }
+
+        .recommendations-close:hover {
+            color: var(--text-primary);
+        }
+
+        .recommendations-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .recommendation-card {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid var(--border-prominent);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .recommendation-card:hover {
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateX(4px);
+        }
+
+        .recommendation-card .model-code {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .recommendation-card .model-name {
+            font-family: var(--font-serif);
+            font-size: 18px;
+            margin: 8px 0;
+        }
+
+        .recommendation-card .model-def {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Models grid */
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .models-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Model card */
+        .model-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 0;
+            background: var(--accent-cyan);
+            transition: height 0.3s;
+        }
+
+        .model-card:hover {
+            border-color: var(--border-prominent);
+            transform: translateY(-2px);
+        }
+
+        .model-card:hover::before {
+            height: 100%;
+        }
+
+        .model-card .model-code {
+            font-weight: 700;
+            color: var(--accent-cyan);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .model-card .model-name {
+            font-family: var(--font-serif);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .model-card .model-def {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .model-card .model-priority {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 10px;
+            color: var(--text-tertiary);
+        }
+
+        /* List view card */
+        .model-card.list-view {
+            display: grid;
+            grid-template-columns: 60px 200px 1fr auto;
+            gap: 16px;
+            align-items: center;
+            padding: 16px 20px;
+        }
+
+        .model-card.list-view .model-name {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .model-card.list-view .model-def {
+            margin: 0;
+        }
+
+        .model-card.list-view .model-priority {
+            position: static;
+        }
+
+        @media (max-width: 768px) {
+            .model-card.list-view {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        /* Model detail modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-code {
+            font-size: 14px;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-title {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+
+        .modal-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .modal-badge {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-cyan);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid var(--border-prominent);
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-tertiary);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-subtle);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-tertiary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="logo">
+                <span class="logo-text">HUMMBL</span>
+                <span class="logo-badge">Explorer</span>
+            </a>
+            <nav class="header-links">
+                <a href="index.html">Home</a>
+                <a href="https://hummbl-api.hummbl.workers.dev" target="_blank">API</a>
+                <a href="https://cal.com/hummbl/30min" target="_blank">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <aside class="sidebar">
+                <!-- Problem recommendation -->
+                <div class="problem-box">
+                    <label>Describe Your Problem</label>
+                    <textarea
+                        class="problem-textarea"
+                        id="problem-input"
+                        placeholder="e.g., I'm struggling to prioritize tasks and make decisions..."
+                    ></textarea>
+                    <button class="recommend-btn" id="recommend-btn">
+                        Get Recommendations
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-box">
+                    <label>Search Models</label>
+                    <div class="search-input-wrapper">
+                        <input
+                            type="text"
+                            class="search-input"
+                            id="search-input"
+                            placeholder="Search by name or keyword..."
+                        >
+                    </div>
+                </div>
+
+                <!-- Transformation filters -->
+                <div class="filters">
+                    <label>Filter by Transformation</label>
+                    <div class="filter-grid" id="filter-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats">
+                    <div class="stats-row">
+                        <span>Showing</span>
+                        <span id="showing-count">120 models</span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="content">
+                <div class="content-header">
+                    <h1 class="content-title">Mental Models</h1>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid" id="grid-view-btn">Grid</button>
+                        <button class="view-btn" data-view="list" id="list-view-btn">List</button>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="recommendations" id="recommendations">
+                    <div class="recommendations-header">
+                        <span class="recommendations-title">Recommended for Your Problem</span>
+                        <button class="recommendations-close" id="recommendations-close">&times;</button>
+                    </div>
+                    <div class="recommendations-grid" id="recommendations-grid">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading models...</p>
+                </div>
+
+                <!-- Models -->
+                <div class="models-grid" id="models-container">
+                    <!-- Filled by JS -->
+                </div>
+
+                <!-- Empty state -->
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <div class="empty-state-icon">?</div>
+                    <p>No models match your search</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>HUMMBL Base120 &copy; 2026 &middot; <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank">MCP Server</a></p>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-code" id="modal-code"></div>
+                    <h2 class="modal-title" id="modal-title"></h2>
+                </div>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-label">Definition</div>
+                    <p class="modal-text" id="modal-definition"></p>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-label">Transformation</div>
+                    <span class="modal-badge" id="modal-transformation"></span>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-label">Priority</div>
+                    <span class="modal-badge" id="modal-priority"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://hummbl-api.hummbl.workers.dev';
+
+        let allModels = [];
+        let currentFilter = 'all';
+        let currentView = 'grid';
+        let transformations = {};
+
+        const FILTER_DATA = [
+            { filter: 'all', code: 'ALL', name: '120 models', isAll: true },
+            { filter: 'P', code: 'P', name: 'Perspective' },
+            { filter: 'IN', code: 'IN', name: 'Inversion' },
+            { filter: 'CO', code: 'CO', name: 'Composition' },
+            { filter: 'DE', code: 'DE', name: 'Decomposition' },
+            { filter: 'RE', code: 'RE', name: 'Recursion' },
+            { filter: 'SY', code: 'SY', name: 'Systems' }
+        ];
+
+        // Create element helper
+        function createElement(tag, className, textContent) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            if (textContent) el.textContent = textContent;
+            return el;
+        }
+
+        // Initialize filters
+        function initFilters() {
+            const grid = document.getElementById('filter-grid');
+            grid.replaceChildren();
+
+            FILTER_DATA.forEach(f => {
+                const btn = createElement('button', 'filter-btn' + (f.isAll ? ' filter-all' : '') + (f.filter === 'all' ? ' active' : ''));
+                btn.dataset.filter = f.filter;
+
+                const codeSpan = createElement('span', 'code', f.code);
+                const nameSpan = createElement('span', 'name', f.name);
+
+                btn.appendChild(codeSpan);
+                btn.appendChild(nameSpan);
+                btn.addEventListener('click', () => setFilter(f.filter));
+
+                grid.appendChild(btn);
+            });
+        }
+
+        // Initialize
+        async function init() {
+            initFilters();
+
+            // Event listeners
+            document.getElementById('search-input').addEventListener('input', filterModels);
+            document.getElementById('recommend-btn').addEventListener('click', getRecommendations);
+            document.getElementById('recommendations-close').addEventListener('click', hideRecommendations);
+            document.getElementById('grid-view-btn').addEventListener('click', () => setView('grid'));
+            document.getElementById('list-view-btn').addEventListener('click', () => setView('list'));
+            document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('modal-overlay')) closeModal();
+            });
+            document.getElementById('modal-close').addEventListener('click', closeModal);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            try {
+                // Load transformations and models
+                const [transRes, modelsRes] = await Promise.all([
+                    fetch(API_BASE + '/v1/transformations'),
+                    fetch(API_BASE + '/v1/models')
+                ]);
+
+                const transData = await transRes.json();
+                const modelsData = await modelsRes.json();
+
+                // Build transformations lookup
+                transData.data.forEach(t => {
+                    transformations[t.key] = t;
+                });
+
+                allModels = modelsData.data;
+
+                document.getElementById('loading').style.display = 'none';
+                renderModels();
+            } catch (error) {
+                console.error('Failed to load models:', error);
+                document.getElementById('loading').textContent = 'Failed to load models. Please refresh.';
+            }
+        }
+
+        // Get transformation key from model code
+        function getTransformationKey(code) {
+            if (code.startsWith('IN')) return 'IN';
+            if (code.startsWith('CO')) return 'CO';
+            if (code.startsWith('DE')) return 'DE';
+            if (code.startsWith('RE')) return 'RE';
+            if (code.startsWith('SY')) return 'SY';
+            if (code.startsWith('P')) return 'P';
+            return 'P';
+        }
+
+        // Create model card element
+        function createModelCard(model, isListView) {
+            const card = createElement('div', 'model-card' + (isListView ? ' list-view' : ''));
+
+            const codeDiv = createElement('div', 'model-code', model.code);
+            const nameDiv = createElement('div', 'model-name', model.name);
+            const defDiv = createElement('div', 'model-def', model.definition);
+            const priorityDiv = createElement('div', 'model-priority', 'P' + model.priority);
+
+            card.appendChild(codeDiv);
+            card.appendChild(nameDiv);
+            card.appendChild(defDiv);
+            card.appendChild(priorityDiv);
+
+            card.addEventListener('click', () => openModal(model.code));
+
+            return card;
+        }
+
+        // Render models
+        function renderModels() {
+            const container = document.getElementById('models-container');
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+            let filtered = allModels;
+
+            // Filter by transformation
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(m => getTransformationKey(m.code) === currentFilter);
+            }
+
+            // Filter by search
+            if (searchTerm) {
+                filtered = filtered.filter(m =>
+                    m.code.toLowerCase().includes(searchTerm) ||
+                    m.name.toLowerCase().includes(searchTerm) ||
+                    m.definition.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Update count
+            document.getElementById('showing-count').textContent = filtered.length + ' models';
+
+            // Show empty state or models
+            if (filtered.length === 0) {
+                container.replaceChildren();
+                document.getElementById('empty-state').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('empty-state').style.display = 'none';
+
+            // Set container class based on view
+            container.className = currentView === 'grid' ? 'models-grid' : 'models-list';
+
+            // Render using DOM methods
+            const fragment = document.createDocumentFragment();
+            filtered.forEach(model => {
+                fragment.appendChild(createModelCard(model, currentView === 'list'));
+            });
+            container.replaceChildren(fragment);
+        }
+
+        // Filter models
+        function filterModels() {
+            renderModels();
+        }
+
+        // Set transformation filter
+        function setFilter(filter) {
+            currentFilter = filter;
+
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+
+            renderModels();
+        }
+
+        // Set view mode
+        function setView(view) {
+            currentView = view;
+
+            // Update button states
+            document.getElementById('grid-view-btn').classList.toggle('active', view === 'grid');
+            document.getElementById('list-view-btn').classList.toggle('active', view === 'list');
+
+            renderModels();
+        }
+
+        // Get recommendations
+        async function getRecommendations() {
+            const problem = document.getElementById('problem-input').value.trim();
+            if (!problem) return;
+
+            const btn = document.getElementById('recommend-btn');
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+
+            try {
+                const res = await fetch(API_BASE + '/v1/recommend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problem: problem })
+                });
+
+                const data = await res.json();
+
+                if (data.success && data.data.length > 0) {
+                    showRecommendations(data.data);
+                } else {
+                    alert('No specific recommendations found. Try describing your problem differently.');
+                }
+            } catch (error) {
+                console.error('Recommendation error:', error);
+                alert('Failed to get recommendations. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Get Recommendations';
+            }
+        }
+
+        // Create recommendation card
+        function createRecommendationCard(model) {
+            const card = createElement('div', 'recommendation-card');
+
+            const codeDiv = createElement('div', 'model-code', model.code);
+            const nameDiv = createElement('div', 'model-name', model.name);
+            const defDiv = createElement('div', 'model-def', model.definition);
+
+            card.appendChild(codeDiv);
+            card.appendChild(nameDiv);
+            card.appendChild(defDiv);
+
+            card.addEventListener('click', () => openModal(model.code));
+
+            return card;
+        }
+
+        // Show recommendations
+        function showRecommendations(models) {
+            const container = document.getElementById('recommendations-grid');
+            const fragment = document.createDocumentFragment();
+
+            models.forEach(model => {
+                fragment.appendChild(createRecommendationCard(model));
+            });
+
+            container.replaceChildren(fragment);
+            document.getElementById('recommendations').classList.add('visible');
+        }
+
+        // Hide recommendations
+        function hideRecommendations() {
+            document.getElementById('recommendations').classList.remove('visible');
+        }
+
+        // Open modal
+        function openModal(code) {
+            const model = allModels.find(m => m.code === code);
+            if (!model) return;
+
+            const transKey = getTransformationKey(code);
+            const trans = transformations[transKey];
+
+            document.getElementById('modal-code').textContent = model.code;
+            document.getElementById('modal-title').textContent = model.name;
+            document.getElementById('modal-definition').textContent = model.definition;
+            document.getElementById('modal-transformation').textContent = transKey + ' - ' + (trans ? trans.name : 'Unknown');
+            document.getElementById('modal-priority').textContent = 'Priority ' + model.priority;
+
+            document.getElementById('modal-overlay').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>

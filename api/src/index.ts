@@ -6,6 +6,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { TRANSFORMATIONS, getAllModels, getModelByCode } from './base120.js';
+import { recommendModels } from './recommend.js';
 
 const app = new Hono();
 
@@ -97,10 +98,11 @@ app.get('/v1/models/:code', (c) => {
 
 /**
  * POST /v1/recommend - Get model recommendations for a problem
+ * Uses improved algorithm with stopwords, pattern matching, and semantic scoring
  */
 app.post('/v1/recommend', async (c) => {
   try {
-    const { problem } = await c.req.json();
+    const { problem, limit } = await c.req.json();
 
     if (!problem || typeof problem !== 'string') {
       return c.json({
@@ -109,37 +111,26 @@ app.post('/v1/recommend', async (c) => {
       }, 400);
     }
 
-    // Simple keyword matching for now
-    // TODO: Implement proper semantic search
     const allModels = getAllModels();
-    const keywords = problem.toLowerCase().split(/\s+/);
+    const maxResults = typeof limit === 'number' && limit > 0 && limit <= 20 ? limit : 5;
 
-    const scored = allModels.map(model => {
-      const searchText = `${model.name} ${model.definition}`.toLowerCase();
-      const matches = keywords.filter(kw => searchText.includes(kw)).length;
-      return { model, score: matches };
-    });
+    const result = recommendModels(problem, allModels, maxResults);
 
-    const recommendations = scored
-      .filter(s => s.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5)
-      .map(s => s.model);
-
-    // If no keyword matches, return top priority models
-    if (recommendations.length === 0) {
+    if (result.models.length === 0) {
       return c.json({
         success: true,
-        data: allModels
-          .filter(m => m.priority === 1)
-          .slice(0, 5),
+        data: allModels.filter(m => m.priority === 1).slice(0, maxResults),
         message: 'No specific matches - showing high-priority models'
       });
     }
 
     return c.json({
       success: true,
-      data: recommendations
+      data: result.models,
+      meta: {
+        matchedPatterns: result.matchedPatterns,
+        keywordsAnalyzed: result.keywordsUsed.length
+      }
     });
   } catch (error) {
     return c.json({

@@ -549,19 +549,24 @@
             <div class="status-bar">
                 <span class="status-indicator"></span>
                 <span>System Online</span>
-                <span style="margin-left: auto; color: var(--text-tertiary);">Base120 v1.0</span>
+                <nav style="margin-left: auto; display: flex; gap: 24px; font-size: 12px;">
+                    <a href="explorer.html" style="color: var(--accent-cyan); text-decoration: none;">Explorer</a>
+                    <a href="#try-it" style="color: var(--text-tertiary); text-decoration: none;">Try It</a>
+                    <a href="#setup" style="color: var(--text-tertiary); text-decoration: none;">Setup</a>
+                    <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" style="color: var(--text-tertiary); text-decoration: none;">API</a>
+                </nav>
             </div>
 
             <h1>Structured reasoning<br>for <span class="highlight">AI agents</span></h1>
             <p class="tagline">120 validated mental models your agents can call via API. No signup. No complexity. Just working infrastructure for building agents that think.</p>
 
             <div class="cta-group">
-                <a href="https://cal.com/hummbl/30min" class="btn btn-primary">
-                    <span>Book Discovery Call</span>
+                <a href="explorer.html" class="btn btn-primary">
+                    <span>Explore 120 Models</span>
                     <span>→</span>
                 </a>
-                <a href="#setup" class="btn btn-secondary">
-                    <span>Quick Setup</span>
+                <a href="https://cal.com/hummbl/30min" class="btn btn-secondary">
+                    <span>Book Discovery Call</span>
                 </a>
             </div>
         </header>
@@ -640,7 +645,61 @@
             </div>
         </section>
 
-        <section data-section="// 02" id="setup">
+        <section data-section="// 02" id="try-it">
+            <h2>Try It Now</h2>
+            <p>Describe a problem you're facing and get recommended mental models instantly. No signup required.</p>
+
+            <div class="try-it-box" style="margin: 40px 0;">
+                <textarea
+                    id="try-problem"
+                    placeholder="e.g., I'm struggling to prioritize what to work on..."
+                    style="
+                        width: 100%;
+                        background: var(--bg-elevated);
+                        border: 1px solid var(--border-subtle);
+                        border-radius: 8px;
+                        padding: 20px;
+                        font-family: var(--font-mono);
+                        font-size: 14px;
+                        color: var(--text-primary);
+                        resize: vertical;
+                        min-height: 100px;
+                        margin-bottom: 16px;
+                    "
+                ></textarea>
+                <button
+                    id="try-btn"
+                    onclick="tryRecommend()"
+                    style="
+                        background: var(--accent-cyan);
+                        color: var(--bg-primary);
+                        border: none;
+                        border-radius: 4px;
+                        padding: 16px 32px;
+                        font-family: var(--font-mono);
+                        font-size: 13px;
+                        font-weight: 500;
+                        text-transform: uppercase;
+                        letter-spacing: 0.1em;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    "
+                >Get Recommendations</button>
+            </div>
+
+            <div id="try-results" style="display: none; margin: 40px 0;">
+                <h3 style="color: var(--accent-cyan); margin-bottom: 20px;">Recommended Models</h3>
+                <div id="try-results-grid" style="display: grid; gap: 16px;"></div>
+                <div style="margin-top: 24px;">
+                    <a href="explorer.html" class="btn btn-secondary" style="display: inline-flex;">
+                        <span>Explore All 120 Models</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section data-section="// 03" id="setup">
             <h2>Claude Desktop Setup</h2>
             <p>Install the MCP server to give Claude direct access to all 120 models.</p>
 
@@ -700,7 +759,7 @@
             </ul>
         </section>
 
-        <section data-section="// 03">
+        <section data-section="// 04">
             <h2>Use Cases</h2>
             <p style="max-width: none; font-size: 16px; margin-bottom: 32px;">HUMMBL provides structured reasoning infrastructure for AI systems. Use it via API, Claude Desktop MCP integration, or direct framework integration:</p>
 
@@ -767,6 +826,70 @@
             navigator.clipboard.writeText(code);
             event.target.textContent = '✓ Copied';
             setTimeout(() => event.target.textContent = 'Copy', 2000);
+        }
+
+        // Try It recommendations
+        async function tryRecommend() {
+            const problem = document.getElementById('try-problem').value.trim();
+            if (!problem) return;
+
+            const btn = document.getElementById('try-btn');
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+
+            try {
+                const res = await fetch('https://hummbl-api.hummbl.workers.dev/v1/recommend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problem: problem })
+                });
+
+                const data = await res.json();
+
+                if (data.success && data.data.length > 0) {
+                    showTryResults(data.data);
+                } else {
+                    alert('No specific recommendations found. Try describing your problem differently.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to get recommendations. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Get Recommendations';
+            }
+        }
+
+        function showTryResults(models) {
+            const grid = document.getElementById('try-results-grid');
+            // Clear previous results using safe DOM method
+            while (grid.firstChild) {
+                grid.removeChild(grid.firstChild);
+            }
+
+            models.forEach(function(model) {
+                const card = document.createElement('div');
+                card.style.cssText = 'background: var(--bg-elevated); border: 1px solid var(--border-prominent); border-radius: 8px; padding: 24px;';
+
+                const code = document.createElement('div');
+                code.style.cssText = 'color: var(--accent-cyan); font-weight: 700; font-size: 14px; margin-bottom: 8px;';
+                code.textContent = model.code;
+
+                const name = document.createElement('div');
+                name.style.cssText = 'font-family: var(--font-serif); font-size: 20px; font-weight: 600; margin-bottom: 8px;';
+                name.textContent = model.name;
+
+                const def = document.createElement('div');
+                def.style.cssText = 'color: var(--text-secondary); font-size: 14px; line-height: 1.6;';
+                def.textContent = model.definition;
+
+                card.appendChild(code);
+                card.appendChild(name);
+                card.appendChild(def);
+                grid.appendChild(card);
+            });
+
+            document.getElementById('try-results').style.display = 'block';
         }
 
         // Intersection Observer for scroll animations
