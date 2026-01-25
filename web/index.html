@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HUMMBL Base120 - Mental Models for AI Agents</title>
     <meta name="description" content="120 mental models your AI agents can call. Working API, zero setup.">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev; frame-ancestors 'none'; form-action 'self';">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -230,9 +237,142 @@
             font-size: 14px;
         }
 
+        .header-nav {
+            margin-left: auto;
+            display: flex;
+            gap: 24px;
+            font-size: 12px;
+        }
+        
+        .header-nav a {
+            color: var(--text-tertiary);
+            text-decoration: none;
+        }
+        
+        .header-nav a.primary {
+            color: var(--accent-cyan);
+        }
+
         .prompt-symbol {
             color: var(--accent-cyan);
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             user-select: none;
+        }
+
+        .footer-text {
+            margin-bottom: 12px;
+        }
+
+        .cta-section {
+            margin-top: 48px;
+        }
+
+        .try-it-container {
+            margin: 40px 0;
+        }
+
+        .problem-textarea {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-primary);
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 16px;
+        }
+
+        .try-button {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 4px;
+            padding: 16px 32px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .results-container {
+            display: none;
+            margin: 40px 0;
+        }
+
+        .results-title {
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .explore-link {
+            display: inline-flex;
+        }
+
+        .margin-top-24 {
+            margin-top: 24px;
+        }
+
+        .inline-code {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-cyan);
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        .config-code {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .use-cases-intro {
+            max-width: none;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin: 48px 0;
+        }
+
+        .use-case-title {
+            margin-top: 0;
+        }
+
+        .use-case-description {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .booking-prompt {
+            max-width: none;
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-top: 48px;
         }
 
         .terminal-code {
@@ -549,11 +689,11 @@
             <div class="status-bar">
                 <span class="status-indicator"></span>
                 <span>System Online</span>
-                <nav style="margin-left: auto; display: flex; gap: 24px; font-size: 12px;">
-                    <a href="explorer.html" style="color: var(--accent-cyan); text-decoration: none;">Explorer</a>
-                    <a href="#try-it" style="color: var(--text-tertiary); text-decoration: none;">Try It</a>
-                    <a href="#setup" style="color: var(--text-tertiary); text-decoration: none;">Setup</a>
-                    <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" style="color: var(--text-tertiary); text-decoration: none;">API</a>
+                <nav class="header-nav">
+                    <a href="explorer.html" class="primary">Explorer</a>
+                    <a href="#try-it">Try It</a>
+                    <a href="#setup">Setup</a>
+                    <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
                 </nav>
             </div>
 
@@ -649,49 +789,24 @@
             <h2>Try It Now</h2>
             <p>Describe a problem you're facing and get recommended mental models instantly. No signup required.</p>
 
-            <div class="try-it-box" style="margin: 40px 0;">
+            <div class="try-it-container">
                 <textarea
                     id="try-problem"
                     placeholder="e.g., I'm struggling to prioritize what to work on..."
-                    style="
-                        width: 100%;
-                        background: var(--bg-elevated);
-                        border: 1px solid var(--border-subtle);
-                        border-radius: 8px;
-                        padding: 20px;
-                        font-family: var(--font-mono);
-                        font-size: 14px;
-                        color: var(--text-primary);
-                        resize: vertical;
-                        min-height: 100px;
-                        margin-bottom: 16px;
-                    "
+                    class="problem-textarea"
                 ></textarea>
                 <button
                     id="try-btn"
                     onclick="tryRecommend()"
-                    style="
-                        background: var(--accent-cyan);
-                        color: var(--bg-primary);
-                        border: none;
-                        border-radius: 4px;
-                        padding: 16px 32px;
-                        font-family: var(--font-mono);
-                        font-size: 13px;
-                        font-weight: 500;
-                        text-transform: uppercase;
-                        letter-spacing: 0.1em;
-                        cursor: pointer;
-                        transition: all 0.2s;
-                    "
+                    class="try-button"
                 >Get Recommendations</button>
             </div>
 
-            <div id="try-results" style="display: none; margin: 40px 0;">
-                <h3 style="color: var(--accent-cyan); margin-bottom: 20px;">Recommended Models</h3>
-                <div id="try-results-grid" style="display: grid; gap: 16px;"></div>
-                <div style="margin-top: 24px;">
-                    <a href="explorer.html" class="btn btn-secondary" style="display: inline-flex;">
+            <div id="try-results" class="results-container">
+                <h3 class="results-title">Recommended Models</h3>
+                <div id="try-results-grid" class="results-grid"></div>
+                <div class="margin-top-24">
+                    <a href="explorer.html" class="btn btn-secondary explore-link">
                         <span>Explore All 120 Models</span>
                         <span>→</span>
                     </a>
@@ -721,7 +836,7 @@
             </div>
 
             <h3>Step 2: Configure</h3>
-            <p>Add to <code style="background: rgba(0, 255, 136, 0.1); color: var(--accent-cyan); padding: 4px 8px; border-radius: 3px; font-family: var(--font-mono); font-size: 13px;">claude_desktop_config.json</code></p>
+            <p>Add to <code class="inline-code">claude_desktop_config.json</code></p>
             <div class="terminal">
                 <div class="terminal-header">
                     <span class="terminal-dot"></span>
@@ -731,7 +846,7 @@
                 </div>
                 <div class="terminal-content">
                     <button class="copy-btn" onclick="copyMcpConfig()">Copy</button>
-                    <pre class="terminal-code" id="mcp-config" style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">{
+                    <pre class="terminal-code config-code" id="mcp-config">{
   "mcpServers": {
     "hummbl": {
       "command": "npx",
@@ -746,53 +861,53 @@
             <ul class="tools-list">
                 <li>
                     <code>hummbl_search</code>
-                    <span style="color: var(--text-secondary); font-size: 14px;">Find models by problem description</span>
+                    <span class="tool-description">Find models by problem description</span>
                 </li>
                 <li>
                     <code>hummbl_get_model</code>
-                    <span style="color: var(--text-secondary); font-size: 14px;">Get full model details by code</span>
+                    <span class="tool-description">Get full model details by code</span>
                 </li>
                 <li>
                     <code>hummbl_recommend</code>
-                    <span style="color: var(--text-secondary); font-size: 14px;">Get ranked recommendations</span>
+                    <span class="tool-description">Get ranked recommendations</span>
                 </li>
             </ul>
         </section>
 
         <section data-section="// 04">
             <h2>Use Cases</h2>
-            <p style="max-width: none; font-size: 16px; margin-bottom: 32px;">HUMMBL provides structured reasoning infrastructure for AI systems. Use it via API, Claude Desktop MCP integration, or direct framework integration:</p>
+            <p class="use-cases-intro">HUMMBL provides structured reasoning infrastructure for AI systems. Use it via API, Claude Desktop MCP integration, or direct framework integration:</p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin: 48px 0;">
+            <div class="use-cases-grid">
                 <div>
-                    <h3 style="margin-top: 0;">Agent Frameworks</h3>
-                    <p style="font-size: 14px; line-height: 1.8;">LangChain, CrewAI, AutoGPT, Semantic Kernel - invoke mental models programmatically to guide agent reasoning.</p>
+                    <h3 class="use-case-title">Agent Frameworks</h3>
+                    <p class="use-case-description">LangChain, CrewAI, AutoGPT, Semantic Kernel - invoke mental models programmatically to guide agent reasoning.</p>
                 </div>
                 <div>
-                    <h3 style="margin-top: 0;">Claude Desktop</h3>
-                    <p style="font-size: 14px; line-height: 1.8;">MCP server gives Claude direct access to all 120 models. Search, retrieve, and apply cognitive frameworks in real-time.</p>
+                    <h3 class="use-case-title">Claude Desktop</h3>
+                    <p class="use-case-description">MCP server gives Claude direct access to all 120 models. Search, retrieve, and apply cognitive frameworks in real-time.</p>
                 </div>
                 <div>
-                    <h3 style="margin-top: 0;">Custom Applications</h3>
-                    <p style="font-size: 14px; line-height: 1.8;">REST API for decision support tools, prompt engineering systems, or reasoning-enhanced workflows. No framework required.</p>
+                    <h3 class="use-case-title">Custom Applications</h3>
+                    <p class="use-case-description">REST API for decision support tools, prompt engineering systems, or reasoning-enhanced workflows. No framework required.</p>
                 </div>
                 <div>
-                    <h3 style="margin-top: 0;">Prompt Engineering</h3>
-                    <p style="font-size: 14px; line-height: 1.8;">Retrieve relevant mental models based on problem context, then inject into system prompts for better LLM outputs.</p>
+                    <h3 class="use-case-title">Prompt Engineering</h3>
+                    <p class="use-case-description">Retrieve relevant mental models based on problem context, then inject into system prompts for better LLM outputs.</p>
                 </div>
                 <div>
-                    <h3 style="margin-top: 0;">Knowledge Systems</h3>
-                    <p style="font-size: 14px; line-height: 1.8;">Build cognitive enhancement tools, decision support systems, or structured thinking applications on top of Base120.</p>
+                    <h3 class="use-case-title">Knowledge Systems</h3>
+                    <p class="use-case-description">Build cognitive enhancement tools, decision support systems, or structured thinking applications on top of Base120.</p>
                 </div>
                 <div>
-                    <h3 style="margin-top: 0;">Research & Education</h3>
-                    <p style="font-size: 14px; line-height: 1.8;">Access validated mental models programmatically for cognitive science research, educational tools, or training systems.</p>
+                    <h3 class="use-case-title">Research & Education</h3>
+                    <p class="use-case-description">Access validated mental models programmatically for cognitive science research, educational tools, or training systems.</p>
                 </div>
             </div>
 
-            <p style="max-width: none; font-size: 16px; color: var(--text-primary); font-weight: 500; margin-top: 48px;">Book a call to see how Base120 fits your use case.</p>
+            <p class="booking-prompt">Book a call to see how Base120 fits your use case.</p>
 
-            <div class="cta-group" style="margin-top: 48px;">
+            <div class="cta-group cta-section">
                 <a href="https://cal.com/hummbl/30min" class="btn btn-primary">
                     <span>Schedule Discovery Call</span>
                     <span>→</span>
@@ -801,8 +916,8 @@
         </section>
 
         <footer>
-            <p style="margin-bottom: 12px;">HUMMBL Base120 © 2026</p>
-            <p>MCP Server: <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank">@hummbl/mcp-server</a></p>
+            <p class="footer-text">HUMMBL Base120 © 2026</p>
+            <p>MCP Server: <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">@hummbl/mcp-server</a></p>
         </footer>
     </div>
 
