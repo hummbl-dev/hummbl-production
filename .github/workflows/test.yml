@@ -37,6 +37,10 @@ jobs:
       - name: Run tests
         working-directory: ./api
         run: npm run test:run
+
+      - name: Web format check (non-blocking)
+        continue-on-error: true
+        run: npx --yes prettier@3.5.3 --check "web/**/*.html"
         
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
