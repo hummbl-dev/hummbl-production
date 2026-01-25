@@ -1,0 +1,4 @@
+name: "HUMMBL CodeQL config"
+
+paths-ignore:
+  - "api/coverage/**"
