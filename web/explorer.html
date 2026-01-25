@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HUMMBL Explorer - Browse 120 Mental Models</title>
     <meta name="description" content="Explore and search 120 mental models. Get recommendations for your problems.">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev; frame-ancestors 'none'; form-action 'self';">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -676,6 +683,10 @@
             opacity: 0.5;
         }
 
+        .hidden {
+            display: none;
+        }
+
         /* Footer */
         footer {
             padding: 40px 0;
@@ -700,8 +711,8 @@
             </a>
             <nav class="header-links">
                 <a href="index.html">Home</a>
-                <a href="https://hummbl-api.hummbl.workers.dev" target="_blank">API</a>
-                <a href="https://cal.com/hummbl/30min" target="_blank">Contact</a>
+                <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+                <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
             </nav>
         </header>
 
@@ -782,7 +793,7 @@
                 </div>
 
                 <!-- Empty state -->
-                <div class="empty-state" id="empty-state" style="display: none;">
+                <div class="empty-state hidden" id="empty-state">
                     <div class="empty-state-icon">?</div>
                     <p>No models match your search</p>
                 </div>
@@ -790,7 +801,7 @@
         </main>
 
         <footer>
-            <p>HUMMBL Base120 &copy; 2026 &middot; <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank">MCP Server</a></p>
+            <p>HUMMBL Base120 &copy; 2026 &middot; <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a></p>
         </footer>
     </div>
 
@@ -967,11 +978,11 @@
             // Show empty state or models
             if (filtered.length === 0) {
                 container.replaceChildren();
-                document.getElementById('empty-state').style.display = 'block';
+                document.getElementById('empty-state').classList.remove('hidden');
                 return;
             }
 
-            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('empty-state').classList.add('hidden');
 
             // Set container class based on view
             container.className = currentView === 'grid' ? 'models-grid' : 'models-list';
