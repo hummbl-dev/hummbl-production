@@ -1,0 +1,38 @@
+name: Test Workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ./api/package-lock.json
+        
+      - name: Install dependencies
+        working-directory: ./api
+        run: npm ci
+        
+      - name: Run tests
+        working-directory: ./api
+        run: npm run test:run
+        
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./api/coverage/lcov.info
+          flags: unittests
+          fail_ci_if_error: false
