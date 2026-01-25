@@ -7,10 +7,12 @@ Thanks for helping improve HUMMBL.
 1. Fork the repo and create a feature branch.
 2. Make your changes with clear, focused commits.
 3. Ensure tests pass locally for the API:
+
    ```bash
    cd api
    npm test
    ```
+
 4. Open a pull request with a short summary and test notes.
 
 ## Code Review
