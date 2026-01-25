@@ -6,15 +6,27 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
-  "keywords": ["mental-models", "ai", "api"],
+  "keywords": [
+    "mental-models",
+    "ai",
+    "api"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "hono": "^4.11.5",
-    "wrangler": "^4.60.0",
+    "@cloudflare/workers-types": "^4.20241218.0",
     "@types/node": "^22.0.0",
-    "@cloudflare/workers-types": "^4.20241218.0"
+    "@vitest/coverage-v8": "^2.1.9",
+    "@vitest/ui": "^2.1.8",
+    "hono": "^4.11.5",
+    "jsdom": "^27.4.0",
+    "vitest": "^2.1.8",
+    "wrangler": "^4.60.0"
   }
 }
