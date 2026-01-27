@@ -1,0 +1,8 @@
+# robots.txt for hummbl.io
+# Allows all crawlers and hints at future sitemap placement.
+
+User-agent: *
+Allow: /
+
+# Uncomment if/when sitemap is hosted
+# Sitemap: https://hummbl.io/sitemap.xml
