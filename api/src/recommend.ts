@@ -268,7 +268,7 @@ const PROBLEM_PATTERNS: ProblemPattern[] = [
       'critique',
       'devil',
       'advocate',
-      'premortem',
+      'premortem', // IN2
       'postmortem',
     ],
     transformations: ['IN'],

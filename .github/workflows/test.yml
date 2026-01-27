@@ -30,6 +30,9 @@ jobs:
         working-directory: ./api
         run: npm run lint
 
+      - name: Lint Base120 references
+        run: node scripts/validate-base120-refs.js
+
       - name: Format check
         working-directory: ./api
         run: npm run format:check
@@ -45,6 +48,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          file: ./api/coverage/lcov.info
+          files: ./api/coverage/lcov.info
           flags: unittests
           fail_ci_if_error: false
