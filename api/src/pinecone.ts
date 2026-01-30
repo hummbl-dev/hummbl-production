@@ -109,7 +109,7 @@ export async function semanticSearch(
 /**
  * Get transformation type from model code
  */
-function getTransformationType(code: string): TransformationType {
+export function getTransformationType(code: string): TransformationType {
   if (code.startsWith('IN')) return 'IN';
   if (code.startsWith('CO')) return 'CO';
   if (code.startsWith('DE')) return 'DE';
