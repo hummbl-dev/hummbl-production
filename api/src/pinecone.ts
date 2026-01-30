@@ -43,7 +43,7 @@ export interface SemanticSearchResult {
 }
 
 /**
- * Search for semantically similar mental models using Pinecone
+ * Search for semantically similar Base120 mental models using Pinecone
  */
 export async function semanticSearch(
   query: string,
