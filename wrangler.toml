@@ -1,0 +1,5 @@
+# Cloudflare Pages configuration for hummbl.io
+# Static site - no build step required
+
+name = "hummbl-io"
+pages_build_output_dir = "./web"
