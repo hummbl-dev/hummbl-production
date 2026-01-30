@@ -48,7 +48,7 @@ export interface SemanticSearchResult {
 export async function semanticSearch(
   query: string,
   env: PineconeEnv,
-  topK: number = 10
+  topK: number = 10,
 ): Promise<SemanticSearchResult | null> {
   if (!env.PINECONE_API_KEY) {
     console.error('PINECONE_API_KEY not configured');
@@ -58,23 +58,20 @@ export async function semanticSearch(
   const indexHost = env.PINECONE_INDEX_HOST || DEFAULT_INDEX_HOST;
 
   try {
-    const response = await fetch(
-      `https://${indexHost}/records/namespaces/default/search`,
-      {
-        method: 'POST',
-        headers: {
-          'Api-Key': env.PINECONE_API_KEY,
-          'Content-Type': 'application/json',
-          'X-Pinecone-API-Version': '2025-04',
+    const response = await fetch(`https://${indexHost}/records/namespaces/default/search`, {
+      method: 'POST',
+      headers: {
+        'Api-Key': env.PINECONE_API_KEY,
+        'Content-Type': 'application/json',
+        'X-Pinecone-API-Version': '2025-04',
+      },
+      body: JSON.stringify({
+        query: {
+          inputs: { text: query },
+          top_k: topK,
         },
-        body: JSON.stringify({
-          query: {
-            inputs: { text: query },
-            top_k: topK,
-          },
-        }),
-      }
-    );
+      }),
+    });
 
     if (!response.ok) {
       console.error('Pinecone search failed:', response.status);

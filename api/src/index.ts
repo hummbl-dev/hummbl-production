@@ -248,14 +248,14 @@ app.get('/v1/workflows', (c) => {
 app.get('/v1/workflows/:id', (c) => {
   const id = c.req.param('id');
   const workflow = getWorkflowById(id);
-  
+
   if (workflow) {
     return c.json({
       success: true,
       data: workflow,
     });
   }
-  
+
   return c.json(
     {
       success: false,
@@ -271,7 +271,7 @@ app.get('/v1/workflows/:id', (c) => {
 app.post('/v1/workflows/match', async (c) => {
   try {
     const { problem, limit } = await c.req.json();
-    
+
     if (!problem || typeof problem !== 'string') {
       return c.json(
         {
@@ -281,10 +281,10 @@ app.post('/v1/workflows/match', async (c) => {
         400,
       );
     }
-    
+
     const maxResults = typeof limit === 'number' && limit > 0 && limit <= 10 ? limit : 3;
     const workflows = matchWorkflows(problem, maxResults);
-    
+
     return c.json({
       success: true,
       data: workflows,
@@ -307,7 +307,7 @@ app.post('/v1/workflows/match', async (c) => {
 app.post('/v1/semantic-search', async (c) => {
   try {
     const { query, limit } = await c.req.json();
-    
+
     if (!query || typeof query !== 'string') {
       return c.json(
         {
@@ -317,10 +317,10 @@ app.post('/v1/semantic-search', async (c) => {
         400,
       );
     }
-    
+
     const topK = typeof limit === 'number' && limit > 0 && limit <= 20 ? limit : 10;
     const result = await semanticSearch(query, c.env, topK);
-    
+
     if (!result) {
       return c.json(
         {
@@ -330,7 +330,7 @@ app.post('/v1/semantic-search', async (c) => {
         503,
       );
     }
-    
+
     return c.json({
       success: true,
       data: result.models,
