@@ -8,11 +8,16 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { TRANSFORMATIONS, getAllModels, getModelByCode } from './base120.js';
 import { recommendModels } from './recommend.js';
+import { semanticSearch, type PineconeEnv } from './pinecone.js';
+import { getAllWorkflows, getWorkflowById, matchWorkflows } from './workflows.js';
+
+// Environment bindings type
+type Bindings = PineconeEnv;
 
 // Initialize start time for uptime tracking
 (globalThis as any).startTime = Date.now();
 
-const app = new Hono();
+const app = new Hono<{ Bindings: Bindings }>();
 
 // CORS - allow all origins for public API
 app.use('*', cors());
@@ -80,7 +85,7 @@ app.use('*', async (c, next) => {
 app.get('/', (c) => {
   return c.json({
     name: 'HUMMBL API',
-    version: '1.0.0',
+    version: '1.1.0',
     description: 'Mental models for AI agents',
     endpoints: {
       health: '/health',
@@ -88,6 +93,10 @@ app.get('/', (c) => {
       model: '/v1/models/:code',
       transformations: '/v1/transformations',
       recommend: '/v1/recommend',
+      workflows: '/v1/workflows',
+      workflow: '/v1/workflows/:id',
+      workflowMatch: '/v1/workflows/match',
+      semanticSearch: '/v1/semantic-search',
     },
     mcp_server: 'npm install -g @hummbl/mcp-server',
   });
@@ -208,6 +217,126 @@ app.post('/v1/recommend', async (c) => {
       meta: {
         matchedPatterns: result.matchedPatterns,
         keywordsAnalyzed: result.keywordsUsed.length,
+      },
+    });
+  } catch (_error) {
+    return c.json(
+      {
+        success: false,
+        error: 'Invalid request body',
+      },
+      400,
+    );
+  }
+});
+
+/**
+ * GET /v1/workflows - List all curated workflows
+ */
+app.get('/v1/workflows', (c) => {
+  const workflows = getAllWorkflows();
+  return c.json({
+    success: true,
+    data: workflows,
+    count: workflows.length,
+  });
+});
+
+/**
+ * GET /v1/workflows/:id - Get specific workflow by ID
+ */
+app.get('/v1/workflows/:id', (c) => {
+  const id = c.req.param('id');
+  const workflow = getWorkflowById(id);
+  
+  if (workflow) {
+    return c.json({
+      success: true,
+      data: workflow,
+    });
+  }
+  
+  return c.json(
+    {
+      success: false,
+      error: `Workflow not found: ${id}`,
+    },
+    404,
+  );
+});
+
+/**
+ * POST /v1/workflows/match - Find workflows matching a problem
+ */
+app.post('/v1/workflows/match', async (c) => {
+  try {
+    const { problem, limit } = await c.req.json();
+    
+    if (!problem || typeof problem !== 'string') {
+      return c.json(
+        {
+          success: false,
+          error: 'Missing or invalid "problem" field',
+        },
+        400,
+      );
+    }
+    
+    const maxResults = typeof limit === 'number' && limit > 0 && limit <= 10 ? limit : 3;
+    const workflows = matchWorkflows(problem, maxResults);
+    
+    return c.json({
+      success: true,
+      data: workflows,
+      count: workflows.length,
+    });
+  } catch (_error) {
+    return c.json(
+      {
+        success: false,
+        error: 'Invalid request body',
+      },
+      400,
+    );
+  }
+});
+
+/**
+ * POST /v1/semantic-search - Semantic search for mental models (requires Pinecone)
+ */
+app.post('/v1/semantic-search', async (c) => {
+  try {
+    const { query, limit } = await c.req.json();
+    
+    if (!query || typeof query !== 'string') {
+      return c.json(
+        {
+          success: false,
+          error: 'Missing or invalid "query" field',
+        },
+        400,
+      );
+    }
+    
+    const topK = typeof limit === 'number' && limit > 0 && limit <= 20 ? limit : 10;
+    const result = await semanticSearch(query, c.env, topK);
+    
+    if (!result) {
+      return c.json(
+        {
+          success: false,
+          error: 'Semantic search unavailable - Pinecone not configured',
+        },
+        503,
+      );
+    }
+    
+    return c.json({
+      success: true,
+      data: result.models,
+      meta: {
+        tokenUsage: result.tokenUsage,
+        scoresAvailable: result.scores.size > 0,
       },
     });
   } catch (_error) {

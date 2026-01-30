@@ -5,9 +5,18 @@ node_modules/
 .wrangler/
 wrangler.toml.local
 
+# Environment (NEVER commit secrets)
+.env
+.env.local
+.env.*.local
+
 # OS
 .DS_Store
 
 # IDE
 .vscode/
 .idea/
+
+# Debug logs
+firebase-debug.log
+*.log
