@@ -42,3 +42,13 @@ All 120 mental models are inline in `src/base120.ts`. No database needed.
 - Hono (web framework)
 - Cloudflare Workers
 - TypeScript
+
+## MCP Server
+
+For Claude Desktop integration, install the MCP server:
+
+```bash
+npx @hummbl/mcp-server
+```
+
+See [MCP Server docs](https://www.npmjs.com/package/@hummbl/mcp-server)
