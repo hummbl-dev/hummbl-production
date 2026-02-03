@@ -23,8 +23,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241218.0",
-    "@types/node": "^25.1.0",
+    "@cloudflare/workers-types": "^4.20260131.0",
+    "@types/node": "^25.0.10",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
     "@typescript-eslint/parser": "^8.45.0",
     "@vitest/coverage-v8": "^2.1.9",
@@ -34,6 +34,6 @@
     "jsdom": "^27.4.0",
     "prettier": "^3.5.3",
     "vitest": "^2.1.8",
-    "wrangler": "^4.60.0"
+    "wrangler": "^4.61.1"
   }
 }
