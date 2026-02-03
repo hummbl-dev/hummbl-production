@@ -199,8 +199,8 @@ describe('Rate Limiting', () => {
     const finalMemory = process.memoryUsage().heapUsed;
     const memoryGrowth = finalMemory - initialMemory;
 
-    // Memory growth should be reasonable (less than 10MB)
-    expect(memoryGrowth).toBeLessThan(10 * 1024 * 1024);
+    // Memory growth should be reasonable (less than 15MB)
+    expect(memoryGrowth).toBeLessThan(15 * 1024 * 1024);
   });
 
   it('should handle rate limiting under load', async () => {

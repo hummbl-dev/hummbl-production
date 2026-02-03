@@ -20,3 +20,6 @@ wrangler.toml.local
 # Debug logs
 firebase-debug.log
 *.log
+
+# Test coverage
+api/coverage/
