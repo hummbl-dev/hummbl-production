@@ -56,7 +56,7 @@
 
 ### Status
 
-⏳ **Cloudflare Web Analytics beacon added** - awaiting deployment and data collection.
+✅ **Cloudflare Web Analytics active** - CF Pages automatic setup verified (token: `68207ada08f9497aa8d2ea4fb67dc335`)
 
 **Note**: Analytics beacon added to `web/index.html` and `web/explorer.html`. Token placeholder needs to be replaced with actual Cloudflare Analytics token for data collection to begin.
 
@@ -170,11 +170,11 @@ GitHub Action to run weekly:
 
 ### Infrastructure Status
 
-| Component     | Status     | Notes                                                    |
-| ------------- | ---------- | -------------------------------------------------------- |
-| API Analytics | ✅ Live    | KV namespace `4101f085485a42368be2bc9bbaf254a5` deployed |
-| Web Analytics | ✅ Live    | Cloudflare automatic setup active on pages.dev           |
-| MCP Tracking  | ✅ Working | 9 weekly downloads                                       |
+| Component     | Status     | Notes                                                     |
+| ------------- | ---------- | --------------------------------------------------------- |
+| API Analytics | ✅ Live    | KV namespace `4101f085485a42368be2bc9bbaf254a5` deployed  |
+| Web Analytics | ✅ Live    | CF Pages auto (token: `68207ada08f9497aa8d2ea4fb67dc335`) |
+| MCP Tracking  | ✅ Working | 9 weekly downloads                                        |
 
 ### Known Metrics (Pre-Activation)
 
