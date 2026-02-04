@@ -199,8 +199,48 @@ GitHub Action to run weekly:
 3. 📅 Capture first full snapshot: 2026-02-05 16:39 UTC (24h of data)
 4. 📅 Define Phase 0 targets: 2026-02-18 (2 weeks data)
 
-**Current Status (Feb 4, 16:56 UTC)**:
+**First Snapshot (Feb 4, 18:27 UTC)**:
 
-- API: 4 requests since baseline reset
-- Web: TBD (CF Analytics propagating, 2-5 min delay)
-- MCP: 9 weekly downloads
+| Metric               | Value           | Notes                             |
+| -------------------- | --------------- | --------------------------------- |
+| MCP Weekly Downloads | 9               | Period: 2026-01-28 to 2026-02-03  |
+| API Daily Requests   | 8               | Since 16:39 UTC reset             |
+| API Top Endpoint     | GET:/health (7) | Health check polling              |
+| Web Visitors         | TBD             | Manual CF dashboard check pending |
+
+**Methodology Validation**:
+
+- ✅ MCP: npm registry API returning consistent data
+- ✅ API: KV counters incrementing correctly (8 requests tracked)
+- ✅ API: Daily stats aggregating by date
+- ⏳ Web: CF Analytics dashboard verification needed
+
+**Next Snapshot**: 2026-02-05 16:39 UTC (24h complete cycle)
+
+---
+
+## 🔧 Automated Snapshot Tool
+
+**Script**: `scripts/capture-wau-snapshot.js`
+
+**Purpose**: Capture WAU metrics from all sources in one command
+
+**Usage**:
+
+```bash
+node scripts/capture-wau-snapshot.js
+```
+
+**Captures**:
+
+- MCP weekly downloads (npm registry)
+- API analytics (KV namespace)
+- Web analytics (manual dashboard instructions)
+
+**Output**: Human-readable + JSON for programmatic use
+
+**Validation Status**:
+
+- ✅ MCP: Automated via npm API
+- ✅ API: Automated via /analytics endpoint
+- ⏳ Web: Requires manual CF dashboard check
