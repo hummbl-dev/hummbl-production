@@ -14,3 +14,4 @@ id = "ANALYTICS_KV_ID_PLACEHOLDER"
 
 [vars]
 PINECONE_INDEX_HOST = "hummbl-models-ss3rcfm.svc.aped-4627-b74a.pinecone.io"
+ENABLE_ANALYTICS = "true"

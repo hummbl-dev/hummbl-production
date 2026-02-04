@@ -17,6 +17,7 @@ const KEYS = {
 // Bindings type extension
 export interface AnalyticsBindings {
   ANALYTICS_KV: KVNamespace;
+  ENABLE_ANALYTICS?: string; // Feature flag: 'true' or 'false'
 }
 
 /**
@@ -156,8 +157,11 @@ export function analyticsMiddleware() {
   return async (c: Context<{ Bindings: AnalyticsBindings }>, next: () => Promise<void>) => {
     const kv = c.env?.ANALYTICS_KV;
 
-    // Only track if KV is configured
-    if (kv) {
+    // Feature flag: check if analytics is enabled (default: true if KV configured)
+    const enabled = c.env?.ENABLE_ANALYTICS !== 'false';
+
+    // Only track if KV is configured AND analytics is enabled
+    if (kv && enabled) {
       const ip = c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'unknown';
       const endpoint = c.req.path;
       const method = c.req.method;
