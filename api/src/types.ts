@@ -3,6 +3,26 @@
  * Core type definitions for mental models, transformations, and framework operations
  */
 
+/**
+ * Transformation domain codes for the Base120 mental model framework.
+ *
+ * Each code represents a distinct cognitive transformation domain containing 20 mental models:
+ * - `P` - Perspective: Models for shifting viewpoints and reframing problems (P1-P20)
+ * - `IN` - Inversion: Models for reverse thinking and contrarian analysis (IN1-IN20)
+ * - `CO` - Composition: Models for combining and synthesizing elements (CO1-CO20)
+ * - `DE` - Decomposition: Models for breaking down complex problems (DE1-DE20)
+ * - `RE` - Recursion: Models for self-referential and iterative patterns (RE1-RE20)
+ * - `SY` - Systems: Models for holistic and interconnected thinking (SY1-SY20)
+ *
+ * @example
+ * ```typescript
+ * const domain: TransformationType = 'P';
+ * const modelCode = `${domain}1`; // "P1" - first Perspective model
+ * ```
+ *
+ * @see {@link TRANSFORMATION_TYPES} for the array of all valid transformation codes
+ * @see {@link isTransformationType} for runtime validation
+ */
 export type TransformationType = 'P' | 'IN' | 'CO' | 'DE' | 'RE' | 'SY';
 
 export const TRANSFORMATION_TYPES: readonly TransformationType[] = [
@@ -111,8 +131,45 @@ export type DomainError =
   | { type: 'Unknown'; message: string };
 
 /**
- * Result type for type-safe error handling (Railway-Oriented Programming).
- * Uses an `ok` discriminant to align with HUMMBL global patterns.
+ * Result type for type-safe error handling using Railway-Oriented Programming (ROP).
+ *
+ * This discriminated union type enables explicit, composable error handling without exceptions.
+ * Uses an `ok` boolean discriminant to distinguish between success and failure states,
+ * aligning with HUMMBL global patterns for predictable control flow.
+ *
+ * @typeParam T - The type of the success value
+ * @typeParam E - The type of the error value (defaults to {@link DomainError})
+ *
+ * @example Success case
+ * ```typescript
+ * const success: Result<number> = { ok: true, value: 42 };
+ * // Or using the helper:
+ * const success = ok(42);
+ * ```
+ *
+ * @example Error case
+ * ```typescript
+ * const failure: Result<number> = { ok: false, error: { type: 'NotFound', entity: 'Model' } };
+ * // Or using the helper:
+ * const failure = err({ type: 'NotFound', entity: 'Model' });
+ * ```
+ *
+ * @example Pattern matching with type guards
+ * ```typescript
+ * function processResult(result: Result<MentalModel>): string {
+ *   if (isOk(result)) {
+ *     return result.value.name; // TypeScript knows value exists
+ *   } else {
+ *     return `Error: ${result.error.type}`; // TypeScript knows error exists
+ *   }
+ * }
+ * ```
+ *
+ * @see {@link ok} - Helper function to create success results
+ * @see {@link err} - Helper function to create error results
+ * @see {@link isOk} - Type guard for success case
+ * @see {@link isErr} - Type guard for error case
+ * @see {@link DomainError} - Default error type for domain operations
  */
 export type Result<T, E = DomainError> = { ok: true; value: T } | { ok: false; error: E };
 

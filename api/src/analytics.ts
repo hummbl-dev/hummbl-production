@@ -22,6 +22,21 @@ export interface AnalyticsBindings {
 
 /**
  * Track a request in analytics
+ *
+ * KNOWN LIMITATION: Race Condition in Counter Increments
+ *
+ * This function uses a read-modify-write pattern for counter updates which is
+ * NOT atomic. Under high concurrency, multiple workers may read the same value
+ * before any write completes, causing some increments to be lost.
+ *
+ * As a result, counts tracked here should be considered APPROXIMATE, not exact.
+ * This is an accepted trade-off for the simplicity and cost-effectiveness of
+ * KV storage.
+ *
+ * For exact counts in high-concurrency scenarios, consider:
+ * - Cloudflare Durable Objects (provides transactional guarantees)
+ * - Cloudflare Analytics Engine (purpose-built for metrics)
+ * - External time-series database with proper atomic operations
  */
 export async function trackRequest(
   kv: KVNamespace,
@@ -35,6 +50,7 @@ export async function trackRequest(
 
   try {
     // Increment total requests
+    // NOTE: Read-modify-write is not atomic; count may drift under high concurrency (eventual consistency)
     await kv.put(KEYS.TOTAL_REQUESTS, ((await getTotalRequests(kv)) + 1).toString());
 
     // Track daily requests
@@ -52,6 +68,7 @@ export async function trackRequest(
       await kv.put(ipKey, now.toISOString(), {
         expirationTtl: 60 * 60 * 24 * 30, // 30 days retention for IP tracking
       });
+      // NOTE: Read-modify-write is not atomic; count may drift under high concurrency (eventual consistency)
       await kv.put(KEYS.UNIQUE_IPS, ((await getUniqueIPCount(kv)) + 1).toString());
     }
 

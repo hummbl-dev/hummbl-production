@@ -9,20 +9,22 @@ import { structuredLog } from './monitoring.js';
 // INPUT VALIDATION & SANITIZATION
 // ============================================================================
 
+// Note: Using 'i' flag only (not 'gi') because .test() with global flag mutates
+// lastIndex, causing non-deterministic validation. See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex
 const DANGEROUS_PATTERNS = [
-  /ignore previous instructions/gi,
-  /ignore the above/gi,
-  /system prompt/gi,
-  /you are now/gi,
-  /you are a \w+ assistant/gi,
-  /new instruction/gi,
-  /override/gi,
-  /disregard/gi,
-  /forget everything/gi,
-  /<!\[CDATA\[/gi,
-  /<script/gi,
-  /javascript:/gi,
-  /on\w+\s*=/gi, // onclick, onerror, etc.
+  /ignore previous instructions/i,
+  /ignore the above/i,
+  /system prompt/i,
+  /you are now/i,
+  /you are a \w+ assistant/i,
+  /new instruction/i,
+  /override/i,
+  /disregard/i,
+  /forget everything/i,
+  /<!\[CDATA\[/i,
+  /<script/i,
+  /javascript:/i,
+  /on\w+\s*=/i, // onclick, onerror, etc.
 ];
 
 const PROMPT_INJECTION_PATTERNS = [
@@ -426,6 +428,49 @@ interface SignedRequest {
 }
 
 /**
+ * Constant-time string comparison using Web Crypto API
+ * Prevents timing attacks by ensuring comparison takes same time regardless of where strings differ
+ */
+async function constantTimeEqual(a: string, b: string): Promise<boolean> {
+  const encoder = new TextEncoder();
+  const aBytes = encoder.encode(a);
+  const bBytes = encoder.encode(b);
+
+  // Handle length mismatch in constant time by padding shorter string
+  const maxLen = Math.max(aBytes.length, bBytes.length);
+  const aPadded = new Uint8Array(maxLen);
+  const bPadded = new Uint8Array(maxLen);
+  aPadded.set(aBytes);
+  bPadded.set(bBytes);
+
+  // Import both as keys and compare via HMAC to ensure constant-time operation
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new Uint8Array(32), // Fixed key for comparison only
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  const [aHash, bHash] = await Promise.all([
+    crypto.subtle.sign('HMAC', key, aPadded),
+    crypto.subtle.sign('HMAC', key, bPadded),
+  ]);
+
+  const aView = new Uint8Array(aHash);
+  const bView = new Uint8Array(bHash);
+
+  // XOR comparison - result is same regardless of match position
+  let result = 0;
+  for (let i = 0; i < aView.length; i++) {
+    result |= aView[i] ^ bView[i];
+  }
+
+  // Also check original lengths match (after constant-time hash comparison)
+  return result === 0 && aBytes.length === bBytes.length;
+}
+
+/**
  * Sign a request for secure inter-agent communication
  */
 export function signRequest(payload: unknown, agentId: string, secret: string): SignedRequest {
@@ -447,11 +492,11 @@ export function signRequest(payload: unknown, agentId: string, secret: string): 
 /**
  * Verify a signed request
  */
-export function verifyRequest(
+export async function verifyRequest(
   request: SignedRequest,
   secret: string,
   maxAgeMs: number = 5 * 60 * 1000, // 5 minutes
-): { valid: boolean; reason?: string; payload?: unknown } {
+): Promise<{ valid: boolean; reason?: string; payload?: unknown }> {
   // Check timestamp
   const requestTime = new Date(request.timestamp).getTime();
   const now = Date.now();
@@ -463,8 +508,9 @@ export function verifyRequest(
   const dataToSign = `${request.agentId}:${request.timestamp}:${request.payload}`;
   const expectedSignature = createHmac('sha256', secret).update(dataToSign).digest('hex');
 
-  // Verify signature
-  if (request.signature !== expectedSignature) {
+  // Verify signature using constant-time comparison to prevent timing attacks
+  const signaturesMatch = await constantTimeEqual(request.signature, expectedSignature);
+  if (!signaturesMatch) {
     return { valid: false, reason: 'Invalid signature' };
   }
 
