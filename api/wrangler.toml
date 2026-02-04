@@ -10,7 +10,7 @@ compatibility_flags = ["nodejs_compat"]
 
 [[kv_namespaces]]
 binding = "ANALYTICS_KV"
-id = "ANALYTICS_KV_ID_PLACEHOLDER"
+id = "4101f085485a42368be2bc9bbaf254a5"
 
 [vars]
 PINECONE_INDEX_HOST = "hummbl-models-ss3rcfm.svc.aped-4627-b74a.pinecone.io"
