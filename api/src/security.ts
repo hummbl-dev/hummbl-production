@@ -449,7 +449,7 @@ async function constantTimeEqual(a: string, b: string): Promise<boolean> {
     new Uint8Array(32), // Fixed key for comparison only
     { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ['sign']
+    ['sign'],
   );
 
   const [aHash, bHash] = await Promise.all([
