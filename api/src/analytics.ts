@@ -154,7 +154,7 @@ export async function getAnalyticsSummary(kv: KVNamespace): Promise<{
  */
 export function analyticsMiddleware() {
   return async (c: Context<{ Bindings: AnalyticsBindings }>, next: () => Promise<void>) => {
-    const kv = c.env.ANALYTICS_KV;
+    const kv = c.env?.ANALYTICS_KV;
 
     // Only track if KV is configured
     if (kv) {
