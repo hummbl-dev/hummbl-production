@@ -178,23 +178,19 @@ GitHub Action to run weekly:
 
 ### Known Metrics (Pre-Activation)
 
-| Metric                 | Value | Source                     |
-| ---------------------- | ----- | -------------------------- |
-| MCP Downloads (weekly) | 9     | npm registry               |
-| MCP Total Versions     | 3     | npm registry               |
-| API Total Requests     | 0     | KV counter (just deployed) |
-| API Unique IPs         | 0     | KV counter (just deployed) |
-| Web Visitors           | TBD   | Pending CF Analytics       |
+| Metric                 | Value | Source                        |
+| ---------------------- | ----- | ----------------------------- |
+| MCP Downloads (weekly) | 9     | npm registry                  |
+| MCP Total Versions     | 3     | npm registry                  |
+| API Total Requests     | 0     | Reset at 2026-02-04 16:39 UTC |
+| API Unique IPs         | 0     | Reset at 2026-02-04 16:39 UTC |
+| Web Visitors           | TBD   | Pending CF Analytics          |
 
-### First Tracked Request
+### Baseline Reset
 
-```json
-{
-  "endpoint": "GET:/analytics",
-  "count": 1,
-  "timestamp": "2026-02-04T16:34:19.791Z"
-}
-```
+**Counters reset**: 2026-02-04 16:39 UTC  
+**Reason**: Clear test artifacts, establish clean baseline  
+**Next snapshot**: 2026-02-05 16:39 UTC (24h of clean data)
 
 **Activation Plan**:
 
