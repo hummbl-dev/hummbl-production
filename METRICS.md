@@ -8,12 +8,12 @@
 
 ## 🎯 Phase 0 Goals (To Be Defined)
 
-| Metric                  | Target | Current | Status                   |
-| ----------------------- | ------ | ------- | ------------------------ |
-| MCP Weekly Downloads    | TBD    | 9       | 📊 Baseline              |
-| Web Weekly Visitors     | TBD    | TBD     | ⏳ Pending CF Analytics  |
-| API Weekly Active Users | TBD    | TBD     | ⏳ Pending KV deployment |
-| Case Studies Completed  | 3      | 0/3     | 📋 Not started           |
+| Metric                  | Target | Current | Status                  |
+| ----------------------- | ------ | ------- | ----------------------- |
+| MCP Weekly Downloads    | TBD    | 9       | 📊 Baseline             |
+| Web Weekly Visitors     | TBD    | TBD     | ⏳ Pending CF Analytics |
+| API Weekly Active Users | TBD    | TBD     | ✅ Live (2026-02-04)    |
+| Case Studies Completed  | 3      | 0/3     | 📋 Not started          |
 
 **Note**: Phase 0 targets need to be set based on 2 weeks of baseline data.
 
@@ -147,8 +147,8 @@ GitHub Action to run weekly:
 
 ## 📈 Next Actions
 
+- [x] Create KV namespace and deploy API analytics ✅ **COMPLETED 2026-02-04**
 - [ ] Replace `ANALYTICS_TOKEN_PLACEHOLDER` in `web/index.html` with actual Cloudflare token
-- [ ] Create KV namespace and deploy API analytics
 - [ ] Collect 2 weeks of baseline data
 - [ ] Define realistic Phase 0 targets based on baseline
 - [ ] Set up automated weekly reporting
@@ -160,3 +160,45 @@ GitHub Action to run weekly:
 **2026-02-04**: Analytics infrastructure added. No historical data available prior to this date. Flying blind until now.
 
 **MCP Version Discrepancy**: npm shows v1.0.2, GitHub shows v1.0.0-beta.2. Local publishes were never pushed. Consider syncing or documenting.
+
+---
+
+## 📊 Pre-Activation Baseline (API Analytics Deployed)
+
+**Date**: 2026-02-04 16:34 UTC  
+**Commit**: `658bbfd`
+
+### Infrastructure Status
+
+| Component     | Status     | Notes                                                    |
+| ------------- | ---------- | -------------------------------------------------------- |
+| API Analytics | ✅ Live    | KV namespace `4101f085485a42368be2bc9bbaf254a5` deployed |
+| Web Analytics | ⏳ Pending | Needs Cloudflare token (user action required)            |
+| MCP Tracking  | ✅ Working | 9 weekly downloads                                       |
+
+### Known Metrics (Pre-Activation)
+
+| Metric                 | Value | Source                     |
+| ---------------------- | ----- | -------------------------- |
+| MCP Downloads (weekly) | 9     | npm registry               |
+| MCP Total Versions     | 3     | npm registry               |
+| API Total Requests     | 0     | KV counter (just deployed) |
+| API Unique IPs         | 0     | KV counter (just deployed) |
+| Web Visitors           | TBD   | Pending CF Analytics       |
+
+### First Tracked Request
+
+```json
+{
+  "endpoint": "GET:/analytics",
+  "count": 1,
+  "timestamp": "2026-02-04T16:34:19.791Z"
+}
+```
+
+**Activation Plan**:
+
+1. ✅ API analytics deployed (COMPLETE)
+2. ⏳ Web analytics (user to add CF token)
+3. 📅 Capture first full snapshot: 2026-02-05 (24h later)
+4. 📅 Define Phase 0 targets: 2026-02-18 (2 weeks data)
