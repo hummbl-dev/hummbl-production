@@ -1,7 +1,7 @@
 # HUMMBL Metrics Baseline
 
 **Established**: February 4, 2026
-**Last Updated**: February 4, 2026 18:41 UTC
+**Last Updated**: February 4, 2026 19:16 UTC
 **Update Frequency**: Weekly (manual until automated)
 
 ---
@@ -69,13 +69,13 @@
 **URL**: https://hummbl-api.hummbl.workers.dev  
 **Platform**: Cloudflare Workers
 
-### Current Stats (as of 2026-02-04 18:41 UTC)
+### Current Stats (as of 2026-02-04 19:16 UTC)
 
 | Metric             | Value                      |
 | ------------------ | -------------------------- |
-| **Total Requests** | **17** (since 16:39 reset) |
-| **Unique IPs**     | **0** (tracking bug?)      |
-| Top Endpoints      | /metrics (11), /health (10), /metrics/errors (8) |
+| **Total Requests** | **7** (post-fix count)     |
+| **Unique IPs**     | **1** ✅ (bug fixed)       |
+| Top Endpoints      | /health (14), /metrics (14), /analytics (11) |
 
 ### Endpoints
 
@@ -106,11 +106,11 @@ Week of 2026-01-28: 9 downloads ▬▬▬▬▬▬▬▬▬▬
 
 ### Combined Weekly Active Users (WAU)
 
-| Week       | MCP Installs | Web Visitors | API Requests | Total WAU |
-| ---------- | ------------ | ------------ | ------------ | --------- |
-| 2026-01-28 | 9            | TBD          | 17*          | TBD       |
+| Week       | MCP Installs | Web Visitors | API Requests | Unique IPs | Total WAU |
+| ---------- | ------------ | ------------ | ------------ | ---------- | --------- |
+| 2026-01-28 | 9            | TBD          | 31*          | 1*         | TBD       |
 
-*API requests since 16:39 UTC reset on Feb 4 (partial day)
+*API metrics since 16:39 UTC reset on Feb 4 (partial day, post-fix)
 
 ---
 
@@ -157,13 +157,15 @@ GitHub Action to run weekly:
 
 ## 📝 Notes
 
-**2026-02-04 18:41 UTC**: Second snapshot captured. 17 API requests since reset. uniqueIPs returning 0 despite traffic - likely tracking not implemented in analytics endpoint.
+**2026-02-04 19:16 UTC**: Third snapshot captured. Analytics bug fixed (PR #22). Both `totalRequests` and `uniqueIPs` now incrementing correctly. Cleared stale IP keys, deployed fix to Workers.
+
+**2026-02-04 18:41 UTC**: Second snapshot captured. 17 API requests since reset. uniqueIPs returning 0 despite traffic - identified as bug in analytics.ts.
 
 **2026-02-04**: Analytics infrastructure added. No historical data available prior to this date. Flying blind until now.
 
 **MCP Version Discrepancy**: npm shows v1.0.2, GitHub shows v1.0.0-beta.2. Local publishes were never pushed. Consider syncing or documenting.
 
-**Known Issue**: `uniqueIPs` counter returns 0. Need to verify IP tracking implementation in `/analytics` endpoint.
+**Resolved Issue**: `uniqueIPs` counter was not incrementing due to missing `+ 1` in analytics.ts. Fixed in PR #22, deployed 19:08 UTC.
 
 ---
 
@@ -231,12 +233,37 @@ GitHub Action to run weekly:
 - `GET:/analytics` - 5 hits
 - `GET:/v1/transformations` - 4 hits
 
+**Third Snapshot (Feb 4, 19:16 UTC) - Post Bug Fix**:
+
+| Metric               | Value              | Notes                              |
+| -------------------- | ------------------ | ---------------------------------- |
+| MCP Weekly Downloads | 9                  | Period: 2026-01-28 to 2026-02-03   |
+| API Total Requests   | 7                  | Now incrementing correctly         |
+| API Unique IPs       | 1                  | ✅ **BUG FIXED** - now counting    |
+| API Daily Requests   | 31                 | Since 16:39 UTC reset              |
+| Web Visitors         | TBD                | Manual CF dashboard check pending  |
+
+**Bug Fix Applied (PR #22)**:
+- Fixed `totalRequests` counter not incrementing (line 38)
+- Fixed `uniqueIPs` counter not incrementing (line 55)
+- Cleared stale IP tracking keys to reset counter
+- Deployed to Cloudflare Workers (version c7a0cbe1)
+
+**Endpoint Breakdown (Feb 4, 19:16 UTC)**:
+- `GET:/health` - 14 hits
+- `GET:/metrics` - 14 hits
+- `GET:/analytics` - 11 hits
+- `GET:/v1/models` - 11 hits
+- `GET:/metrics/errors` - 10 hits
+- `GET:/metrics/slow` - 9 hits
+- `GET:/v1/transformations` - 6 hits
+
 **Methodology Validation**:
 
 - ✅ MCP: npm registry API returning consistent data
-- ✅ API: KV counters incrementing correctly (17 requests tracked)
+- ✅ API: KV counters incrementing correctly
 - ✅ API: Daily stats aggregating by date
-- ⚠️ API: uniqueIPs returns 0 despite 17 requests (investigate)
+- ✅ API: uniqueIPs now working (bug fixed in PR #22)
 - ⏳ Web: CF Analytics dashboard verification needed
 
 **Next Snapshot**: 2026-02-05 16:39 UTC (24h complete cycle)
