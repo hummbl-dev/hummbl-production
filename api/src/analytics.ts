@@ -35,7 +35,7 @@ export async function trackRequest(
 
   try {
     // Increment total requests
-    await kv.put(KEYS.TOTAL_REQUESTS, (await getTotalRequests(kv)).toString());
+    await kv.put(KEYS.TOTAL_REQUESTS, ((await getTotalRequests(kv)) + 1).toString());
 
     // Track daily requests
     const dailyKey = KEYS.DAILY_REQUESTS(dateKey);
@@ -52,7 +52,7 @@ export async function trackRequest(
       await kv.put(ipKey, now.toISOString(), {
         expirationTtl: 60 * 60 * 24 * 30, // 30 days retention for IP tracking
       });
-      await kv.put(KEYS.UNIQUE_IPS, (await getUniqueIPCount(kv)).toString());
+      await kv.put(KEYS.UNIQUE_IPS, ((await getUniqueIPCount(kv)) + 1).toString());
     }
 
     // Track endpoint stats

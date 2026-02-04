@@ -1,7 +1,7 @@
 # HUMMBL Metrics Baseline
 
-**Established**: February 4, 2026  
-**Last Updated**: February 4, 2026  
+**Established**: February 4, 2026
+**Last Updated**: February 4, 2026 18:41 UTC
 **Update Frequency**: Weekly (manual until automated)
 
 ---
@@ -12,8 +12,10 @@
 | ----------------------- | ------ | ------- | ----------------------- |
 | MCP Weekly Downloads    | TBD    | 9       | 📊 Baseline             |
 | Web Weekly Visitors     | TBD    | TBD     | ⏳ Pending CF Analytics |
-| API Weekly Active Users | TBD    | TBD     | ✅ Live (2026-02-04)    |
-| Case Studies Completed  | 3      | 0/3     | 📋 Not started          |
+| API Weekly Active Users | TBD    | 17*     | ✅ Live (2026-02-04)    |
+| Case Studies Completed  | 1      | 1/1     | ✅ Complete (PR #21)    |
+
+*Partial day since 16:39 UTC reset
 
 **Note**: Phase 0 targets need to be set based on 2 weeks of baseline data.
 
@@ -67,13 +69,13 @@
 **URL**: https://hummbl-api.hummbl.workers.dev  
 **Platform**: Cloudflare Workers
 
-### Current Stats (as of 2026-02-04)
+### Current Stats (as of 2026-02-04 18:41 UTC)
 
-| Metric             | Value   |
-| ------------------ | ------- |
-| **Total Requests** | **TBD** |
-| **Unique IPs**     | **TBD** |
-| Top Endpoints      | TBD     |
+| Metric             | Value                      |
+| ------------------ | -------------------------- |
+| **Total Requests** | **17** (since 16:39 reset) |
+| **Unique IPs**     | **0** (tracking bug?)      |
+| Top Endpoints      | /metrics (11), /health (10), /metrics/errors (8) |
 
 ### Endpoints
 
@@ -84,17 +86,13 @@
 | `GET /v1/models/:code` | ✅ Live  | Get model by code          |
 | `POST /v1/recommend`   | ✅ Live  | Get recommendations        |
 | `GET /metrics`         | ✅ Live  | System metrics             |
-| `GET /analytics`       | ⏳ Ready | Usage analytics (needs KV) |
+| `GET /analytics`       | ✅ Live  | Usage analytics (KV active) |
 
 ### Status
 
-⏳ **Analytics module implemented** - awaiting KV namespace creation and deployment.
+✅ **Analytics module LIVE** - KV namespace active, tracking requests since 16:39 UTC reset.
 
-**To activate**:
-
-1. Create KV namespace: `wrangler kv:namespace create "ANALYTICS_KV"`
-2. Update `api/wrangler.toml` with KV namespace ID
-3. Deploy: `wrangler deploy`
+**KV Namespace ID**: `4101f085485a42368be2bc9bbaf254a5`
 
 ---
 
@@ -108,9 +106,11 @@ Week of 2026-01-28: 9 downloads ▬▬▬▬▬▬▬▬▬▬
 
 ### Combined Weekly Active Users (WAU)
 
-| Week       | MCP Installs | Web Visitors | API Users | Total WAU |
-| ---------- | ------------ | ------------ | --------- | --------- |
-| 2026-01-28 | 9            | TBD          | TBD       | TBD       |
+| Week       | MCP Installs | Web Visitors | API Requests | Total WAU |
+| ---------- | ------------ | ------------ | ------------ | --------- |
+| 2026-01-28 | 9            | TBD          | 17*          | TBD       |
+
+*API requests since 16:39 UTC reset on Feb 4 (partial day)
 
 ---
 
@@ -157,9 +157,13 @@ GitHub Action to run weekly:
 
 ## 📝 Notes
 
+**2026-02-04 18:41 UTC**: Second snapshot captured. 17 API requests since reset. uniqueIPs returning 0 despite traffic - likely tracking not implemented in analytics endpoint.
+
 **2026-02-04**: Analytics infrastructure added. No historical data available prior to this date. Flying blind until now.
 
 **MCP Version Discrepancy**: npm shows v1.0.2, GitHub shows v1.0.0-beta.2. Local publishes were never pushed. Consider syncing or documenting.
+
+**Known Issue**: `uniqueIPs` counter returns 0. Need to verify IP tracking implementation in `/analytics` endpoint.
 
 ---
 
@@ -208,11 +212,31 @@ GitHub Action to run weekly:
 | API Top Endpoint     | GET:/health (7) | Health check polling              |
 | Web Visitors         | TBD             | Manual CF dashboard check pending |
 
+**Second Snapshot (Feb 4, 18:41 UTC)**:
+
+| Metric               | Value              | Notes                              |
+| -------------------- | ------------------ | ---------------------------------- |
+| MCP Weekly Downloads | 9                  | Period: 2026-01-28 to 2026-02-03   |
+| API Daily Requests   | 17                 | Since 16:39 UTC reset (+9 from first) |
+| API Unique IPs       | 0                  | ⚠️ Tracking not implemented?      |
+| API Top Endpoints    | /metrics (11), /health (10) | Health/metrics polling    |
+| Web Visitors         | TBD                | Manual CF dashboard check pending  |
+
+**Endpoint Breakdown (Feb 4)**:
+- `GET:/metrics` - 11 hits
+- `GET:/health` - 10 hits
+- `GET:/metrics/errors` - 8 hits
+- `GET:/v1/models` - 8 hits
+- `GET:/metrics/slow` - 7 hits
+- `GET:/analytics` - 5 hits
+- `GET:/v1/transformations` - 4 hits
+
 **Methodology Validation**:
 
 - ✅ MCP: npm registry API returning consistent data
-- ✅ API: KV counters incrementing correctly (8 requests tracked)
+- ✅ API: KV counters incrementing correctly (17 requests tracked)
 - ✅ API: Daily stats aggregating by date
+- ⚠️ API: uniqueIPs returns 0 despite 17 requests (investigate)
 - ⏳ Web: CF Analytics dashboard verification needed
 
 **Next Snapshot**: 2026-02-05 16:39 UTC (24h complete cycle)
