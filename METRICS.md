@@ -173,7 +173,7 @@ GitHub Action to run weekly:
 | Component     | Status     | Notes                                                    |
 | ------------- | ---------- | -------------------------------------------------------- |
 | API Analytics | ✅ Live    | KV namespace `4101f085485a42368be2bc9bbaf254a5` deployed |
-| Web Analytics | ⏳ Pending | Needs Cloudflare token (user action required)            |
+| Web Analytics | ✅ Live    | Cloudflare automatic setup active on pages.dev           |
 | MCP Tracking  | ✅ Working | 9 weekly downloads                                       |
 
 ### Known Metrics (Pre-Activation)
@@ -195,6 +195,12 @@ GitHub Action to run weekly:
 **Activation Plan**:
 
 1. ✅ API analytics deployed (COMPLETE)
-2. ⏳ Web analytics (user to add CF token)
-3. 📅 Capture first full snapshot: 2026-02-05 (24h later)
+2. ✅ Web analytics deployed (COMPLETE - Cloudflare automatic setup)
+3. 📅 Capture first full snapshot: 2026-02-05 16:39 UTC (24h of data)
 4. 📅 Define Phase 0 targets: 2026-02-18 (2 weeks data)
+
+**Current Status (Feb 4, 16:56 UTC)**:
+
+- API: 4 requests since baseline reset
+- Web: TBD (CF Analytics propagating, 2-5 min delay)
+- MCP: 9 weekly downloads
