@@ -64,7 +64,6 @@ export async function metricsMiddleware(c: Context, next: Next) {
     // Increment endpoint counter
     const key = `${method} ${path}`;
     endpointCounters.set(key, (endpointCounters.get(key) || 0) + 1);
-
   } catch (error) {
     const _duration = Date.now() - start;
     const errorMsg = error instanceof Error ? error.message : String(error);
@@ -118,27 +117,26 @@ export function getMetrics() {
 
   // Calculate request rates
   const requestsLastMinute = requestMetrics.filter(
-    m => new Date(m.timestamp) > oneMinuteAgo
+    (m) => new Date(m.timestamp) > oneMinuteAgo,
   ).length;
 
   const requestsLast5Minutes = requestMetrics.filter(
-    m => new Date(m.timestamp) > fiveMinutesAgo
+    (m) => new Date(m.timestamp) > fiveMinutesAgo,
   ).length;
 
   // Calculate error rates
-  const errorsLastMinute = errorMetrics.filter(
-    m => new Date(m.timestamp) > oneMinuteAgo
-  ).length;
+  const errorsLastMinute = errorMetrics.filter((m) => new Date(m.timestamp) > oneMinuteAgo).length;
 
   const errorsLast5Minutes = errorMetrics.filter(
-    m => new Date(m.timestamp) > fiveMinutesAgo
+    (m) => new Date(m.timestamp) > fiveMinutesAgo,
   ).length;
 
   // Calculate average response times
   const recentRequests = requestMetrics.slice(-100);
-  const avgResponseTime = recentRequests.length > 0
-    ? recentRequests.reduce((sum, m) => sum + m.duration_ms, 0) / recentRequests.length
-    : 0;
+  const avgResponseTime =
+    recentRequests.length > 0
+      ? recentRequests.reduce((sum, m) => sum + m.duration_ms, 0) / recentRequests.length
+      : 0;
 
   // Get top endpoints
   const topEndpoints = Array.from(endpointCounters.entries())
@@ -161,9 +159,7 @@ export function getMetrics() {
       total: errorMetrics.length,
       last_minute: errorsLastMinute,
       last_5_minutes: errorsLast5Minutes,
-      error_rate: requestsLastMinute > 0
-        ? (errorsLastMinute / requestsLastMinute) * 100
-        : 0,
+      error_rate: requestsLastMinute > 0 ? (errorsLastMinute / requestsLastMinute) * 100 : 0,
     },
     performance: {
       avg_response_time_ms: Math.round(avgResponseTime),
@@ -179,7 +175,7 @@ export function getMetrics() {
  */
 function calculateP95(requests: RequestMetric[]): number {
   if (requests.length === 0) return 0;
-  
+
   const sorted = [...requests].sort((a, b) => a.duration_ms - b.duration_ms);
   const index = Math.ceil(sorted.length * 0.95) - 1;
   return sorted[Math.max(0, index)].duration_ms;
@@ -197,7 +193,7 @@ export function getRecentErrors(limit: number = 50): ErrorMetric[] {
  */
 export function getSlowRequests(thresholdMs: number = 1000, limit: number = 50): RequestMetric[] {
   return requestMetrics
-    .filter(r => r.duration_ms > thresholdMs)
+    .filter((r) => r.duration_ms > thresholdMs)
     .slice(-limit)
     .reverse();
 }
@@ -208,7 +204,7 @@ export function getSlowRequests(thresholdMs: number = 1000, limit: number = 50):
 export function structuredLog(
   level: 'info' | 'warn' | 'error',
   message: string,
-  meta?: Record<string, unknown>
+  meta?: Record<string, unknown>,
 ) {
   const logEntry = {
     timestamp: new Date().toISOString(),

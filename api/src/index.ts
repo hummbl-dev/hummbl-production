@@ -10,7 +10,13 @@ import { TRANSFORMATIONS, getAllModels, getModelByCode } from './base120.js';
 import { recommendModels } from './recommend.js';
 import { semanticSearch, type PineconeEnv } from './pinecone.js';
 import { getAllWorkflows, getWorkflowById, matchWorkflows } from './workflows.js';
-import { metricsMiddleware, getMetrics, getRecentErrors, getSlowRequests, checkAlertConditions } from './monitoring.js';
+import {
+  metricsMiddleware,
+  getMetrics,
+  getRecentErrors,
+  getSlowRequests,
+  checkAlertConditions,
+} from './monitoring.js';
 import {
   sanitizeInput,
   validateInput,
@@ -253,7 +259,7 @@ app.post('/security/validate', async (c) => {
           success: false,
           error: 'Missing or invalid "input" field',
         },
-        400
+        400,
       );
     }
 
@@ -273,7 +279,7 @@ app.post('/security/validate', async (c) => {
         success: false,
         error: 'Invalid request body',
       },
-      400
+      400,
     );
   }
 });
@@ -357,15 +363,20 @@ app.post('/v1/recommend', async (c) => {
     // Security: Validate input for prompt injection
     const validation = validateInput(problem);
     if (!validation.valid) {
-      logSecurityEvent('prompt_injection_attempt', 'HIGH', {
-        endpoint: '/v1/recommend',
-        reason: validation.reason,
-        inputPreview: problem.substring(0, 100),
-      }, {
-        clientIp: c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For'),
-        userAgent: c.req.header('User-Agent'),
-        endpoint: '/v1/recommend',
-      });
+      logSecurityEvent(
+        'prompt_injection_attempt',
+        'HIGH',
+        {
+          endpoint: '/v1/recommend',
+          reason: validation.reason,
+          inputPreview: problem.substring(0, 100),
+        },
+        {
+          clientIp: c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For'),
+          userAgent: c.req.header('User-Agent'),
+          endpoint: '/v1/recommend',
+        },
+      );
       return c.json(
         {
           success: false,
@@ -378,13 +389,18 @@ app.post('/v1/recommend', async (c) => {
     // Security: Check for PII
     const piiCheck = detectPII(problem);
     if (piiCheck.found) {
-      logSecurityEvent('pii_detected_in_input', 'MEDIUM', {
-        endpoint: '/v1/recommend',
-        types: piiCheck.types,
-      }, {
-        clientIp: c.req.header('CF-Connecting-IP'),
-        endpoint: '/v1/recommend',
-      });
+      logSecurityEvent(
+        'pii_detected_in_input',
+        'MEDIUM',
+        {
+          endpoint: '/v1/recommend',
+          types: piiCheck.types,
+        },
+        {
+          clientIp: c.req.header('CF-Connecting-IP'),
+          endpoint: '/v1/recommend',
+        },
+      );
       // Continue but log the event
     }
 

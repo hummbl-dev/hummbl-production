@@ -43,13 +43,13 @@ export function sanitizeInput(input: string): string {
   let cleaned = input;
 
   // Remove dangerous patterns
-  DANGEROUS_PATTERNS.forEach(pattern => {
+  DANGEROUS_PATTERNS.forEach((pattern) => {
     cleaned = cleaned.replace(pattern, '[FILTERED]');
   });
 
   // Neutralize prompt injection attempts
-  PROMPT_INJECTION_PATTERNS.forEach(pattern => {
-    cleaned = cleaned.replace(pattern, match => `[CODE-BLOCKED:${match.length}]`);
+  PROMPT_INJECTION_PATTERNS.forEach((pattern) => {
+    cleaned = cleaned.replace(pattern, (match) => `[CODE-BLOCKED:${match.length}]`);
   });
 
   // Limit input length
@@ -253,7 +253,7 @@ export function logSecurityEvent(
   type: SecurityEventType,
   severity: Severity,
   details: Record<string, unknown>,
-  meta?: { clientIp?: string; userAgent?: string; endpoint?: string }
+  meta?: { clientIp?: string; userAgent?: string; endpoint?: string },
 ): void {
   const event: SecurityEvent = {
     timestamp: new Date().toISOString(),
@@ -286,16 +286,16 @@ export function logSecurityEvent(
  * Get recent security events
  */
 export function getSecurityEvents(
-  options: { type?: SecurityEventType; severity?: Severity; limit?: number } = {}
+  options: { type?: SecurityEventType; severity?: Severity; limit?: number } = {},
 ): SecurityEvent[] {
   let events = [...securityEvents].reverse();
 
   if (options.type) {
-    events = events.filter(e => e.type === options.type);
+    events = events.filter((e) => e.type === options.type);
   }
 
   if (options.severity) {
-    events = events.filter(e => e.severity === options.severity);
+    events = events.filter((e) => e.severity === options.severity);
   }
 
   return events.slice(0, options.limit || 100);
@@ -313,14 +313,14 @@ export function getSecurityStats(): {
   const byType: Record<string, number> = {};
   const bySeverity: Record<string, number> = {};
 
-  securityEvents.forEach(event => {
+  securityEvents.forEach((event) => {
     byType[event.type] = (byType[event.type] || 0) + 1;
     bySeverity[event.severity] = (bySeverity[event.severity] || 0) + 1;
   });
 
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   const recentCritical = securityEvents.filter(
-    e => e.severity === 'CRITICAL' && e.timestamp > oneHourAgo
+    (e) => e.severity === 'CRITICAL' && e.timestamp > oneHourAgo,
   ).length;
 
   return {
@@ -351,28 +351,28 @@ interface ToolPermission {
 }
 
 export const TOOL_PERMISSIONS: Record<string, ToolPermission> = {
-  'select_model': {
+  select_model: {
     allowedOperations: ['read'],
     rateLimit: 100,
     requiresAuth: false,
     riskLevel: RiskLevel.LOW,
     maxInputLength: 10000,
   },
-  'apply_transformation': {
+  apply_transformation: {
     allowedOperations: ['read'],
     rateLimit: 100,
     requiresAuth: false,
     riskLevel: RiskLevel.LOW,
     maxInputLength: 10000,
   },
-  'analyze_problem': {
+  analyze_problem: {
     allowedOperations: ['read'],
     rateLimit: 50,
     requiresAuth: false,
     riskLevel: RiskLevel.LOW,
     maxInputLength: 10000,
   },
-  'semantic_search': {
+  semantic_search: {
     allowedOperations: ['read'],
     rateLimit: 10,
     requiresAuth: false,
@@ -387,7 +387,7 @@ export const TOOL_PERMISSIONS: Record<string, ToolPermission> = {
 export function checkToolPermission(
   toolName: string,
   operation: string,
-  inputLength: number
+  inputLength: number,
 ): { permitted: boolean; reason?: string } {
   const permission = TOOL_PERMISSIONS[toolName];
 
@@ -428,11 +428,7 @@ interface SignedRequest {
 /**
  * Sign a request for secure inter-agent communication
  */
-export function signRequest(
-  payload: unknown,
-  agentId: string,
-  secret: string
-): SignedRequest {
+export function signRequest(payload: unknown, agentId: string, secret: string): SignedRequest {
   const timestamp = new Date().toISOString();
   const payloadStr = JSON.stringify(payload);
 
@@ -454,7 +450,7 @@ export function signRequest(
 export function verifyRequest(
   request: SignedRequest,
   secret: string,
-  maxAgeMs: number = 5 * 60 * 1000 // 5 minutes
+  maxAgeMs: number = 5 * 60 * 1000, // 5 minutes
 ): { valid: boolean; reason?: string; payload?: unknown } {
   // Check timestamp
   const requestTime = new Date(request.timestamp).getTime();
