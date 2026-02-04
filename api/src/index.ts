@@ -10,6 +10,7 @@ import { TRANSFORMATIONS, getAllModels, getModelByCode } from './base120.js';
 import { recommendModels } from './recommend.js';
 import { semanticSearch, type PineconeEnv } from './pinecone.js';
 import { getAllWorkflows, getWorkflowById, matchWorkflows } from './workflows.js';
+import { metricsMiddleware, getMetrics, getRecentErrors, getSlowRequests, checkAlertConditions } from './monitoring.js';
 
 // Environment bindings type
 type Bindings = PineconeEnv;
@@ -37,6 +38,9 @@ app.use('*', async (c, next) => {
 
 // Request logging
 app.use('*', logger());
+
+// Metrics collection
+app.use('*', metricsMiddleware);
 
 // Basic rate limiting (100 requests per minute per IP) with cleanup
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -108,9 +112,10 @@ app.get('/', (c) => {
 app.get('/health', (c) => {
   const allModels = getAllModels();
   const uptime = Date.now() - (globalThis as any).startTime || 0;
+  const alerts = checkAlertConditions();
 
   return c.json({
-    status: 'healthy',
+    status: alerts.alert ? 'degraded' : 'healthy',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     uptime_ms: uptime,
@@ -120,6 +125,52 @@ app.get('/health', (c) => {
       window_ms: 60 * 1000,
       max_requests_per_minute: 100,
     },
+    alerts: alerts.alert ? alerts.conditions : undefined,
+  });
+});
+
+/**
+ * GET /metrics - Detailed metrics and observability
+ */
+app.get('/metrics', (c) => {
+  const metrics = getMetrics();
+  const alerts = checkAlertConditions();
+
+  return c.json({
+    success: true,
+    timestamp: new Date().toISOString(),
+    metrics,
+    alerts: alerts.alert ? alerts.conditions : [],
+  });
+});
+
+/**
+ * GET /metrics/errors - Recent errors for debugging
+ */
+app.get('/metrics/errors', (c) => {
+  const limit = parseInt(c.req.query('limit') || '50');
+  const errors = getRecentErrors(limit);
+
+  return c.json({
+    success: true,
+    count: errors.length,
+    errors,
+  });
+});
+
+/**
+ * GET /metrics/slow - Slow requests for performance analysis
+ */
+app.get('/metrics/slow', (c) => {
+  const threshold = parseInt(c.req.query('threshold') || '1000');
+  const limit = parseInt(c.req.query('limit') || '50');
+  const slow = getSlowRequests(threshold, limit);
+
+  return c.json({
+    success: true,
+    threshold_ms: threshold,
+    count: slow.length,
+    requests: slow,
   });
 });
 
