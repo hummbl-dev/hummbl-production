@@ -27,9 +27,10 @@ import {
   getSecurityStats,
   checkToolPermission,
 } from './security.js';
+import { analyticsMiddleware, getAnalyticsSummary, type AnalyticsBindings } from './analytics.js';
 
 // Environment bindings type
-type Bindings = PineconeEnv;
+type Bindings = PineconeEnv & AnalyticsBindings;
 
 // Initialize start time for uptime tracking
 (globalThis as any).startTime = Date.now();
@@ -57,6 +58,9 @@ app.use('*', logger());
 
 // Metrics collection
 app.use('*', metricsMiddleware);
+
+// Analytics tracking
+app.use('*', analyticsMiddleware());
 
 // Basic rate limiting (100 requests per minute per IP) with cleanup
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -210,6 +214,32 @@ app.get('/metrics/slow', (c) => {
     threshold_ms: threshold,
     count: slow.length,
     requests: slow,
+  });
+});
+
+/**
+ * GET /analytics - Usage analytics summary
+ */
+app.get('/analytics', async (c) => {
+  const kv = c.env.ANALYTICS_KV;
+
+  if (!kv) {
+    return c.json(
+      {
+        success: false,
+        error: 'Analytics not configured',
+        message: 'ANALYTICS_KV binding not found',
+      },
+      503,
+    );
+  }
+
+  const summary = await getAnalyticsSummary(kv);
+
+  return c.json({
+    success: true,
+    timestamp: new Date().toISOString(),
+    ...summary,
   });
 });
 
