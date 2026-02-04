@@ -11,6 +11,16 @@ import { recommendModels } from './recommend.js';
 import { semanticSearch, type PineconeEnv } from './pinecone.js';
 import { getAllWorkflows, getWorkflowById, matchWorkflows } from './workflows.js';
 import { metricsMiddleware, getMetrics, getRecentErrors, getSlowRequests, checkAlertConditions } from './monitoring.js';
+import {
+  sanitizeInput,
+  validateInput,
+  detectPII,
+  validateOutput,
+  logSecurityEvent,
+  getSecurityEvents,
+  getSecurityStats,
+  checkToolPermission,
+} from './security.js';
 
 // Environment bindings type
 type Bindings = PineconeEnv;
@@ -93,6 +103,12 @@ app.get('/', (c) => {
     description: 'Mental models for AI agents',
     endpoints: {
       health: '/health',
+      metrics: '/metrics',
+      security: {
+        events: '/security/events',
+        stats: '/security/stats',
+        validate: '/security/validate',
+      },
       models: '/v1/models',
       model: '/v1/models/:code',
       transformations: '/v1/transformations',
@@ -107,15 +123,27 @@ app.get('/', (c) => {
 });
 
 /**
- * GET /health - Health check with monitoring metrics
+ * GET /health - Health check with monitoring metrics and security status
  */
 app.get('/health', (c) => {
   const allModels = getAllModels();
   const uptime = Date.now() - (globalThis as any).startTime || 0;
   const alerts = checkAlertConditions();
+  const securityStats = getSecurityStats();
+
+  // Determine overall status
+  let status = 'healthy';
+  const allAlerts: string[] = alerts.alert ? [...alerts.conditions] : [];
+
+  if (securityStats.recentCritical > 0) {
+    status = 'critical';
+    allAlerts.push(`${securityStats.recentCritical} critical security events in last hour`);
+  } else if (alerts.alert) {
+    status = 'degraded';
+  }
 
   return c.json({
-    status: alerts.alert ? 'degraded' : 'healthy',
+    status,
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     uptime_ms: uptime,
@@ -125,7 +153,12 @@ app.get('/health', (c) => {
       window_ms: 60 * 1000,
       max_requests_per_minute: 100,
     },
-    alerts: alerts.alert ? alerts.conditions : undefined,
+    security: {
+      total_events: securityStats.totalEvents,
+      recent_critical: securityStats.recentCritical,
+      by_severity: securityStats.bySeverity,
+    },
+    alerts: allAlerts.length > 0 ? allAlerts : undefined,
   });
 });
 
@@ -172,6 +205,77 @@ app.get('/metrics/slow', (c) => {
     count: slow.length,
     requests: slow,
   });
+});
+
+/**
+ * GET /security/events - Security event log (last 100 events)
+ */
+app.get('/security/events', (c) => {
+  const type = c.req.query('type');
+  const severity = c.req.query('severity');
+  const limit = parseInt(c.req.query('limit') || '100');
+
+  const events = getSecurityEvents({
+    type: type as any,
+    severity: severity as any,
+    limit,
+  });
+
+  return c.json({
+    success: true,
+    count: events.length,
+    events,
+  });
+});
+
+/**
+ * GET /security/stats - Security statistics
+ */
+app.get('/security/stats', (c) => {
+  const stats = getSecurityStats();
+
+  return c.json({
+    success: true,
+    stats,
+  });
+});
+
+/**
+ * POST /security/validate - Validate input for injection attacks
+ */
+app.post('/security/validate', async (c) => {
+  try {
+    const { input } = await c.req.json();
+
+    if (!input || typeof input !== 'string') {
+      return c.json(
+        {
+          success: false,
+          error: 'Missing or invalid "input" field',
+        },
+        400
+      );
+    }
+
+    const validation = validateInput(input);
+    const sanitized = sanitizeInput(input);
+    const piiCheck = detectPII(input);
+
+    return c.json({
+      success: true,
+      validation,
+      sanitized,
+      pii: piiCheck,
+    });
+  } catch (_error) {
+    return c.json(
+      {
+        success: false,
+        error: 'Invalid request body',
+      },
+      400
+    );
+  }
 });
 
 /**
@@ -234,6 +338,7 @@ app.get('/v1/models/:code', (c) => {
 /**
  * POST /v1/recommend - Get model recommendations for a problem
  * Uses improved algorithm with stopwords, pattern matching, and semantic scoring
+ * Includes security validation for prompt injection and PII
  */
 app.post('/v1/recommend', async (c) => {
   try {
@@ -249,10 +354,75 @@ app.post('/v1/recommend', async (c) => {
       );
     }
 
+    // Security: Validate input for prompt injection
+    const validation = validateInput(problem);
+    if (!validation.valid) {
+      logSecurityEvent('prompt_injection_attempt', 'HIGH', {
+        endpoint: '/v1/recommend',
+        reason: validation.reason,
+        inputPreview: problem.substring(0, 100),
+      }, {
+        clientIp: c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For'),
+        userAgent: c.req.header('User-Agent'),
+        endpoint: '/v1/recommend',
+      });
+      return c.json(
+        {
+          success: false,
+          error: `Security validation failed: ${validation.reason}`,
+        },
+        400,
+      );
+    }
+
+    // Security: Check for PII
+    const piiCheck = detectPII(problem);
+    if (piiCheck.found) {
+      logSecurityEvent('pii_detected_in_input', 'MEDIUM', {
+        endpoint: '/v1/recommend',
+        types: piiCheck.types,
+      }, {
+        clientIp: c.req.header('CF-Connecting-IP'),
+        endpoint: '/v1/recommend',
+      });
+      // Continue but log the event
+    }
+
+    // Security: Sanitize input
+    const sanitizedProblem = sanitizeInput(problem);
+
+    // Check tool permission
+    const permission = checkToolPermission('analyze_problem', 'read', sanitizedProblem.length);
+    if (!permission.permitted) {
+      return c.json(
+        {
+          success: false,
+          error: permission.reason,
+        },
+        403,
+      );
+    }
+
     const allModels = getAllModels();
     const maxResults = typeof limit === 'number' && limit > 0 && limit <= 20 ? limit : 5;
 
-    const result = recommendModels(problem, allModels, maxResults);
+    const result = recommendModels(sanitizedProblem, allModels, maxResults);
+
+    // Security: Validate output
+    const outputValidation = validateOutput(result.models);
+    if (!outputValidation.valid) {
+      logSecurityEvent('output_validation_failed', 'HIGH', {
+        endpoint: '/v1/recommend',
+        reason: outputValidation.reason,
+      });
+      return c.json(
+        {
+          success: false,
+          error: 'Output validation failed',
+        },
+        500,
+      );
+    }
 
     if (result.models.length === 0) {
       return c.json({
@@ -318,6 +488,7 @@ app.get('/v1/workflows/:id', (c) => {
 
 /**
  * POST /v1/workflows/match - Find workflows matching a problem
+ * Includes security validation
  */
 app.post('/v1/workflows/match', async (c) => {
   try {
@@ -333,8 +504,25 @@ app.post('/v1/workflows/match', async (c) => {
       );
     }
 
+    // Security: Validate input
+    const validation = validateInput(problem);
+    if (!validation.valid) {
+      logSecurityEvent('prompt_injection_attempt', 'HIGH', {
+        endpoint: '/v1/workflows/match',
+        reason: validation.reason,
+      });
+      return c.json(
+        {
+          success: false,
+          error: `Security validation failed: ${validation.reason}`,
+        },
+        400,
+      );
+    }
+
+    const sanitizedProblem = sanitizeInput(problem);
     const maxResults = typeof limit === 'number' && limit > 0 && limit <= 10 ? limit : 3;
-    const workflows = matchWorkflows(problem, maxResults);
+    const workflows = matchWorkflows(sanitizedProblem, maxResults);
 
     return c.json({
       success: true,
@@ -354,6 +542,7 @@ app.post('/v1/workflows/match', async (c) => {
 
 /**
  * POST /v1/semantic-search - Semantic search for mental models (requires Pinecone)
+ * Includes security validation for prompt injection and PII
  */
 app.post('/v1/semantic-search', async (c) => {
   try {
@@ -369,8 +558,37 @@ app.post('/v1/semantic-search', async (c) => {
       );
     }
 
+    // Security: Validate input
+    const validation = validateInput(query);
+    if (!validation.valid) {
+      logSecurityEvent('prompt_injection_attempt', 'HIGH', {
+        endpoint: '/v1/semantic-search',
+        reason: validation.reason,
+      });
+      return c.json(
+        {
+          success: false,
+          error: `Security validation failed: ${validation.reason}`,
+        },
+        400,
+      );
+    }
+
+    // Security: Check tool permission (stricter rate limit for external calls)
+    const permission = checkToolPermission('semantic_search', 'read', query.length);
+    if (!permission.permitted) {
+      return c.json(
+        {
+          success: false,
+          error: permission.reason,
+        },
+        403,
+      );
+    }
+
+    const sanitizedQuery = sanitizeInput(query);
     const topK = typeof limit === 'number' && limit > 0 && limit <= 20 ? limit : 10;
-    const result = await semanticSearch(query, c.env, topK);
+    const result = await semanticSearch(sanitizedQuery, c.env, topK);
 
     if (!result) {
       return c.json(
