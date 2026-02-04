@@ -1,27 +1,31 @@
 /**
  * Monitoring & Observability Tests
+ * Uses local Hono app instance instead of network calls for reliable testing
  */
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
+import app from '../../src/index.js';
 
 describe('Monitoring Endpoints', () => {
-  const API_BASE = 'https://hummbl-api.hummbl.workers.dev';
+  beforeEach(() => {
+    (globalThis as any).rateLimitMap = new Map();
+  });
 
   describe('GET /health', () => {
     it('should return healthy status', async () => {
-      const res = await fetch(`${API_BASE}/health`);
+      const res = await app.request('/health');
       expect(res.status).toBe(200);
 
       const data = await res.json();
       expect(data.status).toBeDefined();
       expect(data.version).toBe('1.0.0');
       expect(data.models_count).toBe(120);
-      expect(data.uptime_ms).toBeGreaterThan(0);
+      expect(data.uptime_ms).toBeGreaterThanOrEqual(0);
       expect(data.timestamp).toBeDefined();
       expect(data.rate_limit_status).toBeDefined();
     });
 
     it('should include rate limit status', async () => {
-      const res = await fetch(`${API_BASE}/health`);
+      const res = await app.request('/health');
       const data = await res.json();
 
       expect(data.rate_limit_status).toHaveProperty('active_ips');
@@ -32,7 +36,7 @@ describe('Monitoring Endpoints', () => {
 
   describe('GET /metrics', () => {
     it('should return detailed metrics', async () => {
-      const res = await fetch(`${API_BASE}/metrics`);
+      const res = await app.request('/metrics');
       expect(res.status).toBe(200);
 
       const data = await res.json();
@@ -43,7 +47,7 @@ describe('Monitoring Endpoints', () => {
     });
 
     it('should have request metrics structure', async () => {
-      const res = await fetch(`${API_BASE}/metrics`);
+      const res = await app.request('/metrics');
       const data = await res.json();
 
       expect(data.metrics.requests).toBeDefined();
@@ -54,7 +58,7 @@ describe('Monitoring Endpoints', () => {
     });
 
     it('should have error metrics structure', async () => {
-      const res = await fetch(`${API_BASE}/metrics`);
+      const res = await app.request('/metrics');
       const data = await res.json();
 
       expect(data.metrics.errors).toBeDefined();
@@ -64,7 +68,7 @@ describe('Monitoring Endpoints', () => {
     });
 
     it('should have performance metrics', async () => {
-      const res = await fetch(`${API_BASE}/metrics`);
+      const res = await app.request('/metrics');
       const data = await res.json();
 
       expect(data.metrics.performance).toBeDefined();
@@ -73,7 +77,7 @@ describe('Monitoring Endpoints', () => {
     });
 
     it('should have top endpoints list', async () => {
-      const res = await fetch(`${API_BASE}/metrics`);
+      const res = await app.request('/metrics');
       const data = await res.json();
 
       expect(Array.isArray(data.metrics.top_endpoints)).toBe(true);
@@ -82,7 +86,7 @@ describe('Monitoring Endpoints', () => {
 
   describe('GET /metrics/errors', () => {
     it('should return errors list', async () => {
-      const res = await fetch(`${API_BASE}/metrics/errors`);
+      const res = await app.request('/metrics/errors');
       expect(res.status).toBe(200);
 
       const data = await res.json();
@@ -92,7 +96,7 @@ describe('Monitoring Endpoints', () => {
     });
 
     it('should respect limit parameter', async () => {
-      const res = await fetch(`${API_BASE}/metrics/errors?limit=5`);
+      const res = await app.request('/metrics/errors?limit=5');
       const data = await res.json();
 
       expect(data.errors.length).toBeLessThanOrEqual(5);
@@ -101,7 +105,7 @@ describe('Monitoring Endpoints', () => {
 
   describe('GET /metrics/slow', () => {
     it('should return slow requests list', async () => {
-      const res = await fetch(`${API_BASE}/metrics/slow`);
+      const res = await app.request('/metrics/slow');
       expect(res.status).toBe(200);
 
       const data = await res.json();
@@ -112,7 +116,7 @@ describe('Monitoring Endpoints', () => {
     });
 
     it('should respect threshold parameter', async () => {
-      const res = await fetch(`${API_BASE}/metrics/slow?threshold=500`);
+      const res = await app.request('/metrics/slow?threshold=500');
       const data = await res.json();
 
       expect(data.threshold_ms).toBe(500);
@@ -121,30 +125,30 @@ describe('Monitoring Endpoints', () => {
 });
 
 describe('Metrics Collection', () => {
-  it('should track requests across multiple endpoints', async () => {
-    const API_BASE = 'https://hummbl-api.hummbl.workers.dev';
+  beforeEach(() => {
+    (globalThis as any).rateLimitMap = new Map();
+  });
 
-    // Make various requests
-    await fetch(`${API_BASE}/health`);
-    await fetch(`${API_BASE}/v1/models`);
-    await fetch(`${API_BASE}/v1/transformations`);
+  it('should track requests across multiple endpoints', async () => {
+    // Make various requests using local app instance
+    await app.request('/health');
+    await app.request('/v1/models');
+    await app.request('/v1/transformations');
 
     // Check metrics reflect activity
-    const metricsRes = await fetch(`${API_BASE}/metrics`);
+    const metricsRes = await app.request('/metrics');
     const metrics = await metricsRes.json();
 
     expect(metrics.metrics.requests.total).toBeGreaterThan(0);
   });
 
   it('should calculate response times', async () => {
-    const API_BASE = 'https://hummbl-api.hummbl.workers.dev';
-
-    // Make a request
+    // Make a request and verify it completes quickly
     const start = Date.now();
-    await fetch(`${API_BASE}/v1/models`);
+    await app.request('/v1/models');
     const duration = Date.now() - start;
 
-    // Response should be reasonably fast
-    expect(duration).toBeLessThan(5000); // 5 seconds max
+    // Response should be reasonably fast (local testing should be very fast)
+    expect(duration).toBeLessThan(1000); // 1 second max for local tests
   });
 });
