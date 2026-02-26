@@ -64,10 +64,7 @@ export async function enqueueTask(
 }
 
 /** Poll for the next available task (assigns to agent) */
-export async function pollNextTask(
-  kv: KVNamespace,
-  agentId: string,
-): Promise<Task | null> {
+export async function pollNextTask(kv: KVNamespace, agentId: string): Promise<Task | null> {
   const pending = await getPendingQueue(kv);
   if (pending.length === 0) return null;
 
@@ -116,10 +113,7 @@ export async function completeTask(
 }
 
 /** Store agent heartbeat */
-export async function storeHeartbeat(
-  kv: KVNamespace,
-  heartbeat: AgentHeartbeat,
-): Promise<void> {
+export async function storeHeartbeat(kv: KVNamespace, heartbeat: AgentHeartbeat): Promise<void> {
   await kv.put(`agent:${heartbeat.agentId}:hb`, JSON.stringify(heartbeat), {
     expirationTtl: 120, // 2 min TTL — agent heartbeats every 60s, 2x buffer
   });
@@ -154,9 +148,7 @@ export async function getAgentStatuses(
 }
 
 /** Get pending queue entries */
-async function getPendingQueue(
-  kv: KVNamespace,
-): Promise<Array<{ id: string; priority: number }>> {
+async function getPendingQueue(kv: KVNamespace): Promise<Array<{ id: string; priority: number }>> {
   const raw = await kv.get('queue:pending');
   if (!raw) return [];
   try {

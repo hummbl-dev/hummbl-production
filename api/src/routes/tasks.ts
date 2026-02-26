@@ -8,12 +8,7 @@
  */
 
 import { Hono } from 'hono';
-import {
-  enqueueTask,
-  pollNextTask,
-  completeTask,
-  getQueueStats,
-} from '../lib/queue.js';
+import { enqueueTask, pollNextTask, completeTask, getQueueStats } from '../lib/queue.js';
 
 type Bindings = { ANALYTICS_KV: KVNamespace };
 
