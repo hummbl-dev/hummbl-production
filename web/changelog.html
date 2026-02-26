@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Changelog - What's New</title>
+    <meta
+      name="description"
+      content="Stay up to date with HUMMBL Base120 releases, new features, and improvements."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/changelog.html" />
+
+    <!-- Favicon & OG -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Changelog - What's New" />
+    <meta property="og:description" content="Stay up to date with HUMMBL Base120 releases, new features, and improvements." />
+    <meta property="og:url" content="https://hummbl.io/changelog.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Changelog - What's New" />
+    <meta name="twitter:description" content="Stay up to date with HUMMBL Base120 releases, new features, and improvements." />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Hero */
+      .page-hero {
+        text-align: center;
+        padding: 48px 0 64px;
+      }
+
+      .page-hero h1 {
+        font-family: var(--font-serif);
+        font-size: 48px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+      }
+
+      .page-hero p {
+        color: var(--text-secondary);
+        font-size: 16px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* Timeline */
+      .timeline {
+        position: relative;
+        padding: 0 0 64px;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 140px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(0, 255, 136, 0.2);
+      }
+
+      .timeline-entry {
+        position: relative;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 40px;
+        padding-left: 0;
+        margin-bottom: 48px;
+      }
+
+      .timeline-entry:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Timeline dot */
+      .timeline-entry::before {
+        content: "";
+        position: absolute;
+        left: 134px;
+        top: 6px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--bg-primary);
+        border: 2px solid var(--accent-cyan);
+        z-index: 2;
+      }
+
+      .timeline-entry:first-child::before {
+        background: var(--accent-cyan);
+        box-shadow: 0 0 12px rgba(0, 255, 136, 0.4);
+      }
+
+      .timeline-date {
+        text-align: right;
+        padding-top: 2px;
+      }
+
+      .timeline-date-day {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: block;
+        line-height: 1.4;
+      }
+
+      .timeline-date-month {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        display: block;
+        margin-top: 2px;
+      }
+
+      .timeline-content {
+        padding-left: 20px;
+      }
+
+      .timeline-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .timeline-title {
+        font-family: var(--font-serif);
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .timeline-tag {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        padding: 3px 10px;
+        border-radius: 3px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .tag-launch {
+        background: rgba(0, 255, 136, 0.15);
+        color: var(--accent-cyan);
+        border: 1px solid rgba(0, 255, 136, 0.3);
+      }
+
+      .tag-api {
+        background: rgba(68, 136, 255, 0.15);
+        color: #4488ff;
+        border: 1px solid rgba(68, 136, 255, 0.3);
+      }
+
+      .tag-security {
+        background: rgba(255, 107, 53, 0.15);
+        color: var(--accent-warm);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+      }
+
+      .tag-platform {
+        background: rgba(170, 102, 255, 0.15);
+        color: #aa66ff;
+        border: 1px solid rgba(170, 102, 255, 0.3);
+      }
+
+      .tag-integration {
+        background: rgba(0, 204, 170, 0.15);
+        color: #00ccaa;
+        border: 1px solid rgba(0, 204, 170, 0.3);
+      }
+
+      .tag-website {
+        background: rgba(255, 204, 0, 0.2);
+        color: #ffcc00;
+        border: 1px solid rgba(255, 204, 0, 0.3);
+      }
+
+      .tag-announcement {
+        background: rgba(255, 255, 255, 0.12);
+        color: #e8e8e8;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .timeline-body {
+        color: var(--text-secondary);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .timeline-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .timeline-body li {
+        position: relative;
+        padding-left: 20px;
+        margin-bottom: 8px;
+      }
+
+      .timeline-body li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 9px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-tertiary);
+      }
+
+      .timeline-body li:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Subscribe section */
+      .subscribe-section {
+        text-align: center;
+        padding: 64px 0 48px;
+        border-top: 1px solid var(--border-subtle);
+      }
+
+      .subscribe-section h2 {
+        font-family: var(--font-serif);
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+
+      .subscribe-section p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-bottom: 24px;
+      }
+
+      .subscribe-section a {
+        color: var(--accent-cyan);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+
+      .subscribe-section a:hover {
+        opacity: 0.7;
+      }
+
+      .github-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 12px 24px;
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: 13px;
+        transition: border-color 0.2s, background 0.2s;
+      }
+
+      .github-link:hover {
+        border-color: var(--border-prominent);
+        background: rgba(0, 255, 136, 0.05);
+        color: var(--text-primary);
+        opacity: 1;
+      }
+
+      .github-link svg {
+        width: 18px;
+        height: 18px;
+        fill: var(--text-primary);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .page-hero h1 {
+          font-size: 32px;
+        }
+
+        .page-hero p {
+          font-size: 14px;
+        }
+
+        .timeline::before {
+          left: 0;
+        }
+
+        .timeline-entry {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          padding-left: 24px;
+        }
+
+        .timeline-entry::before {
+          left: -6px;
+          top: 4px;
+          width: 12px;
+          height: 12px;
+        }
+
+        .timeline-date {
+          text-align: left;
+        }
+
+        .timeline-date-day {
+          font-size: 12px;
+        }
+
+        .timeline-date-month {
+          display: inline;
+          margin-left: 8px;
+        }
+
+        .timeline-content {
+          padding-left: 0;
+        }
+
+        .timeline-title {
+          font-size: 18px;
+        }
+
+        .timeline-body {
+          font-size: 12px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 16px;
+        }
+
+        .page-hero {
+          padding: 32px 0 48px;
+        }
+
+        .page-hero h1 {
+          font-size: 28px;
+        }
+
+        .timeline-entry {
+          margin-bottom: 36px;
+        }
+
+        .footer-nav {
+          gap: 12px;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Changelog</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <div class="page-hero" id="main">
+        <h1>Changelog</h1>
+        <p>What's new with HUMMBL Base120</p>
+      </div>
+
+      <div class="timeline">
+
+        <!-- February 24, 2026 -->
+        <div class="timeline-entry">
+          <div class="timeline-date">
+            <span class="timeline-date-day">Feb 24</span>
+            <span class="timeline-date-month">2026</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">Website Expansion</span>
+              <span class="timeline-tag tag-website">Website</span>
+            </div>
+            <div class="timeline-body">
+              <ul>
+                <li>Added Playground page with live API sandbox, curated demos, safety stack visualization, and 66-agent lineup</li>
+                <li>Added Explorer page for browsing and searching all 120 models</li>
+                <li>Added Docs, Pricing, Case Studies, and Changelog pages</li>
+                <li>Favicon, Open Graph images, and social sharing meta tags</li>
+                <li>Mobile-responsive hamburger navigation across all pages</li>
+                <li>Cloudflare Pages CSP headers for all routes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- February 20, 2026 -->
+        <div class="timeline-entry">
+          <div class="timeline-date">
+            <span class="timeline-date-day">Feb 20</span>
+            <span class="timeline-date-month">2026</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">Multi-Agent Platform</span>
+              <span class="timeline-tag tag-platform">Platform</span>
+            </div>
+            <div class="timeline-body">
+              <ul>
+                <li>6 vendor runtimes: Claude (Anthropic), Codex (OpenAI), Kimi (Moonshot), Gemini (Google), Ollama (local), plus vendor-agnostic orchestration</li>
+                <li>60+ coordinated agents across the platform</li>
+                <li>TSV append-only coordination bus for agent communication</li>
+                <li>Agent registry with real-time status tracking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- February 15, 2026 -->
+        <div class="timeline-entry">
+          <div class="timeline-date">
+            <span class="timeline-date-day">Feb 15</span>
+            <span class="timeline-date-month">2026</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">Security Stack</span>
+              <span class="timeline-tag tag-security">Security</span>
+            </div>
+            <div class="timeline-body">
+              <ul>
+                <li>5-layer input/output security pipeline</li>
+                <li>Prompt injection detection (18 patterns)</li>
+                <li>PII detection and redaction (8 categories: SSN, credit cards, email, phone, API keys, passwords, tokens, private keys)</li>
+                <li>Input sanitization with comment stripping and template neutralization</li>
+                <li>Output validation with exfiltration detection</li>
+                <li>Security event logging and monitoring via /health endpoint</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- February 10, 2026 -->
+        <div class="timeline-entry">
+          <div class="timeline-date">
+            <span class="timeline-date-day">Feb 10</span>
+            <span class="timeline-date-month">2026</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">MCP Server</span>
+              <span class="timeline-tag tag-integration">Integration</span>
+            </div>
+            <div class="timeline-body">
+              <ul>
+                <li>Published <code>@hummbl/mcp-server</code> on npm</li>
+                <li>Use Base120 models directly from Claude Desktop, Cursor, Windsurf, or any MCP-compatible client</li>
+                <li>Tools: recommend_models, list_models, get_model, match_workflows</li>
+                <li>Zero configuration &mdash; just add to your MCP config</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- February 5, 2026 -->
+        <div class="timeline-entry">
+          <div class="timeline-date">
+            <span class="timeline-date-day">Feb 5</span>
+            <span class="timeline-date-month">2026</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">Workflows Engine</span>
+              <span class="timeline-tag tag-api">API</span>
+            </div>
+            <div class="timeline-body">
+              <ul>
+                <li>Added <code>/v1/workflows/match</code> endpoint</li>
+                <li>Pre-built workflows: Team Performance, Root Cause Analysis, Crisis Response, Strategic Planning</li>
+                <li>Workflows chain multiple models into step-by-step reasoning sequences</li>
+                <li>Pattern matching connects problems to relevant workflows automatically</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- January 28, 2026 -->
+        <div class="timeline-entry">
+          <div class="timeline-date">
+            <span class="timeline-date-day">Jan 28</span>
+            <span class="timeline-date-month">2026</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">API Launch</span>
+              <span class="timeline-tag tag-launch">Launch</span>
+            </div>
+            <div class="timeline-body">
+              <ul>
+                <li>HUMMBL Base120 API goes live on Cloudflare Workers</li>
+                <li>120 mental models across 6 transformations</li>
+                <li>Core endpoints: /v1/models, /v1/models/:code, /v1/recommend</li>
+                <li>Rate limiting: 100 requests/minute per IP</li>
+                <li>Global edge deployment via Cloudflare</li>
+                <li>Zero authentication required during beta</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- January 15, 2026 -->
+        <div class="timeline-entry">
+          <div class="timeline-date">
+            <span class="timeline-date-day">Jan 15</span>
+            <span class="timeline-date-month">2026</span>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">The Beginning</span>
+              <span class="timeline-tag tag-announcement">Announcement</span>
+            </div>
+            <div class="timeline-body">
+              <ul>
+                <li>HUMMBL project founded</li>
+                <li>Base120 framework designed: 120 mental models organized into 6 transformations (Perspective, Inversion, Composition, Decomposition, Recursion, Synthesis)</li>
+                <li>Mission: Give AI agents structured thinking tools, not just raw intelligence</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="subscribe-section">
+        <h2>Subscribe to updates</h2>
+        <p>Follow us on GitHub for the latest releases</p>
+        <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener" class="github-link">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <span>hummbl-dev on GitHub</span>
+        </a>
+      </div>
+
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+    </div>
+
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

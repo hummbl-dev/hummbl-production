@@ -630,7 +630,7 @@ export interface RecommendationResult {
 export function recommendModels(
   problem: string,
   allModels: MentalModel[],
-  limit: number = 5,
+  limit: number = 6,
 ): RecommendationResult {
   // Extract keywords - both raw (for pattern matching) and stemmed (for model matching)
   const rawKeywords = extractKeywords(problem, false); // unstemmed for pattern matching

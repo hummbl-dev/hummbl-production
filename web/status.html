@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Status - API Health</title>
+    <meta
+      name="description"
+      content="Live status of the HUMMBL Base120 API. Real-time health, response time, and security monitoring."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/status.html" />
+
+    <!-- Favicon & OG -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Status - API Health" />
+    <meta property="og:description" content="Live status of the HUMMBL Base120 API. Real-time health, response time, and security monitoring." />
+    <meta property="og:url" content="https://hummbl.io/status.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Status - API Health" />
+    <meta name="twitter:description" content="Live status of the HUMMBL Base120 API. Real-time health, response time, and security monitoring." />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      :root {
+        --color-green: #00ff88;
+        --color-yellow: #ffd700;
+        --color-red: #ff4444;
+        --color-gray: #555;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ── Status Banner ── */
+      .status-banner {
+        text-align: center;
+        padding: 48px 24px;
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        margin-bottom: 40px;
+      }
+
+      .status-banner-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .status-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--color-gray);
+        flex-shrink: 0;
+      }
+
+      .status-dot.green {
+        background: var(--color-green);
+        box-shadow: 0 0 12px rgba(0, 255, 136, 0.5);
+        animation: pulse-green 2s ease-in-out infinite;
+      }
+
+      .status-dot.red {
+        background: var(--color-red);
+        box-shadow: 0 0 12px rgba(255, 68, 68, 0.5);
+        animation: pulse-red 2s ease-in-out infinite;
+      }
+
+      .status-dot.yellow {
+        background: var(--color-yellow);
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+        animation: pulse-yellow 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse-green {
+        0%, 100% { box-shadow: 0 0 8px rgba(0, 255, 136, 0.4); }
+        50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.7); }
+      }
+
+      @keyframes pulse-red {
+        0%, 100% { box-shadow: 0 0 8px rgba(255, 68, 68, 0.4); }
+        50% { box-shadow: 0 0 20px rgba(255, 68, 68, 0.7); }
+      }
+
+      @keyframes pulse-yellow {
+        0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+        50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.7); }
+      }
+
+      .status-banner-text {
+        font-family: var(--font-serif);
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .status-banner-text.green { color: var(--color-green); }
+      .status-banner-text.red { color: var(--color-red); }
+      .status-banner-text.yellow { color: var(--color-yellow); }
+      .status-banner-text.gray { color: var(--text-tertiary); }
+
+      .status-banner-meta {
+        color: var(--text-tertiary);
+        font-size: 12px;
+        margin-top: 8px;
+      }
+
+      .status-banner-meta span {
+        display: block;
+        margin-top: 4px;
+      }
+
+      /* ── Metric Cards ── */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 40px;
+      }
+
+      .metric-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .metric-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--color-gray);
+        transition: background 0.3s;
+      }
+
+      .metric-card.green::before { background: var(--color-green); }
+      .metric-card.yellow::before { background: var(--color-yellow); }
+      .metric-card.red::before { background: var(--color-red); }
+
+      .metric-label {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 8px;
+      }
+
+      .metric-value {
+        font-family: var(--font-serif);
+        font-size: 36px;
+        font-weight: 600;
+        line-height: 1.2;
+        color: var(--text-primary);
+      }
+
+      .metric-value.green { color: var(--color-green); }
+      .metric-value.yellow { color: var(--color-yellow); }
+      .metric-value.red { color: var(--color-red); }
+
+      .metric-sub {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        margin-top: 6px;
+      }
+
+      .metric-icon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 28px;
+        opacity: 0.15;
+      }
+
+      /* ── Spinner ── */
+      .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid var(--border-subtle);
+        border-top-color: var(--accent-cyan);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .spinner-large {
+        width: 24px;
+        height: 24px;
+        border-width: 3px;
+      }
+
+      /* ── Section Headers ── */
+      .section-header {
+        font-family: var(--font-serif);
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-subtle);
+        letter-spacing: -0.02em;
+      }
+
+      /* ── Endpoint Table ── */
+      .endpoint-table-wrap {
+        margin-bottom: 40px;
+        overflow-x: auto;
+      }
+
+      .endpoint-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .endpoint-table th {
+        text-align: left;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-subtle);
+        font-weight: 500;
+      }
+
+      .endpoint-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        vertical-align: middle;
+      }
+
+      .endpoint-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .endpoint-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .endpoint-path {
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .endpoint-method {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 3px;
+        letter-spacing: 0.05em;
+      }
+
+      .method-get {
+        background: rgba(0, 255, 136, 0.1);
+        color: var(--color-green);
+        border: 1px solid rgba(0, 255, 136, 0.2);
+      }
+
+      .method-post {
+        background: rgba(255, 107, 53, 0.1);
+        color: var(--accent-warm);
+        border: 1px solid rgba(255, 107, 53, 0.2);
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+      }
+
+      .status-badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--color-gray);
+        flex-shrink: 0;
+      }
+
+      .status-badge .dot.green { background: var(--color-green); }
+      .status-badge .dot.red { background: var(--color-red); }
+
+      .response-time {
+        font-variant-numeric: tabular-nums;
+        color: var(--text-secondary);
+      }
+
+      .response-time.fast { color: var(--color-green); }
+      .response-time.medium { color: var(--color-yellow); }
+      .response-time.slow { color: var(--color-red); }
+
+      /* ── Rate Limit ── */
+      .rate-limit-section {
+        margin-bottom: 40px;
+      }
+
+      .rate-limit-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+
+      .rate-limit-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .rate-limit-value {
+        font-family: var(--font-serif);
+        font-size: 28px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+
+      .rate-limit-label {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      /* ── Uptime Bar ── */
+      .uptime-section {
+        margin-bottom: 40px;
+      }
+
+      .uptime-bar {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        padding: 20px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+      }
+
+      .uptime-square {
+        flex: 1;
+        height: 32px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.06);
+        transition: background 0.3s;
+        position: relative;
+      }
+
+      .uptime-square.up {
+        background: var(--color-green);
+        opacity: 0.7;
+      }
+
+      .uptime-square.up:hover {
+        opacity: 1;
+      }
+
+      .uptime-square.down {
+        background: var(--color-red);
+        opacity: 0.7;
+      }
+
+      .uptime-square.down:hover {
+        opacity: 1;
+      }
+
+      .uptime-square.empty {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .uptime-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+
+      .uptime-legend {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .uptime-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .uptime-legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+      }
+
+      .uptime-legend-dot.up { background: var(--color-green); opacity: 0.7; }
+      .uptime-legend-dot.down { background: var(--color-red); opacity: 0.7; }
+      .uptime-legend-dot.empty { background: rgba(255, 255, 255, 0.06); }
+
+      /* ── Incidents ── */
+      .incidents-section {
+        margin-bottom: 64px;
+      }
+
+      .incidents-empty {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 24px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      .incidents-check {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(0, 255, 136, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .incidents-check svg {
+        width: 14px;
+        height: 14px;
+        fill: none;
+        stroke: var(--color-green);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 768px) {
+        .status-banner {
+          padding: 32px 16px;
+        }
+
+        .status-banner-text {
+          font-size: 24px;
+        }
+
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .metric-value {
+          font-size: 28px;
+        }
+
+        .rate-limit-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .uptime-square {
+          height: 24px;
+        }
+
+        .endpoint-table {
+          font-size: 12px;
+        }
+
+        .endpoint-table th,
+        .endpoint-table td {
+          padding: 10px 10px;
+        }
+
+        .section-header {
+          font-size: 18px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 16px;
+        }
+
+        .status-banner-text {
+          font-size: 20px;
+        }
+
+        .uptime-bar {
+          gap: 2px;
+          padding: 14px;
+        }
+
+        .uptime-square {
+          height: 20px;
+        }
+
+        .footer-nav {
+          gap: 12px;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+
+      <!-- ── Header ── -->
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Status</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <!-- ── Status Banner ── -->
+      <div class="status-banner" id="main">
+        <div class="status-banner-indicator">
+          <div class="status-dot" id="status-dot"></div>
+          <div class="status-banner-text gray" id="status-text">Checking...</div>
+        </div>
+        <div class="status-banner-meta">
+          <span id="last-checked">Last checked: --</span>
+          <span>Auto-refreshes every 30 seconds</span>
+        </div>
+      </div>
+
+      <!-- ── Metric Cards ── -->
+      <div class="metrics-grid">
+
+        <div class="metric-card" id="card-api">
+          <div class="metric-icon">&#9889;</div>
+          <div class="metric-label">API Status</div>
+          <div class="metric-value" id="metric-api-status"><span class="spinner spinner-large"></span></div>
+          <div class="metric-sub" id="metric-api-sub">Checking /health</div>
+        </div>
+
+        <div class="metric-card" id="card-response">
+          <div class="metric-icon">&#9202;</div>
+          <div class="metric-label">Response Time</div>
+          <div class="metric-value" id="metric-response-time"><span class="spinner spinner-large"></span></div>
+          <div class="metric-sub" id="metric-response-sub">Round-trip to edge</div>
+        </div>
+
+        <div class="metric-card" id="card-models">
+          <div class="metric-icon">&#9881;</div>
+          <div class="metric-label">Models Available</div>
+          <div class="metric-value" id="metric-models-count"><span class="spinner spinner-large"></span></div>
+          <div class="metric-sub" id="metric-models-sub">Base120 mental models</div>
+        </div>
+
+        <div class="metric-card" id="card-security">
+          <div class="metric-icon">&#128274;</div>
+          <div class="metric-label">Security Events</div>
+          <div class="metric-value" id="metric-security-value"><span class="spinner spinner-large"></span></div>
+          <div class="metric-sub" id="metric-security-sub">Monitoring active</div>
+        </div>
+
+      </div>
+
+      <!-- ── Endpoint Status ── -->
+      <div class="endpoint-table-wrap">
+        <h2 class="section-header">Endpoint Status</h2>
+        <table class="endpoint-table">
+          <thead>
+            <tr>
+              <th>Endpoint</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Response Time</th>
+            </tr>
+          </thead>
+          <tbody id="endpoint-tbody">
+            <tr id="ep-health">
+              <td class="endpoint-path">/health</td>
+              <td><span class="endpoint-method method-get">GET</span></td>
+              <td><span class="status-badge"><span class="spinner"></span> Checking</span></td>
+              <td class="response-time">--</td>
+            </tr>
+            <tr id="ep-models">
+              <td class="endpoint-path">/v1/models</td>
+              <td><span class="endpoint-method method-get">GET</span></td>
+              <td><span class="status-badge"><span class="spinner"></span> Checking</span></td>
+              <td class="response-time">--</td>
+            </tr>
+            <tr id="ep-model-p1">
+              <td class="endpoint-path">/v1/models/P1</td>
+              <td><span class="endpoint-method method-get">GET</span></td>
+              <td><span class="status-badge"><span class="spinner"></span> Checking</span></td>
+              <td class="response-time">--</td>
+            </tr>
+            <tr id="ep-recommend">
+              <td class="endpoint-path">/v1/recommend</td>
+              <td><span class="endpoint-method method-post">POST</span></td>
+              <td><span class="status-badge"><span class="spinner"></span> Checking</span></td>
+              <td class="response-time">--</td>
+            </tr>
+            <tr id="ep-workflows">
+              <td class="endpoint-path">/v1/workflows/match</td>
+              <td><span class="endpoint-method method-post">POST</span></td>
+              <td><span class="status-badge"><span class="spinner"></span> Checking</span></td>
+              <td class="response-time">--</td>
+            </tr>
+            <tr id="ep-security">
+              <td class="endpoint-path">/security/validate</td>
+              <td><span class="endpoint-method method-post">POST</span></td>
+              <td><span class="status-badge"><span class="spinner"></span> Checking</span></td>
+              <td class="response-time">--</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Rate Limit Status ── -->
+      <div class="rate-limit-section">
+        <h2 class="section-header">Rate Limit Status</h2>
+        <div class="rate-limit-grid">
+          <div class="rate-limit-card">
+            <div class="rate-limit-value" id="rl-active-ips">--</div>
+            <div class="rate-limit-label">Active IPs</div>
+          </div>
+          <div class="rate-limit-card">
+            <div class="rate-limit-value" id="rl-window">--</div>
+            <div class="rate-limit-label">Window (ms)</div>
+          </div>
+          <div class="rate-limit-card">
+            <div class="rate-limit-value" id="rl-max-req">--</div>
+            <div class="rate-limit-label">Max Req / Min</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Uptime (Session) ── -->
+      <div class="uptime-section">
+        <h2 class="section-header">Session Uptime</h2>
+        <div class="uptime-bar" id="uptime-bar"></div>
+        <div class="uptime-meta">
+          <div class="uptime-legend">
+            <div class="uptime-legend-item">
+              <div class="uptime-legend-dot up"></div>
+              <span>Operational</span>
+            </div>
+            <div class="uptime-legend-item">
+              <div class="uptime-legend-dot down"></div>
+              <span>Degraded</span>
+            </div>
+            <div class="uptime-legend-item">
+              <div class="uptime-legend-dot empty"></div>
+              <span>No data</span>
+            </div>
+          </div>
+          <div id="uptime-count">-- / 30 checks</div>
+        </div>
+      </div>
+
+      <!-- ── Incidents ── -->
+      <div class="incidents-section">
+        <h2 class="section-header">Incident History</h2>
+        <div class="incidents-empty">
+          <div class="incidents-check">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <span>No incidents reported. All systems have been operating normally.</span>
+        </div>
+      </div>
+
+      <!-- ── Footer ── -->
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+
+    </div>
+
+    <script>
+      /* ── API Configuration ── */
+      var API_BASE = 'https://hummbl-api.hummbl.workers.dev';
+      var HISTORY_KEY = 'hummbl-status-history';
+      var MAX_HISTORY = 30;
+
+      /* ── Endpoint definitions ── */
+      var endpoints = [
+        { id: 'ep-health',    method: 'GET',  path: '/health' },
+        { id: 'ep-models',    method: 'GET',  path: '/v1/models' },
+        { id: 'ep-model-p1',  method: 'GET',  path: '/v1/models/P1' },
+        { id: 'ep-recommend', method: 'POST', path: '/v1/recommend', body: { challenge: 'How to prioritize tasks effectively?' } },
+        { id: 'ep-workflows', method: 'POST', path: '/v1/workflows/match', body: { challenge: 'Team performance review' } },
+        { id: 'ep-security',  method: 'POST', path: '/security/validate', body: { input: 'test validation check' } }
+      ];
+
+      /* ── State ── */
+      var checkHistory = [];
+      try {
+        checkHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      } catch (e) {
+        checkHistory = [];
+      }
+
+      /* ── Helpers ── */
+      function formatTime(date) {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
+      function responseTimeClass(ms) {
+        if (ms < 200) return 'fast';
+        if (ms <= 500) return 'medium';
+        return 'slow';
+      }
+
+      /* ── Check a single endpoint ── */
+      function checkEndpoint(method, path, body) {
+        var start = performance.now();
+        var opts = { method: method };
+        if (body) {
+          opts.headers = { 'Content-Type': 'application/json' };
+          opts.body = JSON.stringify(body);
+        }
+        return fetch(API_BASE + path, opts)
+          .then(function(res) {
+            var elapsed = Math.round(performance.now() - start);
+            return res.json().then(function(data) {
+              return { ok: res.ok && data.success !== false, elapsed: elapsed, data: data };
+            }).catch(function() {
+              return { ok: res.ok, elapsed: elapsed, data: {} };
+            });
+          })
+          .catch(function(e) {
+            var elapsed = Math.round(performance.now() - start);
+            return { ok: false, elapsed: elapsed, error: e.message, data: {} };
+          });
+      }
+
+      /* ── Update endpoint row UI ── */
+      function updateEndpointRow(id, result) {
+        var row = document.getElementById(id);
+        if (!row) return;
+        var cells = row.querySelectorAll('td');
+        var statusCell = cells[2];
+        var timeCell = cells[3];
+
+        if (result.ok) {
+          statusCell.innerHTML = '<span class="status-badge"><span class="dot green"></span> Operational</span>';
+        } else {
+          statusCell.innerHTML = '<span class="status-badge"><span class="dot red"></span> Error</span>';
+        }
+
+        var cls = responseTimeClass(result.elapsed);
+        timeCell.className = 'response-time ' + cls;
+        timeCell.textContent = result.elapsed + 'ms';
+      }
+
+      /* ── Update the big status banner ── */
+      function updateBanner(allOk, healthResult) {
+        var dot = document.getElementById('status-dot');
+        var text = document.getElementById('status-text');
+        var lastChecked = document.getElementById('last-checked');
+
+        dot.className = 'status-dot';
+        text.className = 'status-banner-text';
+
+        if (allOk) {
+          dot.classList.add('green');
+          text.classList.add('green');
+          text.textContent = 'All Systems Operational';
+        } else {
+          dot.classList.add('red');
+          text.classList.add('red');
+          text.textContent = 'Degraded';
+        }
+
+        lastChecked.textContent = 'Last checked: ' + formatTime(new Date());
+      }
+
+      /* ── Update metric cards ── */
+      function updateMetrics(healthResult, healthElapsed) {
+        var cardApi = document.getElementById('card-api');
+        var metricApiStatus = document.getElementById('metric-api-status');
+        var metricApiSub = document.getElementById('metric-api-sub');
+
+        if (healthResult.ok) {
+          cardApi.className = 'metric-card green';
+          metricApiStatus.className = 'metric-value green';
+          metricApiStatus.textContent = 'Healthy';
+          metricApiSub.textContent = 'All probes passing';
+        } else {
+          cardApi.className = 'metric-card red';
+          metricApiStatus.className = 'metric-value red';
+          metricApiStatus.textContent = 'Degraded';
+          metricApiSub.textContent = healthResult.error || 'Health check failed';
+        }
+
+        /* Response Time */
+        var cardResponse = document.getElementById('card-response');
+        var metricResponseTime = document.getElementById('metric-response-time');
+        var metricResponseSub = document.getElementById('metric-response-sub');
+        var rtClass = responseTimeClass(healthElapsed);
+        var colorClass = rtClass === 'fast' ? 'green' : (rtClass === 'medium' ? 'yellow' : 'red');
+        cardResponse.className = 'metric-card ' + colorClass;
+        metricResponseTime.className = 'metric-value ' + colorClass;
+        metricResponseTime.textContent = healthElapsed + 'ms';
+        if (rtClass === 'fast') {
+          metricResponseSub.textContent = 'Excellent response time';
+        } else if (rtClass === 'medium') {
+          metricResponseSub.textContent = 'Acceptable response time';
+        } else {
+          metricResponseSub.textContent = 'Elevated latency detected';
+        }
+
+        /* Models Count */
+        var cardModels = document.getElementById('card-models');
+        var metricModelsCount = document.getElementById('metric-models-count');
+        var metricModelsSub = document.getElementById('metric-models-sub');
+
+        if (healthResult.ok && healthResult.data) {
+          var count = healthResult.data.models_count || 0;
+          metricModelsCount.textContent = count;
+          metricModelsCount.className = 'metric-value' + (count >= 120 ? ' green' : ' yellow');
+          cardModels.className = 'metric-card' + (count >= 120 ? ' green' : ' yellow');
+          metricModelsSub.textContent = count >= 120 ? 'Full Base120 registry' : count + ' of 120 loaded';
+        } else {
+          metricModelsCount.textContent = '--';
+          metricModelsCount.className = 'metric-value';
+          cardModels.className = 'metric-card';
+          metricModelsSub.textContent = 'Unable to retrieve';
+        }
+
+        /* Security Events */
+        var cardSecurity = document.getElementById('card-security');
+        var metricSecurityValue = document.getElementById('metric-security-value');
+        var metricSecuritySub = document.getElementById('metric-security-sub');
+
+        if (healthResult.ok && healthResult.data && healthResult.data.security) {
+          var sec = healthResult.data.security;
+          var totalEvents = sec.total_events || 0;
+          var recentCritical = sec.recent_critical || 0;
+
+          metricSecurityValue.textContent = totalEvents;
+          if (recentCritical === 0) {
+            cardSecurity.className = 'metric-card green';
+            metricSecurityValue.className = 'metric-value green';
+            metricSecuritySub.textContent = '0 critical events';
+          } else {
+            cardSecurity.className = 'metric-card red';
+            metricSecurityValue.className = 'metric-value red';
+            metricSecuritySub.textContent = recentCritical + ' critical event' + (recentCritical !== 1 ? 's' : '');
+          }
+        } else {
+          metricSecurityValue.textContent = '--';
+          metricSecurityValue.className = 'metric-value';
+          cardSecurity.className = 'metric-card';
+          metricSecuritySub.textContent = 'Unable to retrieve';
+        }
+      }
+
+      /* ── Update rate limit display ── */
+      function updateRateLimits(healthResult) {
+        var rlActiveIps = document.getElementById('rl-active-ips');
+        var rlWindow = document.getElementById('rl-window');
+        var rlMaxReq = document.getElementById('rl-max-req');
+
+        if (healthResult.ok && healthResult.data && healthResult.data.rate_limit_status) {
+          var rl = healthResult.data.rate_limit_status;
+          rlActiveIps.textContent = rl.active_ips !== undefined ? rl.active_ips : '--';
+          rlWindow.textContent = rl.window_ms !== undefined ? rl.window_ms : '--';
+          rlMaxReq.textContent = rl.max_requests !== undefined ? rl.max_requests : '--';
+        } else {
+          rlActiveIps.textContent = '--';
+          rlWindow.textContent = '--';
+          rlMaxReq.textContent = '--';
+        }
+      }
+
+      /* ── Render uptime bar ── */
+      function renderUptimeBar() {
+        var bar = document.getElementById('uptime-bar');
+        var html = '';
+        for (var i = 0; i < MAX_HISTORY; i++) {
+          if (i < checkHistory.length) {
+            var entry = checkHistory[i];
+            var cls = entry.ok ? 'up' : 'down';
+            var title = (entry.ok ? 'Operational' : 'Degraded') + ' at ' + entry.time;
+            html += '<div class="uptime-square ' + cls + '" title="' + title + '"></div>';
+          } else {
+            html += '<div class="uptime-square empty" title="No data"></div>';
+          }
+        }
+        bar.innerHTML = html;
+
+        var upCount = checkHistory.filter(function(e) { return e.ok; }).length;
+        document.getElementById('uptime-count').textContent = upCount + ' / ' + checkHistory.length + ' checks OK';
+      }
+
+      /* ── Main check routine ── */
+      function runChecks() {
+        var promises = endpoints.map(function(ep) {
+          return checkEndpoint(ep.method, ep.path, ep.body).then(function(result) {
+            return { id: ep.id, result: result };
+          });
+        });
+
+        Promise.all(promises).then(function(results) {
+          var allOk = true;
+          var healthResult = null;
+          var healthElapsed = 0;
+
+          results.forEach(function(r) {
+            updateEndpointRow(r.id, r.result);
+            if (!r.result.ok) allOk = false;
+            if (r.id === 'ep-health') {
+              healthResult = r.result;
+              healthElapsed = r.result.elapsed;
+            }
+          });
+
+          if (healthResult) {
+            updateBanner(allOk, healthResult);
+            updateMetrics(healthResult, healthElapsed);
+            updateRateLimits(healthResult);
+          }
+
+          /* Store history entry */
+          checkHistory.push({
+            ok: allOk,
+            time: formatTime(new Date()),
+            elapsed: healthElapsed
+          });
+          if (checkHistory.length > MAX_HISTORY) {
+            checkHistory = checkHistory.slice(checkHistory.length - MAX_HISTORY);
+          }
+          try {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(checkHistory));
+          } catch (e) { /* localStorage full or unavailable */ }
+
+          renderUptimeBar();
+        });
+      }
+
+      /* ── Initialize ── */
+      renderUptimeBar();
+      runChecks();
+      setInterval(runChecks, 30000);
+    </script>
+
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

@@ -1,4 +1,17 @@
-# Cloudflare Web Analytics token (public, client-side)
-web/explorer.html:generic-api-key:1223
-web/index.html:generic-api-key:1206
-68207ada08f9497aa8d2ea4fb67dc335
+# Cloudflare Web Analytics beacon token (public, client-side, not a secret)
+# This token is embedded in client-side JS by design per Cloudflare docs.
+web/404.html:generic-api-key:224
+web/blog.html:generic-api-key:994
+web/cases.html:generic-api-key:733
+web/changelog.html:generic-api-key:613
+web/docs.html:generic-api-key:1298
+web/explorer.html:generic-api-key:1169
+web/index.html:generic-api-key:1263
+web/playground.html:generic-api-key:2524
+web/pricing.html:generic-api-key:832
+web/privacy.html:generic-api-key:527
+web/status.html:generic-api-key:1025
+web/terms.html:generic-api-key:334
+# Historical METRICS.md references (same public token)
+bebcaa4404de18345c207b965d8f1f2e03bb9154:METRICS.md:generic-api-key:59
+bebcaa4404de18345c207b965d8f1f2e03bb9154:METRICS.md:generic-api-key:176

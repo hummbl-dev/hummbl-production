@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Page Not Found | HUMMBL</title>
+    <meta name="description" content="The page you're looking for doesn't exist." />
+    <meta name="robots" content="noindex" />
+
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 40px;
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        margin-bottom: 0;
+      }
+
+      .logo-badge { background: var(--accent-warm); }
+
+      .error-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 80px 0;
+      }
+
+      .error-code {
+        font-family: var(--font-serif);
+        font-size: clamp(80px, 15vw, 160px);
+        font-weight: 600;
+        color: var(--accent-warm);
+        line-height: 1;
+        margin-bottom: 16px;
+        opacity: 0.8;
+      }
+
+      .error-title {
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+      }
+
+      .error-desc {
+        font-size: 14px;
+        color: var(--text-secondary);
+        max-width: 500px;
+        margin-bottom: 40px;
+      }
+
+      .terminal-block {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 20px 32px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        text-align: left;
+        max-width: 500px;
+        width: 100%;
+      }
+
+      .terminal-block .prompt { color: var(--accent-cyan); }
+      .terminal-block .path { color: var(--accent-warm); }
+      .terminal-block .msg { color: var(--text-tertiary); }
+
+      .error-links {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .error-links a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-family: var(--font-mono);
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        font-weight: 500;
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--accent-cyan);
+        color: var(--accent-cyan);
+      }
+
+      footer {
+        padding: 24px 0;
+        font-size: 12px;
+      }
+
+      @media (max-width: 768px) {
+        .container { padding: 0 24px; }
+        .error-links { flex-direction: column; }
+        .error-links a { width: 100%; justify-content: center; }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">404</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <div id="main" class="error-content">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Model not found</h1>
+        <p class="error-desc">The page you're looking for doesn't exist in our taxonomy. Maybe it was decomposed, inverted, or recursed into something else.</p>
+
+        <div class="terminal-block">
+          <span class="prompt">$</span> curl hummbl.io<span class="path" id="current-path"></span><br>
+          <span class="msg">{"success": false, "error": "Not found"}</span>
+        </div>
+
+        <div class="error-links">
+          <a href="index.html" class="btn-primary">Back to Home</a>
+          <a href="explorer.html" class="btn-secondary">Explore 120 Models</a>
+          <a href="playground.html" class="btn-secondary">Try Playground</a>
+        </div>
+      </div>
+
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+    </div>
+
+    <script>
+      // Show the current path in the terminal
+      document.getElementById('current-path').textContent = window.location.pathname;
+    </script>
+    <script src="shared.js"></script>
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

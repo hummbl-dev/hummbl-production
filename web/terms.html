@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Terms of Service</title>
+    <meta
+      name="description"
+      content="Terms of service for the HUMMBL Base120 API."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/terms.html" />
+
+    <!-- Favicon & OG -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Terms of Service" />
+    <meta property="og:description" content="Terms of service for the HUMMBL Base120 API." />
+    <meta property="og:url" content="https://hummbl.io/terms.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Terms of Service" />
+    <meta name="twitter:description" content="Terms of service for the HUMMBL Base120 API." />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* -- Page Hero -- */
+      .page-hero {
+        text-align: center;
+        padding: 64px 0 48px;
+      }
+
+      .page-hero h1 {
+        font-family: var(--font-serif);
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+
+      .page-hero h1 .highlight {
+        color: var(--accent-cyan);
+      }
+
+      .page-hero-subtitle {
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.8;
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      /* -- Legal Content -- */
+      .legal-content {
+        padding-bottom: 80px;
+      }
+
+      .last-updated {
+        font-size: 13px;
+        color: var(--text-tertiary);
+        margin-bottom: 48px;
+        text-align: center;
+      }
+
+      .legal-section {
+        margin-bottom: 40px;
+      }
+
+      .legal-section h2 {
+        font-family: var(--font-mono);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent-cyan);
+        letter-spacing: 0.04em;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .legal-section p {
+        font-family: var(--font-serif);
+        font-size: 16px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        margin-bottom: 12px;
+      }
+
+      .legal-section p:last-child {
+        margin-bottom: 0;
+      }
+
+      .legal-section ul {
+        list-style: none;
+        margin: 12px 0;
+        padding: 0;
+      }
+
+      .legal-section ul li {
+        font-family: var(--font-serif);
+        font-size: 16px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        padding: 4px 0 4px 20px;
+        position: relative;
+      }
+
+      .legal-section ul li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 14px;
+        width: 4px;
+        height: 4px;
+        background: var(--accent-cyan);
+        border-radius: 50%;
+      }
+
+      .legal-section p.disclaimer {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-tertiary);
+        line-height: 1.7;
+        letter-spacing: 0.02em;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 20px 24px;
+      }
+
+      .legal-section a {
+        color: var(--accent-cyan);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .legal-section a:hover {
+        color: var(--text-primary);
+      }
+
+      /* -- Responsive -- */
+      @media (max-width: 600px) {
+        .page-hero {
+          padding: 40px 0 32px;
+        }
+
+        .legal-section {
+          margin-bottom: 32px;
+        }
+
+        .legal-section p.disclaimer {
+          padding: 16px;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Terms</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <!-- Hero -->
+      <section id="main" class="page-hero">
+        <h1>Terms of <span class="highlight">Service</span></h1>
+        <p class="page-hero-subtitle">The rules of engagement for the HUMMBL Base120 API.</p>
+      </section>
+
+      <!-- Legal Content -->
+      <div class="legal-content">
+        <p class="last-updated">Last updated: February 25, 2026</p>
+
+        <div class="legal-section">
+          <h2>1. Acceptance of Terms</h2>
+          <p>By accessing or using the HUMMBL Base120 API ("Service"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>2. Description of Service</h2>
+          <p>HUMMBL provides a REST API offering 120 mental models for AI agents. The Service is currently in beta and is provided free of charge. Features, availability, and pricing may change.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>3. Beta Service</h2>
+          <p>The Service is currently in beta. This means:</p>
+          <ul>
+            <li>The Service is provided "as is" without warranty</li>
+            <li>Features may be added, changed, or removed without notice</li>
+            <li>Rate limits and usage quotas may be adjusted</li>
+            <li>The Service may experience downtime for maintenance or updates</li>
+            <li>We make no guarantees about the long-term availability of the free tier</li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>4. Acceptable Use</h2>
+          <p>You agree NOT to:</p>
+          <ul>
+            <li>Attempt to circumvent rate limits or access controls</li>
+            <li>Use the Service for any illegal purpose</li>
+            <li>Reverse-engineer, decompile, or attempt to extract the source code</li>
+            <li>Transmit malicious input designed to exploit the Service (prompt injection, SQL injection, etc.)</li>
+            <li>Use the Service to generate harmful, abusive, or misleading content</li>
+            <li>Resell access to the Service without written permission</li>
+            <li>Use automated tools to scrape or bulk-download model data beyond normal API usage</li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>5. Rate Limits</h2>
+          <p>The Service enforces rate limits (currently 100 requests per minute per IP address). Exceeding rate limits will result in HTTP 429 responses. Persistent or deliberate abuse of rate limits may result in temporary or permanent access restrictions.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>6. Intellectual Property</h2>
+          <p>The Base120 mental model framework, model definitions, scoring algorithms, and API design are the intellectual property of HUMMBL. You may use the API responses in your applications but may not claim the models as your own creation.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>7. Data &amp; Privacy</h2>
+          <p>See our <a href="privacy.html">Privacy Policy</a> for details on data collection and handling. In summary: we collect minimal data (IP addresses for rate limiting, Cloudflare Analytics for aggregate usage). We do not store your API request content.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>8. Disclaimer of Warranties</h2>
+          <p class="disclaimer">THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. HUMMBL DOES NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, OR SECURE. THE RECOMMENDATIONS PROVIDED BY THE API ARE FOR INFORMATIONAL PURPOSES ONLY AND SHOULD NOT BE RELIED UPON AS PROFESSIONAL ADVICE.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>9. Limitation of Liability</h2>
+          <p class="disclaimer">TO THE MAXIMUM EXTENT PERMITTED BY LAW, HUMMBL SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM YOUR USE OF THE SERVICE. OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT YOU PAID FOR THE SERVICE (CURRENTLY $0 FOR THE FREE TIER).</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>10. Changes to Terms</h2>
+          <p>We may update these Terms at any time. We will notify users of material changes by updating the "Last updated" date. Continued use of the Service after changes constitutes acceptance of the new Terms.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>11. Termination</h2>
+          <p>We may suspend or terminate your access to the Service at any time, for any reason, without notice. You may stop using the Service at any time.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>12. Governing Law</h2>
+          <p>These Terms shall be governed by the laws of the State of California, United States, without regard to conflict of law principles.</p>
+        </div>
+
+        <div class="legal-section">
+          <h2>13. Contact</h2>
+          <p>For questions about these Terms, contact us at <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">cal.com/hummbl/30min</a>.</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+    </div>
+
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Blog - Mental Models for Builders</title>
+    <meta
+      name="description"
+      content="Technical deep dives, product updates, and community stories from the HUMMBL team."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/blog.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Blog - Mental Models for Builders" />
+    <meta
+      property="og:description"
+      content="Technical deep dives, product updates, and community stories from the HUMMBL team."
+    />
+    <meta property="og:url" content="https://hummbl.io/blog.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Blog - Mental Models for Builders" />
+    <meta
+      name="twitter:description"
+      content="Technical deep dives, product updates, and community stories from the HUMMBL team."
+    />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* -- Hero -- */
+      .page-hero {
+        text-align: center;
+        padding: 48px 0 0;
+      }
+
+      .page-hero h1 {
+        font-family: var(--font-serif);
+        font-size: clamp(36px, 5vw, 56px);
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+      }
+
+      .page-hero h1 .highlight {
+        color: var(--accent-cyan);
+      }
+
+      .page-hero p {
+        color: var(--text-secondary);
+        font-size: 16px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      /* -- Tag Filter Bar -- */
+      .filter-bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 32px 0 0;
+      }
+
+      .filter-btn {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        padding: 6px 14px;
+        border-radius: 4px;
+        border: 1px solid var(--border-subtle);
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        transition: all 0.2s;
+      }
+
+      .filter-btn:hover {
+        border-color: var(--text-tertiary);
+        color: var(--text-primary);
+      }
+
+      .filter-btn.active {
+        border-color: var(--accent-cyan);
+        color: var(--accent-cyan);
+        background: rgba(0, 255, 136, 0.06);
+      }
+
+      .post-count {
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-tertiary);
+        padding: 16px 0 0;
+      }
+
+      /* -- Post List -- */
+      .posts-section {
+        padding: 32px 0 64px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .post-card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 32px;
+        margin-bottom: 24px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .post-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-cyan),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .post-card:hover {
+        border-color: var(--border-prominent);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .post-card:hover::before {
+        opacity: 0.6;
+      }
+
+      .post-date {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        letter-spacing: 0.04em;
+        margin-bottom: 8px;
+      }
+
+      .post-title {
+        font-family: var(--font-serif);
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+      }
+
+      .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+
+      .post-tag {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        padding: 3px 10px;
+        border-radius: 3px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .tag-announcement {
+        background: rgba(255, 255, 255, 0.12);
+        color: #e8e8e8;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .tag-technical {
+        background: rgba(68, 136, 255, 0.15);
+        color: #4488ff;
+        border: 1px solid rgba(68, 136, 255, 0.3);
+      }
+
+      .tag-ai {
+        background: rgba(170, 102, 255, 0.15);
+        color: #aa66ff;
+        border: 1px solid rgba(170, 102, 255, 0.3);
+      }
+
+      .tag-security {
+        background: rgba(255, 107, 53, 0.15);
+        color: var(--accent-warm);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+      }
+
+      .tag-api {
+        background: rgba(0, 204, 170, 0.15);
+        color: #00ccaa;
+        border: 1px solid rgba(0, 204, 170, 0.3);
+      }
+
+      .tag-launch {
+        background: rgba(0, 255, 136, 0.15);
+        color: var(--accent-cyan);
+        border: 1px solid rgba(0, 255, 136, 0.3);
+      }
+
+      .tag-agents {
+        background: rgba(255, 204, 0, 0.2);
+        color: #ffcc00;
+        border: 1px solid rgba(255, 204, 0, 0.3);
+      }
+
+      .tag-mcp {
+        background: rgba(0, 170, 255, 0.15);
+        color: #00aaff;
+        border: 1px solid rgba(0, 170, 255, 0.3);
+      }
+
+      .post-excerpt {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 16px;
+      }
+
+      .post-read-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-family: var(--font-mono);
+        color: var(--accent-cyan);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: gap 0.2s;
+      }
+
+      .post-read-more:hover {
+        gap: 10px;
+      }
+
+      /* -- Post Detail View -- */
+      .post-detail {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 0 64px;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-family: var(--font-mono);
+        color: var(--text-secondary);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 32px;
+        transition: color 0.2s, gap 0.2s;
+      }
+
+      .back-link:hover {
+        color: var(--accent-cyan);
+        gap: 10px;
+      }
+
+      .post-detail-meta {
+        margin-bottom: 8px;
+      }
+
+      .post-detail-date {
+        font-size: 13px;
+        color: var(--text-tertiary);
+        letter-spacing: 0.04em;
+      }
+
+      .post-detail-author {
+        font-size: 13px;
+        color: var(--text-tertiary);
+        margin-left: 16px;
+      }
+
+      .post-detail-title {
+        font-family: var(--font-serif);
+        font-size: clamp(28px, 4vw, 40px);
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+      }
+
+      .post-detail-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 40px;
+      }
+
+      /* -- Markdown Body Styles -- */
+      .post-body h2 {
+        font-family: var(--font-serif);
+        font-size: 24px;
+        font-weight: 600;
+        margin: 40px 0 16px;
+        color: var(--text-primary);
+        letter-spacing: -0.01em;
+      }
+
+      .post-body h3 {
+        font-family: var(--font-serif);
+        font-size: 20px;
+        font-weight: 600;
+        margin: 32px 0 12px;
+        color: var(--text-primary);
+      }
+
+      .post-body p {
+        font-family: var(--font-serif);
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+      }
+
+      .post-body strong {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+
+      .post-body a {
+        color: var(--accent-cyan);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+        transition: border-color 0.2s;
+      }
+
+      .post-body a:hover {
+        border-color: var(--accent-cyan);
+      }
+
+      .post-body code {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        background: rgba(0, 255, 136, 0.08);
+        color: var(--accent-cyan);
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+
+      .post-body pre {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .post-body pre code {
+        background: none;
+        padding: 0;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text-secondary);
+      }
+
+      .post-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+      }
+
+      .post-body li {
+        position: relative;
+        padding-left: 20px;
+        margin-bottom: 8px;
+        font-family: var(--font-serif);
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--text-secondary);
+      }
+
+      .post-body li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 11px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-tertiary);
+      }
+
+      .post-body li:last-child {
+        margin-bottom: 0;
+      }
+
+      .post-body > *:first-child {
+        margin-top: 0;
+      }
+
+      /* -- Loading State -- */
+      .loading {
+        text-align: center;
+        padding: 80px 0;
+        color: var(--text-tertiary);
+        font-size: 13px;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--border-subtle);
+        border-top-color: var(--accent-cyan);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 12px;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .error-message {
+        text-align: center;
+        padding: 80px 0;
+        color: var(--accent-warm);
+        font-size: 14px;
+      }
+
+      .error-message a {
+        color: var(--accent-cyan);
+        text-decoration: none;
+      }
+
+      /* -- Bottom CTA -- */
+      .cta-section {
+        text-align: center;
+        padding: 64px 0 48px;
+        border-top: 1px solid var(--border-subtle);
+      }
+
+      .cta-section h2 {
+        font-family: var(--font-serif);
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-radius: 6px;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .cta-btn.primary {
+        background: var(--accent-warm);
+        color: var(--bg-primary);
+        border: 1px solid var(--accent-warm);
+      }
+
+      .cta-btn.primary:hover {
+        box-shadow: 0 0 24px rgba(255, 107, 53, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .cta-btn.secondary {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .cta-btn.secondary:hover {
+        border-color: var(--text-tertiary);
+        color: var(--text-primary);
+      }
+
+      /* -- Responsive -- */
+      @media (max-width: 768px) {
+        .page-hero h1 {
+          font-size: 32px;
+        }
+
+        .page-hero p {
+          font-size: 14px;
+        }
+
+        .post-card {
+          padding: 24px;
+        }
+
+        .post-title {
+          font-size: 20px;
+        }
+
+        .post-detail-title {
+          font-size: 26px;
+        }
+
+        .post-body h2 {
+          font-size: 20px;
+        }
+
+        .post-body h3 {
+          font-size: 17px;
+        }
+
+        .post-body p,
+        .post-body li {
+          font-size: 15px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 16px;
+        }
+
+        .page-hero {
+          padding: 32px 0 0;
+        }
+
+        .page-hero h1 {
+          font-size: 28px;
+        }
+
+        .post-card {
+          padding: 20px;
+        }
+
+        .post-title {
+          font-size: 18px;
+        }
+
+        .post-excerpt {
+          font-size: 13px;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .footer-nav {
+          gap: 12px;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+
+      <!-- Header -->
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Blog</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <!-- Hero -->
+      <section class="page-hero" id="main">
+        <h1>The HUMMBL <span class="highlight">Blog</span></h1>
+        <p>Technical deep dives, product updates, and community stories.</p>
+
+        <!-- Tag Filter Bar -->
+        <div class="filter-bar" id="filter-bar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="announcement">Announcement</button>
+          <button class="filter-btn" data-filter="technical">Technical</button>
+          <button class="filter-btn" data-filter="ai">AI</button>
+          <button class="filter-btn" data-filter="security">Security</button>
+          <button class="filter-btn" data-filter="api">API</button>
+        </div>
+        <p class="post-count" id="post-count"></p>
+      </section>
+
+      <!-- Main Content: list or detail view -->
+      <div id="blog-content">
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <p>Loading posts...</p>
+        </div>
+      </div>
+
+      <!-- Bottom CTA -->
+      <section class="cta-section" id="cta-section">
+        <h2>Have something to share?</h2>
+        <div class="cta-buttons">
+          <a class="cta-btn primary" href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">
+            Write for the Blog
+          </a>
+          <a class="cta-btn secondary" href="cases.html">
+            Submit a Case Study
+          </a>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+
+    </div>
+
+    <script>
+      (function () {
+        var blogContent = document.getElementById('blog-content');
+        var filterBar = document.getElementById('filter-bar');
+        var countEl = document.getElementById('post-count');
+        var ctaSection = document.getElementById('cta-section');
+        var allPosts = [];
+        var activeFilter = 'all';
+
+        /* -- Utilities -- */
+
+        function escapeHtml(str) {
+          var div = document.createElement('div');
+          div.appendChild(document.createTextNode(str));
+          return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+          var parts = dateStr.split('-');
+          var d = new Date(
+            parseInt(parts[0], 10),
+            parseInt(parts[1], 10) - 1,
+            parseInt(parts[2], 10)
+          );
+          var months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+          ];
+          return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+        }
+
+        function tagClass(tag) {
+          var map = {
+            announcement: 'tag-announcement',
+            technical: 'tag-technical',
+            ai: 'tag-ai',
+            security: 'tag-security',
+            api: 'tag-api',
+            launch: 'tag-launch',
+            agents: 'tag-agents',
+            mcp: 'tag-mcp'
+          };
+          return map[tag.toLowerCase()] || 'tag-announcement';
+        }
+
+        /* -- Simple Markdown to HTML -- */
+
+        function renderMarkdown(md) {
+          var html = '';
+          var lines = md.split('\n');
+          var inCodeBlock = false;
+          var codeBlockLang = '';
+          var codeLines = [];
+          var inList = false;
+          var listItems = [];
+
+          function flushList() {
+            if (inList && listItems.length > 0) {
+              html += '<ul>' + listItems.join('') + '</ul>';
+              listItems = [];
+              inList = false;
+            }
+          }
+
+          function inlineFormat(text) {
+            // Bold
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // Inline code
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            // Links
+            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+            // Em dash
+            text = text.replace(/ -- /g, ' \u2014 ');
+            return text;
+          }
+
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+
+            // Code block fence
+            if (line.match(/^```/)) {
+              if (inCodeBlock) {
+                html += '<pre><code>' + escapeHtml(codeLines.join('\n')) + '</code></pre>';
+                codeLines = [];
+                inCodeBlock = false;
+                codeBlockLang = '';
+              } else {
+                flushList();
+                inCodeBlock = true;
+                codeBlockLang = line.replace(/^```/, '').trim();
+              }
+              continue;
+            }
+
+            if (inCodeBlock) {
+              codeLines.push(line);
+              continue;
+            }
+
+            // Headings
+            if (line.match(/^### /)) {
+              flushList();
+              html += '<h3>' + inlineFormat(escapeHtml(line.replace(/^### /, ''))) + '</h3>';
+              continue;
+            }
+            if (line.match(/^## /)) {
+              flushList();
+              html += '<h2>' + inlineFormat(escapeHtml(line.replace(/^## /, ''))) + '</h2>';
+              continue;
+            }
+
+            // List items
+            if (line.match(/^- /)) {
+              inList = true;
+              listItems.push('<li>' + inlineFormat(escapeHtml(line.replace(/^- /, ''))) + '</li>');
+              continue;
+            }
+
+            // Non-list line: flush any open list
+            flushList();
+
+            // Blank line
+            if (line.trim() === '') {
+              continue;
+            }
+
+            // Regular paragraph
+            html += '<p>' + inlineFormat(escapeHtml(line)) + '</p>';
+          }
+
+          // Flush remaining
+          if (inCodeBlock && codeLines.length > 0) {
+            html += '<pre><code>' + escapeHtml(codeLines.join('\n')) + '</code></pre>';
+          }
+          flushList();
+
+          return html;
+        }
+
+        /* -- Render Post List -- */
+
+        function renderPostList() {
+          var filtered = activeFilter === 'all'
+            ? allPosts
+            : allPosts.filter(function (p) {
+                return p.tags.some(function (t) {
+                  return t.toLowerCase() === activeFilter;
+                });
+              });
+
+          countEl.textContent = filtered.length + ' post' + (filtered.length === 1 ? '' : 's');
+
+          filterBar.style.display = '';
+          countEl.style.display = '';
+          ctaSection.style.display = '';
+
+          if (filtered.length === 0) {
+            blogContent.innerHTML =
+              '<div class="posts-section">' +
+              '<p style="text-align:center;color:var(--text-tertiary);padding:60px 0;font-size:14px;">No posts match this filter.</p>' +
+              '</div>';
+            return;
+          }
+
+          var html = '<div class="posts-section">';
+          filtered.forEach(function (post) {
+            var tagsHtml = post.tags.map(function (t) {
+              return '<span class="post-tag ' + tagClass(t) + '">' + escapeHtml(t) + '</span>';
+            }).join('');
+
+            html +=
+              '<article class="post-card" data-slug="' + escapeHtml(post.id) + '">' +
+                '<div class="post-date">' + formatDate(post.date) + '</div>' +
+                '<h2 class="post-title">' + escapeHtml(post.title) + '</h2>' +
+                '<div class="post-tags">' + tagsHtml + '</div>' +
+                '<p class="post-excerpt">' + escapeHtml(post.excerpt) + '</p>' +
+                '<a href="#' + escapeHtml(post.id) + '" class="post-read-more">Read more <span>&rarr;</span></a>' +
+              '</article>';
+          });
+          html += '</div>';
+
+          blogContent.innerHTML = html;
+
+          // Add click handlers to cards
+          var cards = blogContent.querySelectorAll('.post-card');
+          cards.forEach(function (card) {
+            card.addEventListener('click', function (e) {
+              // Don't intercept if clicking a link directly (let it handle via hashchange)
+              if (e.target.closest('a')) return;
+              var slug = card.getAttribute('data-slug');
+              location.hash = slug;
+            });
+          });
+        }
+
+        /* -- Render Post Detail -- */
+
+        function renderPostDetail(slug) {
+          var post = allPosts.find(function (p) { return p.id === slug; });
+
+          if (!post) {
+            blogContent.innerHTML =
+              '<div class="posts-section">' +
+              '<p class="error-message">Post not found. <a href="blog.html">Back to all posts</a></p>' +
+              '</div>';
+            return;
+          }
+
+          // Hide filter bar and count in detail view
+          filterBar.style.display = 'none';
+          countEl.style.display = 'none';
+          ctaSection.style.display = '';
+
+          var tagsHtml = post.tags.map(function (t) {
+            return '<span class="post-tag ' + tagClass(t) + '">' + escapeHtml(t) + '</span>';
+          }).join('');
+
+          var bodyHtml = renderMarkdown(post.body);
+
+          blogContent.innerHTML =
+            '<div class="post-detail">' +
+              '<a href="#" class="back-link" id="back-link"><span>&larr;</span> Back to all posts</a>' +
+              '<div class="post-detail-meta">' +
+                '<span class="post-detail-date">' + formatDate(post.date) + '</span>' +
+                '<span class="post-detail-author">' + escapeHtml(post.author) + '</span>' +
+              '</div>' +
+              '<h1 class="post-detail-title">' + escapeHtml(post.title) + '</h1>' +
+              '<div class="post-detail-tags">' + tagsHtml + '</div>' +
+              '<div class="post-body">' + bodyHtml + '</div>' +
+            '</div>';
+
+          // Back link clears hash
+          var backLink = document.getElementById('back-link');
+          if (backLink) {
+            backLink.addEventListener('click', function (e) {
+              e.preventDefault();
+              history.pushState(null, '', 'blog.html');
+              renderPostList();
+              window.scrollTo(0, 0);
+            });
+          }
+        }
+
+        /* -- Router -- */
+
+        function route() {
+          var hash = location.hash.replace(/^#/, '');
+          if (hash && hash.length > 0) {
+            renderPostDetail(hash);
+            window.scrollTo(0, 0);
+          } else {
+            renderPostList();
+          }
+        }
+
+        window.addEventListener('hashchange', route);
+
+        /* -- Filter Buttons -- */
+
+        filterBar.addEventListener('click', function (e) {
+          var btn = e.target.closest('.filter-btn');
+          if (!btn) return;
+          activeFilter = btn.dataset.filter;
+          filterBar.querySelectorAll('.filter-btn').forEach(function (b) {
+            b.classList.toggle('active', b === btn);
+          });
+          // Clear hash when filtering
+          if (location.hash) {
+            history.pushState(null, '', 'blog.html');
+          }
+          renderPostList();
+        });
+
+        /* -- Fetch Posts -- */
+
+        fetch('posts.json')
+          .then(function (res) {
+            if (!res.ok) throw new Error('Failed to fetch');
+            return res.json();
+          })
+          .then(function (data) {
+            allPosts = data;
+            route();
+          })
+          .catch(function () {
+            blogContent.innerHTML =
+              '<p class="error-message">Failed to load posts. <a href="blog.html">Retry</a></p>';
+          });
+      })();
+    </script>
+
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

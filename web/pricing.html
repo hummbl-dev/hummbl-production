@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Pricing - Free During Beta</title>
+    <meta
+      name="description"
+      content="HUMMBL Base120 API pricing, rate limits, and usage quotas. Free during beta with 100 requests/minute."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/pricing.html" />
+
+    <!-- Favicon & OG -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Pricing - Free During Beta" />
+    <meta property="og:description" content="HUMMBL Base120 API pricing, rate limits, and usage quotas. Free during beta with 100 requests/minute." />
+    <meta property="og:url" content="https://hummbl.io/pricing.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Pricing - Free During Beta" />
+    <meta name="twitter:description" content="HUMMBL Base120 API pricing, rate limits, and usage quotas. Free during beta with 100 requests/minute." />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ── Header ── */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border-subtle);
+        margin-bottom: 48px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .logo-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: 0.1em;
+      }
+
+      .logo-badge {
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* ── Page Hero ── */
+      .page-hero {
+        text-align: center;
+        padding: 64px 0 80px;
+      }
+
+      .page-hero h1 {
+        font-family: var(--font-serif);
+        font-size: clamp(32px, 5vw, 56px);
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+
+      .page-hero h1 .highlight {
+        color: var(--accent-cyan);
+      }
+
+      .page-hero-subtitle {
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.8;
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      /* ── Pricing Cards ── */
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-bottom: 96px;
+      }
+
+      .pricing-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        padding: 40px 32px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      .pricing-card:hover {
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .pricing-card.featured {
+        border-color: var(--border-prominent);
+        box-shadow: 0 0 40px rgba(0, 255, 136, 0.06);
+      }
+
+      .pricing-card.featured:hover {
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 60px rgba(0, 255, 136, 0.1);
+      }
+
+      .pricing-card.dimmed {
+        opacity: 0.7;
+      }
+
+      .pricing-card.dimmed:hover {
+        opacity: 0.85;
+      }
+
+      .card-header {
+        margin-bottom: 32px;
+      }
+
+      .card-tier {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .card-tier-name {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .card-badge {
+        font-size: 9px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .card-badge.active {
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+      }
+
+      .card-badge.upcoming {
+        background: transparent;
+        color: var(--text-tertiary);
+        border: 1px solid var(--text-tertiary);
+      }
+
+      .card-price {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        margin-bottom: 8px;
+      }
+
+      .card-price-amount {
+        font-family: var(--font-serif);
+        font-size: 48px;
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      .card-price-period {
+        font-size: 14px;
+        color: var(--text-tertiary);
+      }
+
+      .card-features {
+        list-style: none;
+        margin-bottom: 40px;
+        flex: 1;
+      }
+
+      .card-features li {
+        font-size: 13px;
+        color: var(--text-secondary);
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-features li:last-child {
+        border-bottom: none;
+      }
+
+      .card-features li::before {
+        content: "";
+        width: 4px;
+        height: 4px;
+        background: var(--accent-cyan);
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .dimmed .card-features li::before {
+        background: var(--text-tertiary);
+      }
+
+      .card-cta {
+        display: block;
+        text-align: center;
+        padding: 14px 24px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .card-cta.primary {
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+      }
+
+      .card-cta.primary:hover {
+        box-shadow: 0 0 24px rgba(0, 255, 136, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .card-cta.secondary {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .card-cta.secondary:hover {
+        border-color: var(--text-tertiary);
+        color: var(--text-primary);
+      }
+
+      /* ── Rate Limits Table ── */
+      .section-block {
+        margin-bottom: 96px;
+      }
+
+      .section-title {
+        font-family: var(--font-serif);
+        font-size: clamp(24px, 3vw, 36px);
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .section-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-bottom: 40px;
+        max-width: 600px;
+      }
+
+      .rate-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .rate-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .rate-table thead th {
+        text-align: left;
+        padding: 14px 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        border-bottom: 1px solid var(--border-subtle);
+        white-space: nowrap;
+      }
+
+      .rate-table thead th:first-child {
+        color: var(--text-secondary);
+      }
+
+      .rate-table tbody td {
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        color: var(--text-secondary);
+        white-space: nowrap;
+      }
+
+      .rate-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .rate-table tbody td:first-child {
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .rate-table .highlight-col {
+        color: var(--accent-cyan);
+        font-weight: 500;
+      }
+
+      /* ── Feature Comparison ── */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: 2fr repeat(3, 1fr);
+        font-size: 13px;
+      }
+
+      .feature-grid-header {
+        padding: 14px 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .feature-grid-header:first-child {
+        color: var(--text-secondary);
+      }
+
+      .feature-row {
+        display: contents;
+      }
+
+      .feature-cell {
+        padding: 12px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+      }
+
+      .feature-cell:first-child {
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .feature-row:last-child .feature-cell {
+        border-bottom: none;
+      }
+
+      .check {
+        color: var(--accent-cyan);
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .dash {
+        color: var(--text-tertiary);
+      }
+
+      /* ── FAQ ── */
+      .faq-list {
+        max-width: 800px;
+      }
+
+      .faq-item {
+        border-bottom: 1px solid var(--border-subtle);
+        padding: 28px 0;
+      }
+
+      .faq-item:first-child {
+        padding-top: 0;
+      }
+
+      .faq-item:last-child {
+        border-bottom: none;
+      }
+
+      .faq-question {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .faq-question::before {
+        content: "Q";
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent-cyan);
+        background: rgba(0, 255, 136, 0.1);
+        padding: 2px 6px;
+        border-radius: 3px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .faq-answer {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        padding-left: 32px;
+      }
+
+      /* ── Bottom CTA ── */
+      .bottom-cta {
+        text-align: center;
+        padding: 80px 0;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 16px;
+      }
+
+      .bottom-cta-title {
+        font-family: var(--font-serif);
+        font-size: clamp(24px, 4vw, 40px);
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+
+      .bottom-cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 40px;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-radius: 6px;
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        transition: box-shadow 0.2s, transform 0.2s;
+      }
+
+      .bottom-cta-btn:hover {
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .bottom-cta-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        .pricing-grid {
+          grid-template-columns: 1fr;
+          max-width: 480px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .pricing-card.dimmed {
+          opacity: 0.8;
+        }
+
+        .feature-grid {
+          display: none;
+        }
+
+        .container {
+          padding: 0 20px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .rate-table {
+          font-size: 11px;
+        }
+
+        .rate-table thead th,
+        .rate-table tbody td {
+          padding: 10px 12px;
+        }
+
+        .page-hero {
+          padding: 40px 0 56px;
+        }
+
+        .section-block {
+          margin-bottom: 64px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Pricing</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <!-- Hero -->
+      <section class="page-hero" id="main">
+        <h1>Simple, <span class="highlight">Transparent</span> Pricing</h1>
+        <p class="page-hero-subtitle">Free during beta. No credit card required. No hidden limits.</p>
+      </section>
+
+      <!-- Pricing Cards -->
+      <section class="pricing-grid">
+        <!-- Free Tier -->
+        <div class="pricing-card featured">
+          <div class="card-header">
+            <div class="card-tier">
+              <span class="card-tier-name">Free</span>
+              <span class="card-badge active">Current</span>
+            </div>
+            <div class="card-price">
+              <span class="card-price-amount">$0</span>
+              <span class="card-price-period">/mo</span>
+            </div>
+          </div>
+          <ul class="card-features">
+            <li>100 requests/minute</li>
+            <li>All 120 models</li>
+            <li>All endpoints</li>
+            <li>Community support</li>
+            <li>No authentication required</li>
+          </ul>
+          <a href="docs.html" class="card-cta primary">Start Building</a>
+        </div>
+
+        <!-- Pro Tier -->
+        <div class="pricing-card dimmed">
+          <div class="card-header">
+            <div class="card-tier">
+              <span class="card-tier-name">Pro</span>
+              <span class="card-badge upcoming">Coming Soon</span>
+            </div>
+            <div class="card-price">
+              <span class="card-price-amount">$29</span>
+              <span class="card-price-period">/mo</span>
+            </div>
+          </div>
+          <ul class="card-features">
+            <li>1,000 requests/minute</li>
+            <li>All 120 models</li>
+            <li>Priority endpoints</li>
+            <li>Email support</li>
+            <li>API key authentication</li>
+            <li>Custom workflows</li>
+          </ul>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener" class="card-cta secondary">Join Waitlist</a>
+        </div>
+
+        <!-- Enterprise Tier -->
+        <div class="pricing-card dimmed">
+          <div class="card-header">
+            <div class="card-tier">
+              <span class="card-tier-name">Enterprise</span>
+              <span class="card-badge upcoming">Coming Soon</span>
+            </div>
+            <div class="card-price">
+              <span class="card-price-amount">Custom</span>
+            </div>
+          </div>
+          <ul class="card-features">
+            <li>Unlimited requests</li>
+            <li>All 120 models</li>
+            <li>Dedicated endpoints</li>
+            <li>Dedicated support</li>
+            <li>SSO / SAML</li>
+            <li>Custom model training</li>
+            <li>SLA guarantee</li>
+          </ul>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener" class="card-cta secondary">Contact Us</a>
+        </div>
+      </section>
+
+      <!-- Rate Limits -->
+      <section class="section-block">
+        <h2 class="section-title">Rate Limits</h2>
+        <p class="section-subtitle">All tiers include generous limits designed to let you build without friction.</p>
+        <div class="rate-table-wrapper">
+          <table class="rate-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Free</th>
+                <th>Pro</th>
+                <th>Enterprise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Requests/min</td>
+                <td class="highlight-col">100</td>
+                <td>1,000</td>
+                <td>Unlimited</td>
+              </tr>
+              <tr>
+                <td>Daily limit</td>
+                <td class="highlight-col">None</td>
+                <td>None</td>
+                <td>None</td>
+              </tr>
+              <tr>
+                <td>Burst limit</td>
+                <td class="highlight-col">100</td>
+                <td>500</td>
+                <td>Custom</td>
+              </tr>
+              <tr>
+                <td>Response time</td>
+                <td class="highlight-col">Best effort</td>
+                <td>&lt;200ms p95</td>
+                <td>&lt;100ms p95</td>
+              </tr>
+              <tr>
+                <td>Uptime SLA</td>
+                <td class="highlight-col">None</td>
+                <td>99.9%</td>
+                <td>99.99%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Feature Comparison -->
+      <section class="section-block">
+        <h2 class="section-title">What's Included</h2>
+        <p class="section-subtitle">Every tier gets access to the full Base120 model library.</p>
+        <div class="feature-grid">
+          <div class="feature-grid-header">Feature</div>
+          <div class="feature-grid-header">Free</div>
+          <div class="feature-grid-header">Pro</div>
+          <div class="feature-grid-header">Enterprise</div>
+
+          <div class="feature-row">
+            <div class="feature-cell">All 120 mental models</div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">Model recommendations</div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">Chain analysis</div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">MCP server access</div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">API key authentication</div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">Priority endpoints</div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">Custom workflows</div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">SSO / SAML</div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">Custom model training</div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">SLA guarantee</div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-cell">Dedicated support</div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="dash">&mdash;</span></div>
+            <div class="feature-cell"><span class="check">&#10003;</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="section-block">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">Is there really no catch with the free tier?</div>
+            <p class="faq-answer">No catch. We're in beta building the best mental models API. Free tier stays free even after we launch paid tiers.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">What happens when I hit the rate limit?</div>
+            <p class="faq-answer">You get a 429 response with a Retry-After header. Wait a few seconds and retry. We don't ban or throttle beyond the window.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">Do I need an API key?</div>
+            <p class="faq-answer">Not currently. The free tier is fully open. API keys will be introduced with the Pro tier for usage tracking and higher limits.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">Can I use this in production?</div>
+            <p class="faq-answer">Yes. The API is production-ready and running on Cloudflare Workers with global edge deployment. Response times are typically under 50ms.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">How do I get on the Pro waitlist?</div>
+            <p class="faq-answer">Schedule a call with us at <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">cal.com/hummbl/30min</a> and we'll notify you when Pro launches.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom CTA -->
+      <section class="bottom-cta">
+        <h2 class="bottom-cta-title">Ready to build?</h2>
+        <a href="docs.html" class="bottom-cta-btn">
+          Read the Docs
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="8" x2="13" y2="8"></line>
+            <polyline points="9 4 13 8 9 12"></polyline>
+          </svg>
+        </a>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+    </div>
+
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

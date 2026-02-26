@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Case Studies - Base120 in Action</title>
+    <meta
+      name="description"
+      content="See how teams use Base120 mental models to solve real problems. Startup scaling, strategic pivots, production crises, and more."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/cases.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Case Studies - Base120 in Action" />
+    <meta
+      property="og:description"
+      content="See how teams use Base120 mental models to solve real problems. Startup scaling, strategic pivots, production crises, and more."
+    />
+    <meta property="og:url" content="https://hummbl.io/cases.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Case Studies - Base120 in Action" />
+    <meta
+      name="twitter:description"
+      content="See how teams use Base120 mental models to solve real problems. Startup scaling, strategic pivots, production crises, and more."
+    />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* -- Hero -- */
+      .page-hero {
+        padding: 48px 0 0;
+      }
+
+      .page-hero h1 {
+        font-family: var(--font-serif);
+        font-size: clamp(36px, 5vw, 56px);
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 12px;
+      }
+
+      .page-hero h1 .highlight {
+        color: var(--accent-cyan);
+      }
+
+      .page-hero-desc {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.8;
+        max-width: 700px;
+      }
+
+      /* -- Filter Tabs -- */
+      .filter-bar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 32px 0 0;
+      }
+
+      .filter-btn {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        padding: 6px 14px;
+        border-radius: 4px;
+        border: 1px solid var(--border-subtle);
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        transition: all 0.2s;
+      }
+
+      .filter-btn:hover {
+        border-color: var(--text-tertiary);
+        color: var(--text-primary);
+      }
+
+      .filter-btn.active {
+        border-color: var(--accent-cyan);
+        color: var(--accent-cyan);
+        background: rgba(0, 255, 136, 0.06);
+      }
+
+      .case-count {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        padding: 16px 0 0;
+      }
+
+      /* -- Case Study Grid -- */
+      .cases-section {
+        padding: 24px 0 60px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .cases-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+      }
+
+      /* -- Case Card -- */
+      .case-card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 32px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .case-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-cyan),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .case-card:hover {
+        border-color: var(--border-prominent);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .case-card:hover::before {
+        opacity: 0.6;
+      }
+
+      .case-card.community {
+        border-color: rgba(255, 107, 53, 0.2);
+      }
+
+      .case-card.community::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-warm),
+          transparent
+        );
+      }
+
+      .case-card.community:hover {
+        border-color: rgba(255, 107, 53, 0.4);
+      }
+
+      .case-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .case-category {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--accent-cyan);
+        display: inline-block;
+      }
+
+      .case-source-badge {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-weight: 700;
+      }
+
+      .case-source-badge.hummbl {
+        background: rgba(0, 255, 136, 0.1);
+        color: var(--accent-cyan);
+        border: 1px solid rgba(0, 255, 136, 0.2);
+      }
+
+      .case-source-badge.community {
+        background: rgba(255, 107, 53, 0.1);
+        color: var(--accent-warm);
+        border: 1px solid rgba(255, 107, 53, 0.2);
+      }
+
+      .case-title {
+        font-family: var(--font-serif);
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        line-height: 1.3;
+      }
+
+      .case-problem {
+        font-family: var(--font-serif);
+        font-size: 15px;
+        font-style: italic;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 20px;
+        padding-left: 16px;
+        border-left: 2px solid var(--border-prominent);
+      }
+
+      .case-models {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .model-badge {
+        font-size: 11px;
+        font-family: var(--font-mono);
+        background: rgba(0, 255, 136, 0.08);
+        color: var(--accent-cyan);
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 255, 136, 0.15);
+        white-space: nowrap;
+      }
+
+      .case-workflow {
+        font-size: 12px;
+        color: var(--text-tertiary);
+        margin-bottom: 16px;
+      }
+
+      .case-workflow strong {
+        color: var(--accent-warm);
+        font-weight: 500;
+      }
+
+      .case-insight {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        margin-bottom: 20px;
+      }
+
+      .case-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-family: var(--font-mono);
+        color: var(--accent-cyan);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 8px 16px;
+        border: 1px solid var(--border-prominent);
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+
+      .case-cta:hover {
+        background: rgba(0, 255, 136, 0.08);
+        box-shadow: 0 0 16px rgba(0, 255, 136, 0.15);
+      }
+
+      .case-cta-arrow {
+        transition: transform 0.2s;
+      }
+
+      .case-cta:hover .case-cta-arrow {
+        transform: translateX(3px);
+      }
+
+      /* -- Submit CTA -- */
+      .submit-section {
+        padding: 80px 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .submit-card {
+        background: var(--bg-secondary);
+        border: 1px solid rgba(255, 107, 53, 0.2);
+        border-radius: 12px;
+        padding: 48px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 40px;
+        align-items: center;
+      }
+
+      .submit-card-content h2 {
+        font-family: var(--font-serif);
+        font-size: clamp(24px, 3vw, 32px);
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .submit-card-content h2 .warm {
+        color: var(--accent-warm);
+      }
+
+      .submit-card-content p {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        max-width: 560px;
+      }
+
+      .submit-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .submit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-radius: 6px;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .submit-btn.primary {
+        background: var(--accent-warm);
+        color: var(--bg-primary);
+        border: 1px solid var(--accent-warm);
+      }
+
+      .submit-btn.primary:hover {
+        box-shadow: 0 0 24px rgba(255, 107, 53, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .submit-btn.secondary {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-subtle);
+      }
+
+      .submit-btn.secondary:hover {
+        border-color: var(--text-tertiary);
+        color: var(--text-primary);
+      }
+
+      .submit-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* -- Bottom CTA -- */
+      .cta-band {
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .cta-band-title {
+        font-family: var(--font-serif);
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .cta-band-desc {
+        color: var(--text-secondary);
+        font-size: 14px;
+        max-width: 560px;
+        margin: 0 auto 32px;
+        line-height: 1.7;
+      }
+
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 32px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .cta-btn-primary {
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        border: 1px solid var(--accent-cyan);
+      }
+
+      .cta-btn-primary:hover {
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+        transform: translateY(-2px);
+      }
+
+      /* -- Loading -- */
+      .loading {
+        text-align: center;
+        padding: 80px 0;
+        color: var(--text-tertiary);
+        font-size: 13px;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--border-subtle);
+        border-top-color: var(--accent-cyan);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 12px;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* -- Responsive -- */
+      @media (max-width: 900px) {
+        .cases-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .submit-card {
+          grid-template-columns: 1fr;
+          padding: 32px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .page-hero h1 {
+          font-size: 28px;
+        }
+
+        .case-card {
+          padding: 24px;
+        }
+
+        .case-title {
+          font-size: 18px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 16px;
+        }
+
+        .case-card {
+          padding: 20px;
+        }
+
+        .case-problem {
+          font-size: 14px;
+        }
+
+        .case-insight {
+          font-size: 12px;
+        }
+
+        .submit-card {
+          padding: 24px;
+        }
+
+        .cta-band {
+          padding: 48px 0;
+        }
+
+        .cta-btn {
+          padding: 12px 24px;
+          font-size: 12px;
+        }
+
+        .footer-nav {
+          gap: 12px;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+
+      <!-- Header -->
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Cases</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <!-- Hero -->
+      <section class="page-hero" id="main">
+        <h1>Base120 <span class="highlight">in Action</span></h1>
+        <p class="page-hero-desc">
+          Real problems. Real models. Real results. From the HUMMBL team and the community.
+        </p>
+
+        <!-- Filter -->
+        <div class="filter-bar" id="filter-bar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="hummbl">HUMMBL</button>
+          <button class="filter-btn" data-filter="community">Community</button>
+        </div>
+        <p class="case-count" id="case-count"></p>
+      </section>
+
+      <!-- Case Studies (loaded from cases.json) -->
+      <section class="cases-section">
+        <div class="cases-grid" id="cases-grid">
+          <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading case studies...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Submit Your Case Study -->
+      <section class="submit-section">
+        <div class="submit-card">
+          <div class="submit-card-content">
+            <h2>Share <span class="warm">Your</span> Case Study</h2>
+            <p>
+              Used Base120 to solve a real problem? We want to hear about it. Community case studies get featured on this page with full attribution. Share your problem, the models that helped, and what you learned.
+            </p>
+          </div>
+          <div class="submit-options">
+            <a class="submit-btn primary" href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="1"/><line x1="2" y1="7" x2="14" y2="7"/><line x1="5" y1="1" x2="5" y2="5"/><line x1="11" y1="1" x2="11" y2="5"/></svg>
+              Submit a Case Study
+            </a>
+            <a class="submit-btn secondary" href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">
+              Or schedule a chat
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom CTA -->
+      <section class="cta-band">
+        <h2 class="cta-band-title">Your problem, your models</h2>
+        <p class="cta-band-desc">
+          Every recommendation is computed from your specific problem statement, not a generic template.
+        </p>
+        <a class="cta-btn cta-btn-primary" href="playground.html">
+          Try it now <span>&rarr;</span>
+        </a>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+
+    </div>
+
+    <script>
+      (function () {
+        var grid = document.getElementById('cases-grid');
+        var filterBar = document.getElementById('filter-bar');
+        var countEl = document.getElementById('case-count');
+        var allCases = [];
+        var activeFilter = 'all';
+
+        function escapeHtml(str) {
+          var div = document.createElement('div');
+          div.appendChild(document.createTextNode(str));
+          return div.innerHTML;
+        }
+
+        function renderCases(cases) {
+          var filtered = activeFilter === 'all'
+            ? cases
+            : cases.filter(function (c) { return c.source === activeFilter; });
+
+          countEl.textContent = filtered.length + ' case ' + (filtered.length === 1 ? 'study' : 'studies');
+
+          if (filtered.length === 0) {
+            grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-tertiary);padding:60px 0;font-size:14px;">No case studies in this category yet. <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener" style="color:var(--accent-warm);">Be the first to submit one.</a></p>';
+            return;
+          }
+
+          var frag = document.createDocumentFragment();
+          filtered.forEach(function (c) {
+            var card = document.createElement('article');
+            card.className = 'case-card' + (c.source === 'community' ? ' community' : '');
+
+            var modelsHtml = c.models.map(function (m) {
+              return '<span class="model-badge">' + escapeHtml(m) + '</span>';
+            }).join('');
+
+            var workflowHtml = c.workflow
+              ? '<p class="case-workflow"><strong>Workflow matched:</strong> ' + escapeHtml(c.workflow) + '</p>'
+              : '';
+
+            var sourceBadge = c.source === 'community'
+              ? '<span class="case-source-badge community">Community</span>'
+              : '<span class="case-source-badge hummbl">HUMMBL</span>';
+
+            var playgroundQuery = encodeURIComponent(c.problem);
+
+            card.innerHTML =
+              '<div class="case-meta">' +
+                '<span class="case-category">' + escapeHtml(c.category) + '</span>' +
+                sourceBadge +
+              '</div>' +
+              '<h2 class="case-title">' + escapeHtml(c.title) + '</h2>' +
+              '<p class="case-problem">"' + escapeHtml(c.problem) + '"</p>' +
+              '<div class="case-models">' + modelsHtml + '</div>' +
+              workflowHtml +
+              '<p class="case-insight">' + escapeHtml(c.insight) + '</p>' +
+              '<a class="case-cta" href="playground.html?q=' + playgroundQuery + '">' +
+                'Try it in Playground <span class="case-cta-arrow">&rarr;</span>' +
+              '</a>';
+
+            frag.appendChild(card);
+          });
+
+          grid.innerHTML = '';
+          grid.appendChild(frag);
+        }
+
+        // Filter buttons
+        filterBar.addEventListener('click', function (e) {
+          var btn = e.target.closest('.filter-btn');
+          if (!btn) return;
+          activeFilter = btn.dataset.filter;
+          filterBar.querySelectorAll('.filter-btn').forEach(function (b) {
+            b.classList.toggle('active', b === btn);
+          });
+          renderCases(allCases);
+        });
+
+        // Fetch cases
+        fetch('cases.json')
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            allCases = data;
+            renderCases(data);
+          })
+          .catch(function () {
+            grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--accent-warm);padding:60px 0;">Failed to load case studies. <a href="cases.html" style="color:var(--accent-cyan);">Retry</a></p>';
+          });
+      })();
+    </script>
+
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

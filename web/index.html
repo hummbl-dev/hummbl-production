@@ -22,6 +22,25 @@
       content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
     />
 
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/" />
+
+    <!-- Favicon & OG -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Base120 - Mental Models for AI Agents" />
+    <meta property="og:description" content="120 mental models your AI agents can call. Working API, zero setup." />
+    <meta property="og:url" content="https://hummbl.io/" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Base120 - Mental Models for AI Agents" />
+    <meta name="twitter:description" content="120 mental models your AI agents can call. Working API, zero setup." />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,39 +48,9 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="shared.css" />
 
     <style>
-      :root {
-        --bg-primary: #0a0a0a;
-        --bg-secondary: #141414;
-        --bg-elevated: #1a1a1a;
-        --text-primary: #e8e8e8;
-        --text-secondary: #a0a0a0;
-        --text-tertiary: #666;
-        --accent-cyan: #00ff88;
-        --accent-warm: #ff6b35;
-        --border-subtle: rgba(255, 255, 255, 0.08);
-        --border-prominent: rgba(0, 255, 136, 0.3);
-
-        --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
-        --font-serif: "Crimson Pro", Georgia, serif;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: var(--font-mono);
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        line-height: 1.6;
-        overflow-x: hidden;
-        position: relative;
-      }
-
       /* Animated background grid */
       body::before {
         content: "";
@@ -137,10 +126,13 @@
         z-index: 1;
       }
 
-      /* Header */
+      /* Header - override shared.css (index uses different header pattern) */
       header {
+        display: block;
         padding: 80px 0 120px;
         position: relative;
+        border-bottom: none;
+        margin-bottom: 0;
       }
 
       .status-bar {
@@ -301,6 +293,11 @@
       .header-nav a {
         color: var(--text-tertiary);
         text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .header-nav a:hover {
+        color: var(--accent-cyan);
       }
 
       .header-nav a.primary {
@@ -696,24 +693,43 @@
         font-size: 12px;
       }
 
-      footer a {
-        color: var(--accent-cyan);
-        text-decoration: none;
-        transition: opacity 0.2s;
-      }
-
-      footer a:hover {
-        opacity: 0.7;
-      }
-
       /* Responsive */
       @media (max-width: 768px) {
+        .hamburger {
+          display: flex;
+        }
+
+        .header-nav {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(10, 10, 10, 0.98);
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 32px;
+          font-size: 18px;
+          z-index: 1000;
+          margin-left: 0;
+        }
+
+        .header-nav.open {
+          display: flex;
+        }
+
         .container {
           padding: 0 24px;
         }
 
         header {
           padding: 60px 0 80px;
+        }
+
+        .status-bar {
+          flex-wrap: wrap;
         }
 
         h1 {
@@ -736,25 +752,33 @@
         .framework-grid {
           grid-template-columns: 1fr;
         }
+
+        .footer-nav {
+          gap: 12px;
+          font-size: 11px;
+        }
       }
     </style>
   </head>
   <body>
+    <a href="#main" class="skip-link">Skip to content</a>
     <div class="container">
       <header>
         <div class="status-bar">
           <span class="status-indicator"></span>
           <span>System Online</span>
-          <nav class="header-nav">
+          <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <nav class="header-nav" id="nav-menu">
             <a href="explorer.html" class="primary">Explorer</a>
-            <a href="#try-it">Try It</a>
-            <a href="#setup">Setup</a>
-            <a
-              href="https://hummbl-api.hummbl.workers.dev"
-              target="_blank"
-              rel="noopener"
-              >API</a
-            >
+            <a href="playground.html">Playground</a>
+            <a href="docs.html">Docs</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="cases.html">Cases</a>
+            <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+            <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
           </nav>
         </div>
 
@@ -786,7 +810,7 @@
           <span class="terminal-title">api.hummbl.workers.dev</span>
         </div>
         <div class="terminal-content">
-          <button class="copy-btn" onclick="copyCode()">Copy</button>
+          <button class="copy-btn" onclick="copyCode(event)">Copy</button>
           <div class="terminal-prompt">
             <span class="prompt-symbol">$</span>
             <code class="terminal-code" id="curl-code"
@@ -803,15 +827,23 @@
         </div>
         <div class="stat">
           <span class="stat-number">6</span>
-          <span class="stat-label">Transformations</span>
+          <span class="stat-label">API Endpoints</span>
         </div>
         <div class="stat">
-          <span class="stat-number">0ms</span>
-          <span class="stat-label">Setup Time</span>
+          <span class="stat-number">5</span>
+          <span class="stat-label">Vendor Runtimes</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">66</span>
+          <span class="stat-label">AI Agents</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" id="api-latency">--</span>
+          <span class="stat-label">API Latency</span>
         </div>
       </div>
 
-      <section data-section="// 01" id="framework">
+      <section data-section="// 01" id="main">
         <h2>The Framework</h2>
         <p>
           Base120 organizes cognitive tools across 6 transformation types. Each
@@ -914,7 +946,7 @@
             <span class="terminal-title">terminal</span>
           </div>
           <div class="terminal-content">
-            <button class="copy-btn" onclick="copyMcpInstall()">Copy</button>
+            <button class="copy-btn" onclick="copyMcpInstall(event)">Copy</button>
             <div class="terminal-prompt">
               <span class="prompt-symbol">$</span>
               <code class="terminal-code" id="mcp-install"
@@ -936,7 +968,7 @@
             <span class="terminal-title">claude_desktop_config.json</span>
           </div>
           <div class="terminal-content">
-            <button class="copy-btn" onclick="copyMcpConfig()">Copy</button>
+            <button class="copy-btn" onclick="copyMcpConfig(event)">Copy</button>
             <pre class="terminal-code config-code" id="mcp-config">
 {
   "mcpServers": {
@@ -1076,40 +1108,64 @@
       </section>
 
       <footer>
-        <p class="footer-text">HUMMBL Base120 © 2026</p>
-        <p>
-          MCP Server:
-          <a
-            href="https://www.npmjs.com/package/@hummbl/mcp-server"
-            target="_blank"
-            rel="noopener"
-            >@hummbl/mcp-server</a
-          >
-        </p>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p class="footer-text">HUMMBL Base120 &copy; 2026</p>
       </footer>
     </div>
 
     <script>
-      function copyCode() {
+      function copyCode(e) {
         const code = document.getElementById("curl-code").textContent;
         navigator.clipboard.writeText(code);
-        event.target.textContent = "✓ Copied";
-        setTimeout(() => (event.target.textContent = "Copy"), 2000);
+        e.target.textContent = "✓ Copied";
+        setTimeout(() => (e.target.textContent = "Copy"), 2000);
       }
 
-      function copyMcpInstall() {
+      function copyMcpInstall(e) {
         const code = document.getElementById("mcp-install").textContent;
         navigator.clipboard.writeText(code);
-        event.target.textContent = "✓ Copied";
-        setTimeout(() => (event.target.textContent = "Copy"), 2000);
+        e.target.textContent = "✓ Copied";
+        setTimeout(() => (e.target.textContent = "Copy"), 2000);
       }
 
-      function copyMcpConfig() {
+      function copyMcpConfig(e) {
         const code = document.getElementById("mcp-config").textContent;
         navigator.clipboard.writeText(code);
-        event.target.textContent = "✓ Copied";
-        setTimeout(() => (event.target.textContent = "Copy"), 2000);
+        e.target.textContent = "✓ Copied";
+        setTimeout(() => (e.target.textContent = "Copy"), 2000);
       }
+
+      // Live API latency check
+      (function() {
+        var start = performance.now();
+        fetch('https://hummbl-api.hummbl.workers.dev/health')
+          .then(function(r) { return r.json(); })
+          .then(function() {
+            var ms = Math.round(performance.now() - start);
+            var el = document.getElementById('api-latency');
+            if (el) el.textContent = ms + 'ms';
+          })
+          .catch(function() {
+            var el = document.getElementById('api-latency');
+            if (el) el.textContent = '--';
+          });
+      })();
 
       // Try It recommendations
       async function tryRecommend() {
@@ -1202,7 +1258,8 @@
         observer.observe(section);
       });
     </script>
+    <script src="shared.js"></script>
     <!-- Cloudflare Web Analytics -->
-    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "68207ada08f9497aa8d2ea4fb67dc335"}'></script>
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
   </body>
 </html>

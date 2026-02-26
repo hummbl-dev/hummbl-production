@@ -1,0 +1,2526 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Playground - See Base120 in Action</title>
+    <meta
+      name="description"
+      content="Try the Base120 mental models API live. Curated demos, sandbox, safety stack visualization, and multi-agent lineup."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/playground.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Playground - See Base120 in Action" />
+    <meta property="og:description" content="Try the Base120 mental models API live. Curated demos, sandbox, safety stack visualization, and multi-agent lineup." />
+    <meta property="og:url" content="https://hummbl.io/playground.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Playground - See Base120 in Action" />
+    <meta name="twitter:description" content="Try the Base120 mental models API live. Curated demos, sandbox, and safety visualization." />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "HUMMBL Playground",
+      "description": "Try the Base120 mental models API live. Curated demos, sandbox, safety stack visualization, and multi-agent lineup.",
+      "url": "https://hummbl.io/playground.html",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "HUMMBL",
+        "url": "https://hummbl.io"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "HUMMBL",
+        "url": "https://hummbl.io"
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Performance -->
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="preconnect" href="https://hummbl-api.hummbl.workers.dev" crossorigin />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      html {
+        font-size: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Header */
+      header {
+        padding: 40px 0;
+        border-bottom: 1px solid var(--border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--text-primary);
+      }
+
+      .logo-text {
+        font-family: var(--font-serif);
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .logo-badge {
+        font-size: 10px;
+        background: rgba(0, 255, 136, 0.1);
+        color: var(--accent-cyan);
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid var(--border-prominent);
+      }
+
+      /* Section nav */
+      .section-nav {
+        display: flex;
+        gap: 8px;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border-subtle);
+        flex-wrap: wrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--bg-primary);
+      }
+
+      .section-nav-btn {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 10px 20px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .section-nav-btn:hover {
+        border-color: var(--border-prominent);
+        color: var(--text-primary);
+      }
+
+      .section-nav-btn.active {
+        background: rgba(0, 255, 136, 0.1);
+        border-color: var(--accent-cyan);
+        color: var(--accent-cyan);
+      }
+
+      /* Page hero */
+      .page-hero {
+        padding: 48px 0 0;
+      }
+
+      .page-hero h1 {
+        font-family: var(--font-serif);
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 600;
+        line-height: 1.2;
+        margin-bottom: 12px;
+      }
+
+      .page-hero h1 .highlight {
+        color: var(--accent-cyan);
+      }
+
+      .page-hero-desc {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.8;
+        max-width: 700px;
+      }
+
+      /* CTA band */
+      .cta-band {
+        padding: 60px 0;
+        border-bottom: 1px solid var(--border-subtle);
+        text-align: center;
+      }
+
+      .cta-band-title {
+        font-family: var(--font-serif);
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .cta-band-desc {
+        color: var(--text-secondary);
+        font-size: 14px;
+        max-width: 500px;
+        margin: 0 auto 32px;
+        line-height: 1.7;
+      }
+
+      .cta-band-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 32px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .cta-btn-primary {
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        border: 1px solid var(--accent-cyan);
+      }
+
+      .cta-btn-primary:hover {
+        box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .cta-btn-secondary {
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--border-prominent);
+      }
+
+      .cta-btn-secondary:hover {
+        background: rgba(0, 255, 136, 0.05);
+        border-color: var(--accent-cyan);
+      }
+
+      /* Sections */
+      .pg-section {
+        padding: 60px 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .pg-section:last-of-type {
+        border-bottom: none;
+      }
+
+      .section-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--text-tertiary);
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        font-family: var(--font-serif);
+        font-size: clamp(28px, 4vw, 44px);
+        font-weight: 600;
+        margin-bottom: 12px;
+        line-height: 1.2;
+      }
+
+      .section-desc {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.8;
+        max-width: 700px;
+        margin-bottom: 32px;
+      }
+
+      /* Showcase tabs */
+      .showcase-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+      }
+
+      .showcase-tab {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 12px 20px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .showcase-tab:hover {
+        border-color: var(--border-prominent);
+        color: var(--text-primary);
+      }
+
+      .showcase-tab.active {
+        background: rgba(0, 255, 136, 0.1);
+        border-color: var(--accent-cyan);
+        color: var(--accent-cyan);
+      }
+
+      /* Showcase detail */
+      .showcase-detail {
+        display: none;
+      }
+
+      .showcase-detail.active {
+        display: block;
+      }
+
+      .showcase-problem {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .showcase-problem::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--accent-warm);
+      }
+
+      .showcase-problem-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 8px;
+      }
+
+      .showcase-problem-text {
+        font-family: var(--font-serif);
+        font-size: 18px;
+        color: var(--text-primary);
+        line-height: 1.6;
+        font-style: italic;
+      }
+
+      .showcase-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      @media (max-width: 768px) {
+        .showcase-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .showcase-models-panel,
+      .showcase-workflows-panel {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+      }
+
+      .panel-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent-cyan);
+        margin-bottom: 16px;
+      }
+
+      .model-rec-card {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .model-rec-card:last-child {
+        border-bottom: none;
+      }
+
+      .model-rec-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+      }
+
+      .model-rec-code {
+        font-weight: 700;
+        color: var(--accent-cyan);
+        font-size: 14px;
+      }
+
+      .model-rec-priority {
+        font-size: 10px;
+        color: var(--text-tertiary);
+        background: var(--bg-secondary);
+        padding: 2px 8px;
+        border-radius: 3px;
+      }
+
+      .model-rec-name {
+        font-family: var(--font-serif);
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .model-rec-def {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      .workflow-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .workflow-step:last-child {
+        border-bottom: none;
+      }
+
+      .workflow-step-num {
+        width: 24px;
+        height: 24px;
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid var(--border-prominent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent-cyan);
+        flex-shrink: 0;
+      }
+
+      .workflow-step-content {
+        flex: 1;
+      }
+
+      .workflow-step-model {
+        font-weight: 700;
+        color: var(--accent-cyan);
+        font-size: 12px;
+      }
+
+      .workflow-step-purpose {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      .workflow-name {
+        font-family: var(--font-serif);
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .workflow-desc {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      .no-workflow {
+        color: var(--text-tertiary);
+        font-size: 13px;
+        font-style: italic;
+        padding: 20px 0;
+      }
+
+      .showcase-insight {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+        border-left: 3px solid var(--accent-cyan);
+      }
+
+      .showcase-insight-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent-cyan);
+        margin-bottom: 8px;
+      }
+
+      .showcase-insight-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+      }
+
+      /* Sandbox */
+      .sandbox-input {
+        width: 100%;
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 16px;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        color: var(--text-primary);
+        resize: vertical;
+        min-height: 100px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        margin-bottom: 16px;
+      }
+
+      .sandbox-input:focus {
+        outline: none;
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+      }
+
+      .sandbox-input::placeholder {
+        color: var(--text-tertiary);
+      }
+
+      .sandbox-btn {
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        border: none;
+        border-radius: 6px;
+        padding: 14px 32px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .sandbox-btn:hover {
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .sandbox-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .sandbox-results {
+        display: none;
+        margin-top: 32px;
+      }
+
+      .sandbox-results.visible {
+        display: block;
+      }
+
+      .result-tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 16px;
+      }
+
+      .result-tab {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-bottom: none;
+        border-radius: 6px 6px 0 0;
+        padding: 10px 20px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .result-tab:hover {
+        color: var(--text-primary);
+      }
+
+      .result-tab.active {
+        background: var(--bg-secondary);
+        border-color: var(--border-prominent);
+        color: var(--accent-cyan);
+      }
+
+      .result-panel {
+        display: none;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 0 8px 8px 8px;
+        padding: 24px;
+        min-height: 200px;
+      }
+
+      .result-panel.active {
+        display: block;
+      }
+
+      /* Formatted results */
+      .formatted-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+      }
+
+      .formatted-card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .formatted-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--accent-cyan);
+      }
+
+      .formatted-card-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 8px;
+      }
+
+      .formatted-card-title {
+        font-family: var(--font-serif);
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .formatted-card-text {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      .health-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .health-badge.healthy {
+        background: rgba(0, 255, 136, 0.1);
+        color: var(--accent-cyan);
+        border: 1px solid var(--border-prominent);
+      }
+
+      .health-badge.unhealthy {
+        background: rgba(255, 107, 53, 0.1);
+        color: var(--accent-warm);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+      }
+
+      /* Raw JSON */
+      .raw-json {
+        background: var(--bg-elevated);
+        border-radius: 6px;
+        padding: 16px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        white-space: pre-wrap;
+        word-break: break-all;
+        max-height: 500px;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .raw-json-copy {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid var(--border-prominent);
+        color: var(--accent-cyan);
+        padding: 6px 12px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.2s;
+      }
+
+      .raw-json-copy:hover {
+        background: rgba(0, 255, 136, 0.2);
+      }
+
+      /* Curl commands */
+      .curl-block {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 12px;
+        position: relative;
+      }
+
+      .curl-block:last-child {
+        margin-bottom: 0;
+      }
+
+      .curl-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 8px;
+      }
+
+      .curl-code {
+        font-size: 12px;
+        color: var(--text-secondary);
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+
+      .curl-copy {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 255, 136, 0.1);
+        border: 1px solid var(--border-prominent);
+        color: var(--accent-cyan);
+        padding: 4px 10px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.2s;
+      }
+
+      .curl-copy:hover {
+        background: rgba(0, 255, 136, 0.2);
+      }
+
+      /* Safety Stack */
+      .safety-stats-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .safety-stat {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 16px;
+        text-align: center;
+      }
+
+      .safety-stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--accent-cyan);
+        display: block;
+      }
+
+      .safety-stat-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-top: 4px;
+      }
+
+      .safety-layers {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+
+      .safety-layer {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s;
+      }
+
+      .safety-layer:hover {
+        border-color: var(--border-prominent);
+      }
+
+      .safety-layer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--accent-cyan);
+        opacity: 0.5;
+        transition: opacity 0.2s;
+      }
+
+      .safety-layer:hover::before {
+        opacity: 1;
+      }
+
+      .safety-layer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .safety-layer-num {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        font-weight: 700;
+      }
+
+      .safety-layer-title {
+        font-family: var(--font-serif);
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .safety-layer-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      .safety-layer-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .safety-tag {
+        font-size: 10px;
+        background: var(--bg-secondary);
+        color: var(--text-tertiary);
+        padding: 3px 8px;
+        border-radius: 3px;
+        border: 1px solid var(--border-subtle);
+      }
+
+      /* Validator demo */
+      .validator-demo {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+      }
+
+      .validator-demo-title {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent-cyan);
+        margin-bottom: 16px;
+      }
+
+      .validator-input {
+        width: 100%;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 12px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        resize: vertical;
+        min-height: 60px;
+      }
+
+      .validator-input:focus {
+        outline: none;
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+      }
+
+      .validator-btn {
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        border: none;
+        border-radius: 6px;
+        padding: 14px 32px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .validator-btn:hover {
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .validator-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .validator-result {
+        display: none;
+        margin-top: 16px;
+        background: var(--bg-secondary);
+        border-radius: 6px;
+        padding: 16px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        white-space: pre-wrap;
+      }
+
+      .validator-result.visible {
+        display: block;
+      }
+
+      /* Agent Lineup */
+      .agents-primary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .agent-card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s;
+      }
+
+      .agent-card:hover {
+        border-color: var(--border-prominent);
+        transform: translateY(-2px);
+      }
+
+      .agent-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 0;
+        background: var(--accent-cyan);
+        transition: height 0.3s;
+      }
+
+      .agent-card:hover::before {
+        height: 100%;
+      }
+
+      .agent-card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .agent-emoji {
+        font-size: 24px;
+      }
+
+      .agent-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid var(--border-subtle);
+      }
+
+      .agent-callsign {
+        font-weight: 700;
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .agent-status {
+        margin-left: auto;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent-cyan);
+        box-shadow: 0 0 8px var(--accent-cyan);
+      }
+
+      .agent-role {
+        font-size: 12px;
+        color: var(--accent-cyan);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+      }
+
+      .agent-summary {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 12px;
+      }
+
+      .agent-vendor {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 4px;
+        padding: 2px 8px;
+        background: var(--bg-secondary);
+        border-radius: 3px;
+        display: inline-block;
+        border: 1px solid var(--border-subtle);
+      }
+
+      .agent-card-agnostic {
+        border-color: var(--border-prominent);
+        background: linear-gradient(135deg, var(--bg-elevated) 0%, rgba(0, 255, 136, 0.03) 100%);
+      }
+
+      .agent-card-agnostic::before {
+        height: 100% !important;
+        opacity: 0.5;
+      }
+
+      .agent-bus-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 6px;
+      }
+
+      .agent-bus {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .agent-bus-id {
+        font-size: 10px;
+        background: var(--bg-secondary);
+        color: var(--text-tertiary);
+        padding: 3px 8px;
+        border-radius: 3px;
+        border: 1px solid var(--border-subtle);
+      }
+
+      .agents-roster {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+      }
+
+      .roster-title {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent-cyan);
+        margin-bottom: 16px;
+      }
+
+      .roster-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 8px;
+      }
+
+      .roster-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: var(--bg-secondary);
+        border-radius: 4px;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .roster-item-emoji {
+        font-size: 14px;
+      }
+
+      .roster-item-name {
+        flex: 1;
+      }
+
+      .roster-item-type {
+        font-size: 9px;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* Sandbox extras */
+      .sandbox-examples {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+
+      .sandbox-example-chip {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-subtle);
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .sandbox-example-chip:hover {
+        border-color: var(--border-prominent);
+        color: var(--accent-cyan);
+      }
+
+      .sandbox-history {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
+      .sandbox-history:empty {
+        display: none;
+      }
+
+      .sandbox-history-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 6px;
+      }
+
+      .history-chip {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-tertiary);
+        cursor: pointer;
+        transition: all 0.2s;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .history-chip:hover {
+        border-color: var(--border-prominent);
+        color: var(--text-secondary);
+      }
+
+      .sandbox-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .sandbox-hint {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+
+      .share-btn {
+        background: transparent;
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        display: none;
+      }
+
+      .share-btn.visible {
+        display: inline-block;
+      }
+
+      .share-btn:hover {
+        border-color: var(--border-prominent);
+        color: var(--accent-cyan);
+      }
+
+      /* Error state */
+      .sandbox-error {
+        background: rgba(255, 107, 53, 0.08);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+        border-radius: 8px;
+        padding: 20px;
+        color: var(--accent-warm);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .sandbox-error::before {
+        content: "\26A0\FE0F ";
+      }
+
+      /* Sandbox loading */
+      .sandbox-loading {
+        display: none;
+        text-align: center;
+        padding: 48px 24px;
+      }
+
+      .sandbox-loading.visible {
+        display: block;
+      }
+
+      .sandbox-loading-text {
+        color: var(--text-secondary);
+        font-size: 13px;
+        margin-top: 12px;
+      }
+
+      /* Empty state */
+      .sandbox-empty {
+        text-align: center;
+        padding: 24px;
+        color: var(--text-tertiary);
+        font-size: 13px;
+        font-style: italic;
+      }
+
+      /* Loading spinner */
+      .loading-spinner {
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--border-subtle);
+        border-top-color: var(--accent-cyan);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .section-nav {
+          gap: 6px;
+        }
+
+        .section-nav-btn {
+          padding: 8px 14px;
+          font-size: 11px;
+        }
+
+        .showcase-tabs {
+          flex-direction: column;
+        }
+
+        .safety-stats-bar {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .agents-primary {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .roster-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 16px;
+        }
+
+        .page-hero h1 {
+          font-size: 28px;
+        }
+
+        .section-title {
+          font-size: 24px;
+        }
+
+        .showcase-problem-text {
+          font-size: 15px;
+        }
+
+        .showcase-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .sandbox-input {
+          font-size: 13px;
+          min-height: 80px;
+        }
+
+        .sandbox-example-chip {
+          font-size: 10px;
+          padding: 5px 10px;
+        }
+
+        .sandbox-actions {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .safety-stats-bar {
+          grid-template-columns: 1fr;
+        }
+
+        .formatted-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .agents-primary {
+          grid-template-columns: 1fr;
+        }
+
+        .agent-card {
+          padding: 16px;
+        }
+
+        .cta-band {
+          padding: 40px 0;
+        }
+
+        .cta-btn {
+          padding: 12px 24px;
+          font-size: 12px;
+        }
+
+        .footer-nav {
+          gap: 12px;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Playground</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <div class="page-hero" id="main">
+        <h1>See <span class="highlight">Base120</span> in action</h1>
+        <p class="page-hero-desc">
+          120 mental models your AI agents can call via API. Describe any
+          problem and get structured reasoning back &mdash; no signup, no setup.
+        </p>
+      </div>
+
+      <nav class="section-nav" role="tablist" aria-label="Page sections">
+        <button class="section-nav-btn active" data-target="showcase" role="tab" aria-selected="true">Showcase</button>
+        <button class="section-nav-btn" data-target="sandbox" role="tab" aria-selected="false">Sandbox</button>
+        <button class="section-nav-btn" data-target="safety" role="tab" aria-selected="false">Safety Stack</button>
+        <button class="section-nav-btn" data-target="agents" role="tab" aria-selected="false">Agents</button>
+      </nav>
+
+      <!-- Section 1: Showcase -->
+      <section class="pg-section" id="showcase">
+        <div class="section-label">// 01</div>
+        <h2 class="section-title">Curated Demos</h2>
+        <p class="section-desc">
+          Three real scenarios run through the full Base120 pipeline.
+          See which models get recommended, which workflows match, and why.
+        </p>
+
+        <div class="showcase-tabs" id="showcase-tabs" role="tablist" aria-label="Demo scenarios">
+          <!-- Populated by JS -->
+        </div>
+
+        <div id="showcase-content">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Section 2: Sandbox -->
+      <section class="pg-section" id="sandbox">
+        <div class="section-label">// 02</div>
+        <h2 class="section-title">Try It Live</h2>
+        <p class="section-desc">
+          Type any problem and run the full pipeline: security validation,
+          model recommendation, workflow matching, and health check &mdash;
+          all in parallel.
+        </p>
+
+        <div class="sandbox-examples" id="sandbox-examples">
+          <button class="sandbox-example-chip" data-prompt="Our customer churn doubled this quarter and we don't know why">Customer churn</button>
+          <button class="sandbox-example-chip" data-prompt="I need to decide between building in-house vs buying a vendor solution for our auth system">Build vs buy</button>
+          <button class="sandbox-example-chip" data-prompt="Our engineering team keeps missing sprint deadlines and morale is dropping">Team velocity</button>
+          <button class="sandbox-example-chip" data-prompt="We raised a Series A but our burn rate gives us 14 months of runway">Runway planning</button>
+        </div>
+
+        <div id="sandbox-history-section">
+          <div class="sandbox-history-label" id="sandbox-history-label" style="display:none">Recent queries</div>
+          <div class="sandbox-history" id="sandbox-history"></div>
+        </div>
+
+        <textarea
+          class="sandbox-input"
+          id="sandbox-input"
+          placeholder="e.g., We're losing engineers to competitors and our onboarding takes 3 months..."
+        ></textarea>
+        <div class="sandbox-actions">
+          <button class="sandbox-btn" id="sandbox-btn">Run Full Pipeline</button>
+          <button class="share-btn" id="share-btn">Share Query</button>
+          <span class="sandbox-hint" id="sandbox-hint"></span>
+        </div>
+
+        <div class="sandbox-loading" id="sandbox-loading">
+          <div class="loading-spinner"></div>
+          <div class="sandbox-loading-text">Running 4 API calls in parallel...</div>
+        </div>
+
+        <div class="sandbox-results" id="sandbox-results">
+          <div class="result-tabs" id="result-tabs" role="tablist" aria-label="Result format">
+            <button class="result-tab active" data-panel="formatted" role="tab" aria-selected="true" aria-controls="panel-formatted">Formatted</button>
+            <button class="result-tab" data-panel="raw" role="tab" aria-selected="false" aria-controls="panel-raw">Raw JSON</button>
+            <button class="result-tab" data-panel="curl" role="tab" aria-selected="false" aria-controls="panel-curl">curl Commands</button>
+          </div>
+          <div class="result-panel active" id="panel-formatted" role="tabpanel" aria-live="polite"></div>
+          <div class="result-panel" id="panel-raw" role="tabpanel"></div>
+          <div class="result-panel" id="panel-curl" role="tabpanel"></div>
+        </div>
+      </section>
+
+      <!-- CTA Band -->
+      <div class="cta-band">
+        <div class="cta-band-title">Ready to integrate?</div>
+        <p class="cta-band-desc">
+          Add structured reasoning to your agents in minutes.
+          Free API, MCP server, or book a call to discuss your use case.
+        </p>
+        <div class="cta-band-buttons">
+          <a href="explorer.html" class="cta-btn cta-btn-primary">
+            <span>Explore 120 Models</span>
+            <span>&rarr;</span>
+          </a>
+          <a href="https://cal.com/hummbl/30min" class="cta-btn cta-btn-secondary" target="_blank" rel="noopener">
+            <span>Book Discovery Call</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Section 3: Safety Stack -->
+      <section class="pg-section" id="safety">
+        <div class="section-label">// 03</div>
+        <h2 class="section-title">5-Layer Safety Stack</h2>
+        <p class="section-desc">
+          Every API call passes through five security layers before
+          any model data is returned. Here's what protects your input.
+        </p>
+
+        <div class="safety-stats-bar" id="safety-stats">
+          <div class="safety-stat">
+            <span class="safety-stat-value" id="stat-status">--</span>
+            <span class="safety-stat-label">API Status</span>
+          </div>
+          <div class="safety-stat">
+            <span class="safety-stat-value" id="stat-events">--</span>
+            <span class="safety-stat-label">Security Events</span>
+          </div>
+          <div class="safety-stat">
+            <span class="safety-stat-value" id="stat-critical">--</span>
+            <span class="safety-stat-label">Critical</span>
+          </div>
+          <div class="safety-stat">
+            <span class="safety-stat-value" id="stat-models">--</span>
+            <span class="safety-stat-label">Models Loaded</span>
+          </div>
+          <div class="safety-stat">
+            <span class="safety-stat-value" id="stat-rate">--</span>
+            <span class="safety-stat-label">Rate Limit/min</span>
+          </div>
+        </div>
+
+        <div class="safety-layers" id="safety-layers">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="validator-demo">
+          <div class="validator-demo-title">Try the Validator</div>
+          <textarea
+            class="validator-input"
+            id="validator-input"
+            placeholder="Try something suspicious: DROP TABLE users; or my SSN is 123-45-6789"
+          ></textarea>
+          <button class="validator-btn" id="validator-btn">Validate Input</button>
+          <div class="validator-result" id="validator-result"></div>
+        </div>
+      </section>
+
+      <!-- Section 4: Agent Lineup -->
+      <section class="pg-section" id="agents">
+        <div class="section-label">// 04</div>
+        <h2 class="section-title">Agent Lineup</h2>
+        <p class="section-desc">
+          HUMMBL runs on five vendor runtimes simultaneously &mdash; no lock-in, no single
+          point of failure. Each vendor brings different strengths, all coordinated
+          through the same bus, governance, and safety stack.
+        </p>
+
+        <div class="agents-primary" id="agents-primary">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="agents-roster" id="agents-roster">
+          <div class="roster-title" id="roster-title">Extended Roster</div>
+          <div class="roster-grid" id="roster-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+    </div>
+
+    <script>
+      const API_BASE = 'https://hummbl-api.hummbl.workers.dev';
+
+      // ── Static Data: Showcase Scenarios ──
+      const SCENARIOS = [
+        {
+          id: 'scaling',
+          tab: 'Scaling a Startup Team',
+          problem: 'I need to scale my startup team from 5 to 50 people while maintaining culture and productivity.',
+          recommendations: [
+            { code: 'CO2', name: 'Chunking', definition: 'Group related elements into meaningful units to reduce cognitive load', priority: 1 },
+            { code: 'DE7', name: 'Pareto Decomposition (80/20)', definition: 'Identify vital few drivers producing most impact versus trivial many', priority: 1 },
+            { code: 'SY8', name: 'Homeostasis/Dynamic Equilibrium', definition: 'Understand self-regulating mechanisms maintaining stable states despite disturbances', priority: 3 },
+            { code: 'SY15', name: 'Multi-Scale Alignment', definition: 'Ensure strategy, operations, and execution cohere across organizational levels', priority: 3 },
+            { code: 'P9', name: 'Cultural Lens Shifting', definition: 'Adjust communication and interpretation for different cultural contexts and norms', priority: 4 }
+          ],
+          meta: { matchedPatterns: ['Composition', 'Systems'], keywordsAnalyzed: 10 },
+          workflows: [
+            {
+              name: 'Team Performance',
+              description: 'Diagnose and improve how teams work together',
+              steps: [
+                { order: 1, modelCode: 'SY1', purpose: 'Identify the feedback loops affecting behavior' },
+                { order: 2, modelCode: 'SY9', purpose: 'Understand how incentives shape actions' },
+                { order: 3, modelCode: 'P2', purpose: 'Map stakeholders and their real interests' },
+                { order: 4, modelCode: 'IN8', purpose: 'Surface assumptions through steel-manning' },
+                { order: 5, modelCode: 'RE11', purpose: 'Build calibration and feedback mechanisms' }
+              ]
+            }
+          ],
+          insight: 'The API matched Composition and Systems patterns \u2014 recognizing that scaling a team is fundamentally a systems problem. CO2 (Chunking) suggests organizing people into meaningful pods. SY8 (Homeostasis) highlights that culture is a self-regulating system: grow too fast and the equilibrium breaks. The Team Performance workflow provides a 5-step diagnostic starting from feedback loops, not headcount.'
+        },
+        {
+          id: 'pivot',
+          tab: 'Should We Pivot?',
+          problem: 'We have good retention but terrible acquisition. Our product is loved by users but nobody knows about it. Should we pivot to something with better distribution?',
+          recommendations: [
+            { code: 'RE3', name: 'Meta-Learning (Learn-to-Learn)', definition: 'Improve the process of learning itself, not just domain knowledge', priority: 2 },
+            { code: 'CO7', name: 'Network Effects', definition: 'Exploit increasing value as user base or connections grow', priority: 2 },
+            { code: 'RE8', name: 'Bootstrapping', definition: 'Build capability using currently available resources, then use that to build more', priority: 2 },
+            { code: 'RE13', name: 'Gradient Descent Heuristic', definition: 'Iteratively adjust toward improvement, even without perfect knowledge of optimal direction', priority: 3 },
+            { code: 'RE18', name: 'Anti-Catastrophic Forgetting', definition: 'Preserve critical knowledge while adapting to new information', priority: 4 }
+          ],
+          meta: { matchedPatterns: ['Recursion'], keywordsAnalyzed: 10 },
+          workflows: [],
+          insight: 'No predefined workflow matched \u2014 and that is itself a signal. The API sees this as a Recursion problem: iterative improvement rather than binary pivot-or-stay. CO7 (Network Effects) suggests building distribution into the product itself. RE18 (Anti-Catastrophic Forgetting) warns against throwing away what works. The absence of a workflow match means this problem needs a custom approach, not a recipe.'
+        },
+        {
+          id: 'crisis',
+          tab: 'Production Crisis',
+          problem: 'Our production database is failing intermittently under load. Users are seeing timeout errors. We have a major product launch in 48 hours.',
+          recommendations: [
+            { code: 'IN12', name: 'Failure First Design', definition: 'Begin planning by identifying all possible failure modes and designing to prevent them', priority: 3 },
+            { code: 'IN2', name: 'Premortem Analysis', definition: 'Assume failure has occurred and work backward to identify causes', priority: 1 },
+            { code: 'IN18', name: 'Kill-Criteria & Stop Rules', definition: 'Define conditions that trigger project termination before launch', priority: 3 },
+            { code: 'DE7', name: 'Pareto Decomposition (80/20)', definition: 'Identify vital few drivers producing most impact versus trivial many', priority: 1 },
+            { code: 'IN20', name: 'Antigoals & Anti-Patterns Catalog', definition: 'Document failure modes to avoid rather than success patterns to emulate', priority: 4 }
+          ],
+          meta: { matchedPatterns: ['Perspective', 'Inversion'], keywordsAnalyzed: 10 },
+          workflows: [
+            {
+              name: 'Crisis Response',
+              description: 'Navigate urgent situations with clarity and systematic action',
+              steps: [
+                { order: 1, modelCode: 'DE4', purpose: 'Focus on what you can control' },
+                { order: 2, modelCode: 'DE3', purpose: 'Identify the vital few priorities' },
+                { order: 3, modelCode: 'IN2', purpose: 'Define the must-not-fail constraints' },
+                { order: 4, modelCode: 'RE4', purpose: 'Establish tight feedback loops' },
+                { order: 5, modelCode: 'CO7', purpose: 'Build redundancy for resilience' }
+              ]
+            }
+          ],
+          insight: 'The API immediately flagged Inversion patterns \u2014 the right instinct for a crisis. IN2 (Premortem) asks "if the launch fails, what caused it?" before it happens. DE7 (Pareto) identifies the 20% of queries causing 80% of load. The Crisis Response workflow starts with controllability (DE4), not root cause \u2014 because in a crisis you stabilize first, then diagnose.'
+        }
+      ];
+
+      // ── Static Data: Safety Layers ──
+      const SAFETY_LAYERS = [
+        {
+          num: 1,
+          title: 'Input Validation',
+          desc: 'Checks all incoming text against 18 prompt injection patterns including SQL injection, command injection, and LLM jailbreak attempts. Rejects malicious input before it reaches any processing.',
+          tags: ['18 patterns', 'SQL injection', 'Command injection', 'LLM jailbreak', 'XSS']
+        },
+        {
+          num: 2,
+          title: 'PII Detection',
+          desc: 'Scans for 8 categories of personally identifiable information using regex patterns. Flags but does not store any detected PII. Prevents sensitive data from being processed or logged.',
+          tags: ['SSN', 'Credit card', 'Email', 'Phone', 'API keys', 'Passwords', 'Tokens', 'Private keys']
+        },
+        {
+          num: 3,
+          title: 'Input Sanitization',
+          desc: 'Strips potentially dangerous patterns from input text: HTML/script comments, template injection markers, and control characters. Normalizes input to safe plaintext.',
+          tags: ['Comment stripping', 'Template neutralization', 'Control chars', 'HTML encoding']
+        },
+        {
+          num: 4,
+          title: 'Tool Permission Gate',
+          desc: 'Every API endpoint has an explicit allow/deny permission. Rate limits are enforced per-IP with a sliding window. Tools are classified by risk level (low/medium/high).',
+          tags: ['Per-tool allowlist', 'Rate limits', 'Risk levels', 'Sliding window', '100 req/min']
+        },
+        {
+          num: 5,
+          title: 'Output Validation',
+          desc: 'Responses are checked for PII leakage, data exfiltration patterns, and excessive size. Responses over 50KB are truncated. Ensures no sensitive data leaves the system.',
+          tags: ['PII leakage check', 'Exfiltration detection', '50KB size limit', 'Response sanitization']
+        }
+      ];
+
+      // ── Static Data: Agents ──
+      const PRIMARY_AGENTS = [
+        {
+          callsign: 'claude',
+          name: 'Claude Code',
+          emoji: '\uD83C\uDFAF',
+          avatar: null,
+          vendor: 'Anthropic',
+          summary: 'Lead: integration, hardening, TDD, shipping. Opus 4.6 via Claude Code CLI.',
+          bus_identity: ['claude-code', 'claude-opus-god-mode'],
+          status: 'active'
+        },
+        {
+          callsign: 'codex',
+          name: 'Codex',
+          emoji: '\uD83E\uDDED',
+          avatar: 'avatars/codex-avatar.png',
+          vendor: 'OpenAI',
+          summary: 'Verifier: test suites, CI checks, code review. GPT-5 via Codex CLI.',
+          bus_identity: ['codex', 'codex-cheap'],
+          status: 'active'
+        },
+        {
+          callsign: 'kimi',
+          name: 'Kimi',
+          emoji: '\uD83D\uDD27',
+          avatar: 'avatars/kimi-avatar.png',
+          vendor: 'Moonshot AI',
+          summary: 'Builder: greenfield generation, large-scale output. Moonshot AI via Kimi CLI.',
+          bus_identity: ['kimi-1', 'kimi-2'],
+          status: 'active'
+        },
+        {
+          callsign: 'gemini',
+          name: 'Gemini',
+          emoji: '\uD83D\uDC8E',
+          avatar: null,
+          vendor: 'Google',
+          summary: 'Analyst: research, docs, release notes. Google Gemini CLI.',
+          bus_identity: ['gemini'],
+          status: 'active'
+        },
+        {
+          callsign: 'ollama',
+          name: 'Ollama',
+          emoji: '\uD83E\uDD99',
+          avatar: null,
+          vendor: 'Local / Self-Hosted',
+          summary: 'Local inference: Mistral, Llama, Phi, and any GGUF model. Runs on your hardware, zero cloud dependency.',
+          bus_identity: ['ollama'],
+          status: 'ready'
+        },
+        {
+          callsign: 'hummbl',
+          name: 'Vendor Agnostic',
+          emoji: '\u267E\uFE0F',
+          avatar: null,
+          vendor: 'Any Runtime',
+          summary: 'HUMMBL treats every vendor as a swappable runtime. Same coordination bus, same governance, same safety stack \u2014 regardless of which model answers.',
+          bus_identity: [],
+          status: 'active'
+        }
+      ];
+
+      const ROSTER_AGENTS = [
+        { callsign: 'a11y', name: 'A11y', emoji: '\u267F', summary: 'Accessibility advocate ensuring inclusive design across all agents.', avatar: 'avatars/a11y-avatar-mono.png', type: 'agent' },
+        { callsign: 'anchor', name: 'Anchor', emoji: '\uD83E\uDE9D', summary: 'Maintains fallback/rollback docs for each mission.', avatar: 'avatars/anchor-avatar-mono.png', type: 'agent' },
+        { callsign: 'antithesis', name: 'Antithesis', emoji: '\u2694\uFE0F', summary: 'I interrogate weaknesses so synthesis can emerge stronger.', avatar: 'avatars/antithesis-avatar-mono.png', type: 'agent' },
+        { callsign: 'atlas', name: 'Atlas', emoji: '\uD83E\uDDE0', summary: 'I stitch disparate workstreams into cohesive strategies.', avatar: 'avatars/atlas-avatar-mono.png', type: 'agent' },
+        { callsign: 'axis', name: 'Axis', emoji: '\uD83D\uDDC2\uFE0F', summary: 'Keeps priority matrix current and cites SITREPs for every alignment call.', avatar: 'avatars/axis-avatar-mono.png', type: 'agent' },
+        { callsign: 'beacon', name: 'Beacon', emoji: '\uD83D\uDEA8', summary: 'Escalate with evidence; default to quiet unless severity >= WARN.', avatar: 'avatars/beacon-avatar-mono.png', type: 'agent' },
+        { callsign: 'bluewall', name: 'Bluewall', emoji: '\uD83D\uDD35', summary: 'I absorb Redline\u2019s findings and harden the stack.', avatar: 'avatars/bluewall-avatar-mono.png', type: 'agent' },
+        { callsign: 'chronos', name: 'Chronos', emoji: '\u23F1', summary: 'I keep every mission on schedule.', avatar: 'avatars/chronos-avatar-mono.png', type: 'agent' },
+        { callsign: 'circuit', name: 'Circuit', emoji: '\uD83D\uDEE0', summary: 'I build and refactor per the plan.', avatar: 'avatars/circuit-avatar-mono.png', type: 'agent' },
+        { callsign: 'cost-optimizer', name: 'Cost Optimizer', emoji: '\uD83D\uDCB8', summary: 'Proactive cost management: forecasts spend, identifies savings, enforces budget guardrails.', avatar: null, type: 'agent' },
+        { callsign: 'dialectic', name: 'Dialectic Team', emoji: '\u2696\uFE0F', summary: 'Coordinates thesis\u2192antithesis\u2192synthesis debates.', avatar: null, type: 'team' },
+        { callsign: 'echo', name: 'Echo', emoji: '\uD83D\uDD01', summary: 'I mirror critical context so nothing slips between agents.', avatar: 'avatars/echo-avatar-mono.png', type: 'agent' },
+        { callsign: 'ember', name: 'Ember', emoji: '\uD83D\uDD25', summary: 'Never optimize blindly; metrics first.', avatar: 'avatars/ember-avatar-mono.png', type: 'agent' },
+        { callsign: 'flux', name: 'Flux', emoji: '\u267B\uFE0F', summary: 'I keep HUMMBL\u2019s automation flowing.', avatar: 'avatars/flux-avatar-mono.png', type: 'agent' },
+        { callsign: 'forge', name: 'Forge', emoji: '\uD83C\uDFD7\uFE0F', summary: 'I turn plans into working artifacts.', avatar: 'avatars/forge-avatar-mono.png', type: 'agent' },
+        { callsign: 'forgefire', name: 'Forgefire', emoji: '\uD83D\uDEE0\uFE0F', summary: 'Demands rehearsal plans before touching prod.', avatar: 'avatars/forgefire-avatar-mono.png', type: 'agent' },
+        { callsign: 'gap-finders', name: 'Gap Finders', emoji: '\uD83D\uDD0D', summary: 'Analyzes the ecosystem for missing capabilities, architecture gaps, and improvement opportunities.', avatar: null, type: 'agent' },
+        { callsign: 'glyph', name: 'Glyph', emoji: '\uD83C\uDFA8', summary: 'Keeps style guides aligned with engineering realities.', avatar: 'avatars/glyph-avatar-mono.png', type: 'agent' },
+        { callsign: 'guardian', name: 'Guardian', emoji: '\uD83D\uDEE1\uFE0F', summary: 'Validate policies before execution; log approvals.', avatar: 'avatars/guardian-avatar-mono.png', type: 'agent' },
+        { callsign: 'halo', name: 'Halo', emoji: '\uD83C\uDF0C', summary: 'Outline risks/opportunities with citations before handing to planners.', avatar: 'avatars/halo-avatar-mono.png', type: 'agent' },
+        { callsign: 'harbor', name: 'Harbor', emoji: '\u2693', summary: 'Coordinates with Guardian + Sentinel before pushing.', avatar: 'avatars/harbor-avatar-mono.png', type: 'agent' },
+        { callsign: 'incident-commander', name: 'Incident Commander', emoji: '\uD83D\uDEA8\u200D\uD83D\uDEE1\uFE0F', summary: 'Coordinates incident response during SEV1/SEV2 events. Maintains timelines and runs post-mortems.', avatar: null, type: 'agent' },
+        { callsign: 'hexaops', name: 'Hexaops Team', emoji: '\uD83D\uDD37', summary: 'Research\u2192plan\u2192build\u2192QA\u2192schedule\u2192brief team.', avatar: null, type: 'team' },
+        { callsign: 'kernel', name: 'Kernel', emoji: '\uD83E\uDDEC', summary: 'Demands reproducible builds + tests before handing to Harbor.', avatar: 'avatars/kernel-avatar-mono.png', type: 'agent' },
+        { callsign: 'knowledge-curator', name: 'Knowledge Curator', emoji: '\uD83D\uDCD6', summary: 'Maintains expertise maps, connects related work, surfaces context, and identifies knowledge gaps.', avatar: null, type: 'agent' },
+        { callsign: 'ledger', name: 'Ledger', emoji: '\uD83D\uDCB0', summary: 'Financial optimization and cost efficiency tracking.', avatar: 'avatars/ledger-avatar-mono.png', type: 'agent' },
+        { callsign: 'loom', name: 'Loom', emoji: '\uD83E\uDEB5', summary: 'Promote insights from daily logs into long-term memory.', avatar: 'avatars/loom-avatar-mono.png', type: 'agent' },
+        { callsign: 'matrix', name: 'Matrix', emoji: '\uD83E\uDDEE', summary: 'Prefer charts/tables with references to raw data.', avatar: 'avatars/matrix-avatar-mono.png', type: 'agent' },
+        { callsign: 'nexus', name: 'Nexus', emoji: '\uD83D\uDD17', summary: 'I ensure everyone shares the same understanding.', avatar: 'avatars/nexus-avatar-mono.png', type: 'agent' },
+        { callsign: 'octave', name: 'Octave Team', emoji: '\uD83C\uDFB5', summary: 'Risk, experience, core, integration, performance, release, liaison, archive.', avatar: null, type: 'team' },
+        { callsign: 'orbit', name: 'Orbit', emoji: '\uD83D\uDEF0\uFE0F', summary: 'Documents dependencies + integration tests for Guardian + Harbor.', avatar: 'avatars/orbit-avatar-mono.png', type: 'agent' },
+        { callsign: 'pentad', name: 'Pentad Team', emoji: '\u2B50', summary: 'Strategic/build/monitor/analytics/automation collective.', avatar: null, type: 'team' },
+        { callsign: 'prism', name: 'Prism', emoji: '\uD83E\uDDEA', summary: 'I explore new domains and bring back clean datasets for the others.', avatar: 'avatars/prism-avatar-mono.png', type: 'agent' },
+        { callsign: 'pulse', name: 'Pulse', emoji: '\u26A1', summary: 'I keep a finger on the heartbeat of HUMMBL\u2019s runtime signals.', avatar: 'avatars/pulse-avatar-mono.png', type: 'agent' },
+        { callsign: 'pulsewave', name: 'Pulsewave', emoji: '\uD83D\uDCE1', summary: 'Escalates only when impact > INFO, with data references.', avatar: 'avatars/pulsewave-avatar-mono.png', type: 'agent' },
+        { callsign: 'purplebridge', name: 'Purplebridge', emoji: '\uD83D\uDFE3', summary: 'I ensure offense + defense stay aligned and documented.', avatar: 'avatars/purplebridge-avatar-mono.png', type: 'agent' },
+        { callsign: 'quill', name: 'Quill', emoji: '\u270F\uFE0F', summary: 'Keep docs current; cite every section with file paths.', avatar: 'avatars/quill-avatar-mono.png', type: 'agent' },
+        { callsign: 'quorum', name: 'Quorum', emoji: '\uD83D\uDCCA', summary: 'I translate observations into metrics.', avatar: 'avatars/quorum-avatar-mono.png', type: 'agent' },
+        { callsign: 'red-blue-purple', name: 'Red-Blue-Purple Team', emoji: '\uD83C\uDFAD', summary: 'Offense (red), defense (blue), coordination (purple).', avatar: null, type: 'team' },
+        { callsign: 'redline', name: 'Redline', emoji: '\uD83D\uDD34', summary: 'I simulate adversaries so issues surface before attackers find them.', avatar: 'avatars/redline-avatar-mono.png', type: 'agent' },
+        { callsign: 'relay', name: 'Relay', emoji: '\uD83D\uDD00', summary: 'Summaries must include references + asks.', avatar: 'avatars/relay-avatar-mono.png', type: 'agent' },
+        { callsign: 'relayor', name: 'Relayor', emoji: '\uD83D\uDD04', summary: 'Every handoff has an owner + timestamp.', avatar: 'avatars/relayor-avatar-mono.png', type: 'agent' },
+        { callsign: 'rpbx', name: 'RPBx', emoji: '\uD83E\uDE9E', summary: 'Founder-grade mirror translating human instincts into agent coordination.', avatar: 'avatars/rpbx-avatar-mono.png', type: 'agent' },
+        { callsign: 'scout', name: 'Scout', emoji: '\uD83D\uDEF0', summary: 'I track vectors, flag anomalies, and hand the right data to whoever needs it.', avatar: 'avatars/scout-avatar-mono.png', type: 'agent' },
+        { callsign: 'scribe', name: 'Scribe', emoji: '\uD83D\uDCDA', summary: 'Maintains decision logs and ensures approvals are traceable.', avatar: 'avatars/scribe-avatar-mono.png', type: 'agent' },
+        { callsign: 'sentinel', name: 'Sentinel', emoji: '\uD83D\uDEE1', summary: 'I guard the release gates.', avatar: 'avatars/sentinel-avatar-mono.png', type: 'agent' },
+        { callsign: 'septet', name: 'Septet Team', emoji: '\uD83C\uDF10', summary: 'Vision, documentation, data, security, cadence, comms, memory team.', avatar: null, type: 'team' },
+        { callsign: 'shield', name: 'Shield', emoji: '\uD83E\uDDF1', summary: 'Coordinates with Guardian/Vault for approvals.', avatar: 'avatars/shield-avatar-mono.png', type: 'agent' },
+        { callsign: 'spark', name: 'Spark', emoji: '\u2728', summary: 'Documents experiments, metrics, and go/no-go results.', avatar: 'avatars/spark-avatar-mono.png', type: 'agent' },
+        { callsign: 'synthesis', name: 'Synthesis', emoji: '\uD83E\uDD1D', summary: 'I turn debate into decisions.', avatar: 'avatars/synthesis-avatar-mono.png', type: 'agent' },
+        { callsign: 'tempo', name: 'Tempo', emoji: '\uD83C\uDF9B\uFE0F', summary: 'Watch quiet hours + scheduling constraints.', avatar: 'avatars/tempo-avatar-mono.png', type: 'agent' },
+        { callsign: 'test-harness', name: 'Test Harness', emoji: '\u2705', summary: 'Systematic test generation, coverage-guided fuzzing, regression detection, and flakiness monitoring.', avatar: null, type: 'agent' },
+        { callsign: 'tempofox', name: 'Tempofox', emoji: '\uD83E\uDD8A', summary: 'Maintains backlog triage + heartbeat adjustments.', avatar: 'avatars/tempofox-avatar-mono.png', type: 'agent' },
+        { callsign: 'thesis', name: 'Thesis', emoji: '\uD83D\uDCA1', summary: 'I chart the first argument: structured, hopeful, and grounded in evidence.', avatar: 'avatars/thesis-avatar-mono.png', type: 'agent' },
+        { callsign: 'triage', name: 'Triage', emoji: '\uD83C\uDFE5', summary: 'Rapid incident response and priority classification.', avatar: 'avatars/triage-avatar-mono.png', type: 'agent' },
+        { callsign: 'vault', name: 'Vault', emoji: '\uD83D\uDD12', summary: 'Ensures sensitive notes stay in governed locations only.', avatar: 'avatars/vault-avatar-mono.png', type: 'agent' },
+        { callsign: 'vector', name: 'Vector', emoji: '\uD83D\uDCD0', summary: 'I transform research into executable plans.', avatar: 'avatars/vector-avatar-mono.png', type: 'agent' },
+        { callsign: 'vigil', name: 'Vigil', emoji: '\uD83D\uDC41\uFE0F', summary: 'I keep the streams in sight.', avatar: 'avatars/vigil-avatar-mono.png', type: 'agent' },
+        { callsign: 'warden', name: 'Warden', emoji: '\uD83D\uDD10', summary: 'Control-plane governor enforcing governance policies.', avatar: 'avatars/warden-avatar-mono.png', type: 'agent' },
+        { callsign: 'whisper', name: 'Whisper', emoji: '\uD83D\uDDE3\uFE0F', summary: 'Every update cites sources + owners.', avatar: 'avatars/whisper-avatar-mono.png', type: 'agent' }
+      ];
+
+      // ── Helpers ──
+      function createElement(tag, className, textContent) {
+        const el = document.createElement(tag);
+        if (className) el.className = className;
+        if (textContent) el.textContent = textContent;
+        return el;
+      }
+
+      function copyText(text, btn) {
+        var prev = btn.textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function() {
+            btn.textContent = 'Copied';
+            setTimeout(function() { btn.textContent = prev; }, 2000);
+          }).catch(function() {
+            btn.textContent = 'Failed';
+            setTimeout(function() { btn.textContent = prev; }, 2000);
+          });
+        } else {
+          // Fallback for non-secure contexts
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            btn.textContent = 'Copied';
+          } catch (e) {
+            btn.textContent = 'Failed';
+          }
+          document.body.removeChild(ta);
+          setTimeout(function() { btn.textContent = prev; }, 2000);
+        }
+      }
+
+      // ── Showcase ──
+      function renderShowcaseTabs() {
+        var tabs = document.getElementById('showcase-tabs');
+        tabs.replaceChildren();
+        SCENARIOS.forEach(function(s, i) {
+          var btn = createElement('button', 'showcase-tab' + (i === 0 ? ' active' : ''), s.tab);
+          btn.dataset.index = i;
+          btn.setAttribute('role', 'tab');
+          btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+          btn.addEventListener('click', function() { selectScenario(i); });
+          tabs.appendChild(btn);
+        });
+      }
+
+      function selectScenario(idx) {
+        document.querySelectorAll('.showcase-tab').forEach(function(t, i) {
+          t.classList.toggle('active', i === idx);
+          t.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+        });
+        renderScenarioDetail(SCENARIOS[idx]);
+      }
+
+      function renderScenarioDetail(scenario) {
+        var container = document.getElementById('showcase-content');
+        container.replaceChildren();
+
+        // Problem
+        var prob = createElement('div', 'showcase-problem');
+        var probLabel = createElement('div', 'showcase-problem-label', 'Problem Statement');
+        var probText = createElement('div', 'showcase-problem-text', '"' + scenario.problem + '"');
+        prob.appendChild(probLabel);
+        prob.appendChild(probText);
+        container.appendChild(prob);
+
+        // Grid: models + workflows
+        var grid = createElement('div', 'showcase-grid');
+
+        // Models panel
+        var modelsPanel = createElement('div', 'showcase-models-panel');
+        var modelsTitle = createElement('div', 'panel-title', 'Recommended Models (' + scenario.recommendations.length + ')');
+        modelsPanel.appendChild(modelsTitle);
+
+        scenario.recommendations.forEach(function(m) {
+          var card = createElement('div', 'model-rec-card');
+          var header = createElement('div', 'model-rec-header');
+          header.appendChild(createElement('span', 'model-rec-code', m.code));
+          header.appendChild(createElement('span', 'model-rec-priority', 'P' + m.priority));
+          card.appendChild(header);
+          card.appendChild(createElement('div', 'model-rec-name', m.name));
+          card.appendChild(createElement('div', 'model-rec-def', m.definition));
+          modelsPanel.appendChild(card);
+        });
+
+        var metaInfo = createElement('div', 'model-rec-def');
+        metaInfo.style.marginTop = '12px';
+        metaInfo.style.fontSize = '11px';
+        metaInfo.textContent = 'Matched patterns: ' + scenario.meta.matchedPatterns.join(', ') + ' | Keywords analyzed: ' + scenario.meta.keywordsAnalyzed;
+        modelsPanel.appendChild(metaInfo);
+        grid.appendChild(modelsPanel);
+
+        // Workflows panel
+        var wfPanel = createElement('div', 'showcase-workflows-panel');
+        var wfTitle = createElement('div', 'panel-title', 'Matched Workflows (' + scenario.workflows.length + ')');
+        wfPanel.appendChild(wfTitle);
+
+        if (scenario.workflows.length === 0) {
+          wfPanel.appendChild(createElement('div', 'no-workflow', 'No predefined workflow matched \u2014 this problem needs a custom approach.'));
+        } else {
+          scenario.workflows.forEach(function(wf) {
+            wfPanel.appendChild(createElement('div', 'workflow-name', wf.name));
+            wfPanel.appendChild(createElement('div', 'workflow-desc', wf.description));
+            wf.steps.forEach(function(step) {
+              var stepEl = createElement('div', 'workflow-step');
+              stepEl.appendChild(createElement('div', 'workflow-step-num', step.order));
+              var content = createElement('div', 'workflow-step-content');
+              content.appendChild(createElement('div', 'workflow-step-model', step.modelCode));
+              content.appendChild(createElement('div', 'workflow-step-purpose', step.purpose));
+              stepEl.appendChild(content);
+              wfPanel.appendChild(stepEl);
+            });
+          });
+        }
+
+        grid.appendChild(wfPanel);
+        container.appendChild(grid);
+
+        // Insight
+        var insight = createElement('div', 'showcase-insight');
+        insight.appendChild(createElement('div', 'showcase-insight-label', 'Editorial Insight'));
+        insight.appendChild(createElement('div', 'showcase-insight-text', scenario.insight));
+        container.appendChild(insight);
+      }
+
+      // ── Sandbox History (localStorage) ──
+      var HISTORY_KEY = 'hummbl_sandbox_history';
+      var MAX_HISTORY = 5;
+
+      function getHistory() {
+        try {
+          var h = JSON.parse(localStorage.getItem(HISTORY_KEY));
+          return Array.isArray(h) ? h : [];
+        } catch (e) { return []; }
+      }
+
+      function saveToHistory(query) {
+        var h = getHistory().filter(function(q) { return q !== query; });
+        h.unshift(query);
+        if (h.length > MAX_HISTORY) h = h.slice(0, MAX_HISTORY);
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch (e) {}
+        renderHistory();
+      }
+
+      function renderHistory() {
+        var h = getHistory();
+        var container = document.getElementById('sandbox-history');
+        var label = document.getElementById('sandbox-history-label');
+        container.replaceChildren();
+        if (h.length === 0) {
+          label.style.display = 'none';
+          return;
+        }
+        label.style.display = 'block';
+        h.forEach(function(q) {
+          var chip = createElement('button', 'history-chip', q.length > 40 ? q.substring(0, 40) + '...' : q);
+          chip.title = q;
+          chip.addEventListener('click', function() {
+            document.getElementById('sandbox-input').value = q;
+            document.getElementById('sandbox-input').focus();
+          });
+          container.appendChild(chip);
+        });
+      }
+
+      // ── URL Params ──
+      function getQueryParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      function updateShareButton() {
+        var input = document.getElementById('sandbox-input').value.trim();
+        var btn = document.getElementById('share-btn');
+        btn.classList.toggle('visible', input.length > 0);
+      }
+
+      function shareQuery() {
+        var input = document.getElementById('sandbox-input').value.trim();
+        if (!input) return;
+        var url = window.location.origin + window.location.pathname + '?q=' + encodeURIComponent(input) + '#sandbox';
+        var btn = document.getElementById('share-btn');
+        copyText(url, btn);
+      }
+
+      // ── Example Prompts ──
+      function initExamples() {
+        document.getElementById('sandbox-examples').addEventListener('click', function(e) {
+          var chip = e.target.closest('.sandbox-example-chip');
+          if (!chip) return;
+          var prompt = chip.dataset.prompt;
+          document.getElementById('sandbox-input').value = prompt;
+          document.getElementById('sandbox-input').focus();
+          updateShareButton();
+        });
+      }
+
+      // ── Keyboard Shortcuts ──
+      function initKeyboardShortcuts() {
+        var isMac = navigator.platform.indexOf('Mac') > -1;
+        var hint = document.getElementById('sandbox-hint');
+        hint.textContent = (isMac ? '\u2318' : 'Ctrl') + '+Enter to run';
+
+        document.getElementById('sandbox-input').addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault();
+            runSandbox();
+          }
+        });
+
+        document.getElementById('validator-input').addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            e.preventDefault();
+            runValidator();
+          }
+        });
+      }
+
+      // ── Fetch helper with r.ok check ──
+      function safeFetch(url, opts) {
+        return fetch(url, opts).then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
+      }
+
+      // ── Sandbox ──
+      var sandboxCooldown = false;
+
+      function runSandbox() {
+        var problem = document.getElementById('sandbox-input').value.trim();
+        if (!problem || sandboxCooldown) return;
+
+        saveToHistory(problem);
+
+        var btn = document.getElementById('sandbox-btn');
+        btn.disabled = true;
+        btn.textContent = 'Running...';
+        sandboxCooldown = true;
+
+        document.getElementById('sandbox-results').classList.remove('visible');
+        document.getElementById('sandbox-loading').classList.add('visible');
+
+        var body = JSON.stringify({ problem: problem });
+        var valBody = JSON.stringify({ input: problem });
+
+        Promise.all([
+          safeFetch(API_BASE + '/security/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: valBody
+          }).catch(function() { return { error: 'Failed to reach security/validate' }; }),
+          safeFetch(API_BASE + '/v1/recommend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: body
+          }).catch(function() { return { error: 'Failed to reach v1/recommend' }; }),
+          safeFetch(API_BASE + '/v1/workflows/match', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: body
+          }).catch(function() { return { error: 'Failed to reach v1/workflows/match' }; }),
+          safeFetch(API_BASE + '/health')
+            .catch(function() { return { error: 'Failed to reach health' }; })
+        ]).then(function(results) {
+          var validate = results[0];
+          var recommend = results[1];
+          var workflows = results[2];
+          var health = results[3];
+
+          renderFormatted(validate, recommend, workflows, health);
+          renderRawJSON({ validate: validate, recommend: recommend, workflows: workflows, health: health });
+          renderCurlCommands(problem);
+
+          document.getElementById('sandbox-loading').classList.remove('visible');
+          document.getElementById('sandbox-results').classList.add('visible');
+        }).catch(function(err) {
+          document.getElementById('sandbox-loading').classList.remove('visible');
+          var panel = document.getElementById('panel-formatted');
+          panel.replaceChildren();
+          var errEl = createElement('div', 'sandbox-error', 'Something went wrong: ' + (err.message || 'Unknown error') + '. Please try again.');
+          panel.appendChild(errEl);
+          document.getElementById('sandbox-results').classList.add('visible');
+        }).finally(function() {
+          btn.disabled = false;
+          btn.textContent = 'Run Full Pipeline';
+          setTimeout(function() { sandboxCooldown = false; }, 2000);
+        });
+      }
+
+      function renderFormatted(validate, recommend, workflows, health) {
+        var panel = document.getElementById('panel-formatted');
+        panel.replaceChildren();
+        var grid = createElement('div', 'formatted-grid');
+
+        // Health card
+        var hCard = createElement('div', 'formatted-card');
+        hCard.appendChild(createElement('div', 'formatted-card-label', 'API Health'));
+        var badge = createElement('span', 'health-badge');
+        if (health.status === 'healthy') {
+          badge.classList.add('healthy');
+          badge.textContent = 'Healthy';
+        } else {
+          badge.classList.add('unhealthy');
+          badge.textContent = health.status || 'Error';
+        }
+        hCard.appendChild(badge);
+        var hText = createElement('div', 'formatted-card-text');
+        hText.style.marginTop = '8px';
+        hText.textContent = (health.models_count || '?') + ' models loaded, v' + (health.version || '?');
+        hCard.appendChild(hText);
+        grid.appendChild(hCard);
+
+        // Validation card
+        var vCard = createElement('div', 'formatted-card');
+        vCard.appendChild(createElement('div', 'formatted-card-label', 'Security Validation'));
+        if (validate.validation) {
+          var vBadge = createElement('span', 'health-badge');
+          if (validate.validation.valid) {
+            vBadge.classList.add('healthy');
+            vBadge.textContent = 'Valid';
+          } else {
+            vBadge.classList.add('unhealthy');
+            vBadge.textContent = 'Blocked';
+          }
+          vCard.appendChild(vBadge);
+          var vText = createElement('div', 'formatted-card-text');
+          vText.style.marginTop = '8px';
+          vText.textContent = 'PII detected: ' + (validate.pii && validate.pii.found ? 'Yes (' + (validate.pii.types || []).join(', ') + ')' : 'None');
+          vCard.appendChild(vText);
+        } else {
+          var vErr = createElement('div', 'sandbox-error', validate.error || 'Validation unavailable');
+          vCard.appendChild(vErr);
+        }
+        grid.appendChild(vCard);
+
+        // Recommendations
+        if (recommend.error) {
+          var errCard = createElement('div', 'sandbox-error', 'Recommendations: ' + recommend.error);
+          grid.appendChild(errCard);
+        } else if (recommend.success && Array.isArray(recommend.data)) {
+          if (recommend.data.length === 0) {
+            grid.appendChild(createElement('div', 'sandbox-empty', 'No models matched this problem. Try rephrasing with more detail.'));
+          } else {
+            recommend.data.forEach(function(m) {
+              var mCard = createElement('div', 'formatted-card');
+              mCard.appendChild(createElement('div', 'formatted-card-label', 'Model: ' + m.code));
+              mCard.appendChild(createElement('div', 'formatted-card-title', m.name));
+              mCard.appendChild(createElement('div', 'formatted-card-text', m.definition));
+              grid.appendChild(mCard);
+            });
+          }
+        }
+
+        // Workflows
+        if (workflows.error) {
+          grid.appendChild(createElement('div', 'sandbox-error', 'Workflows: ' + workflows.error));
+        } else if (workflows.success && Array.isArray(workflows.data) && workflows.data.length > 0) {
+          workflows.data.forEach(function(wf) {
+            var wCard = createElement('div', 'formatted-card');
+            wCard.appendChild(createElement('div', 'formatted-card-label', 'Workflow'));
+            wCard.appendChild(createElement('div', 'formatted-card-title', wf.name));
+            var stepsText = (wf.steps || []).map(function(s) { return s.order + '. ' + s.modelCode + ' \u2014 ' + s.purpose; }).join('\n');
+            var stepsEl = createElement('div', 'formatted-card-text', stepsText);
+            stepsEl.style.whiteSpace = 'pre-line';
+            wCard.appendChild(stepsEl);
+            grid.appendChild(wCard);
+          });
+        }
+
+        panel.appendChild(grid);
+      }
+
+      function renderRawJSON(data) {
+        var panel = document.getElementById('panel-raw');
+        panel.replaceChildren();
+        var wrapper = createElement('div', 'raw-json');
+        wrapper.style.position = 'relative';
+        var copyBtn = createElement('button', 'raw-json-copy', 'Copy');
+        var text = JSON.stringify(data, null, 2);
+        copyBtn.addEventListener('click', function() { copyText(text, copyBtn); });
+        wrapper.appendChild(copyBtn);
+        wrapper.appendChild(document.createTextNode(text));
+        panel.appendChild(wrapper);
+      }
+
+      function renderCurlCommands(problem) {
+        var panel = document.getElementById('panel-curl');
+        panel.replaceChildren();
+
+        var escapedProblem = problem.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "'\\''");
+
+        var commands = [
+          { label: 'Security Validation', cmd: "curl -X POST " + API_BASE + "/security/validate \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"input\": \"" + escapedProblem + "\"}'" },
+          { label: 'Model Recommendations', cmd: "curl -X POST " + API_BASE + "/v1/recommend \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"problem\": \"" + escapedProblem + "\"}'" },
+          { label: 'Workflow Matching', cmd: "curl -X POST " + API_BASE + "/v1/workflows/match \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"problem\": \"" + escapedProblem + "\"}'" },
+          { label: 'Health Check', cmd: 'curl ' + API_BASE + '/health' }
+        ];
+
+        commands.forEach(function(c) {
+          var block = createElement('div', 'curl-block');
+          block.appendChild(createElement('div', 'curl-label', c.label));
+          block.appendChild(createElement('div', 'curl-code', c.cmd));
+          var btn = createElement('button', 'curl-copy', 'Copy');
+          btn.addEventListener('click', function() { copyText(c.cmd, btn); });
+          block.appendChild(btn);
+          panel.appendChild(block);
+        });
+      }
+
+      // ── Result tabs ──
+      function initResultTabs() {
+        document.getElementById('result-tabs').addEventListener('click', function(e) {
+          var tab = e.target.closest('.result-tab');
+          if (!tab) return;
+          var panelId = tab.dataset.panel;
+          document.querySelectorAll('.result-tab').forEach(function(t) {
+            t.classList.toggle('active', t === tab);
+            t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+          });
+          document.querySelectorAll('.result-panel').forEach(function(p) { p.classList.toggle('active', p.id === 'panel-' + panelId); });
+        });
+      }
+
+      // ── Safety Stack ──
+      function renderSafetyLayers() {
+        var container = document.getElementById('safety-layers');
+        container.replaceChildren();
+
+        SAFETY_LAYERS.forEach(function(layer) {
+          var el = createElement('div', 'safety-layer');
+          var header = createElement('div', 'safety-layer-header');
+          header.appendChild(createElement('span', 'safety-layer-num', 'Layer ' + layer.num));
+          el.appendChild(header);
+          el.appendChild(createElement('div', 'safety-layer-title', layer.title));
+          el.appendChild(createElement('div', 'safety-layer-desc', layer.desc));
+
+          var tags = createElement('div', 'safety-layer-tags');
+          layer.tags.forEach(function(tag) {
+            tags.appendChild(createElement('span', 'safety-tag', tag));
+          });
+          el.appendChild(tags);
+          container.appendChild(el);
+        });
+      }
+
+      function fetchSafetyStats() {
+        Promise.all([
+          safeFetch(API_BASE + '/health').catch(function() { return {}; }),
+          safeFetch(API_BASE + '/security/stats').catch(function() { return {}; })
+        ]).then(function(results) {
+          var health = results[0];
+          var stats = results[1];
+
+          document.getElementById('stat-status').textContent = health.status === 'healthy' ? 'OK' : health.status ? health.status.toUpperCase() : '--';
+          document.getElementById('stat-events').textContent = (stats.stats ? stats.stats.totalEvents : health.security ? health.security.total_events : '--') || '--';
+          document.getElementById('stat-critical').textContent = (stats.stats ? stats.stats.recentCritical : health.security ? health.security.recent_critical : '--') || '--';
+          document.getElementById('stat-models').textContent = health.models_count || '--';
+          document.getElementById('stat-rate').textContent = health.rate_limit_status ? health.rate_limit_status.max_requests_per_minute : '--';
+        });
+      }
+
+      var validatorCooldown = false;
+
+      function runValidator() {
+        var input = document.getElementById('validator-input').value.trim();
+        if (!input || validatorCooldown) return;
+
+        var btn = document.getElementById('validator-btn');
+        btn.disabled = true;
+        btn.textContent = 'Validating...';
+        validatorCooldown = true;
+
+        safeFetch(API_BASE + '/security/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input: input })
+        })
+        .then(function(data) {
+          var result = document.getElementById('validator-result');
+          result.textContent = JSON.stringify(data, null, 2);
+          result.classList.add('visible');
+        })
+        .catch(function(err) {
+          var result = document.getElementById('validator-result');
+          result.textContent = 'Error: ' + err.message;
+          result.classList.add('visible');
+        })
+        .finally(function() {
+          btn.disabled = false;
+          btn.textContent = 'Validate Input';
+          setTimeout(function() { validatorCooldown = false; }, 2000);
+        });
+      }
+
+      // ── Agents ──
+      function renderAgents() {
+        var primary = document.getElementById('agents-primary');
+        primary.replaceChildren();
+
+        PRIMARY_AGENTS.forEach(function(agent) {
+          var card = createElement('div', 'agent-card');
+          if (agent.callsign === 'hummbl') card.classList.add('agent-card-agnostic');
+          var header = createElement('div', 'agent-card-header');
+          if (agent.avatar) {
+            var img = document.createElement('img');
+            img.src = agent.avatar;
+            img.alt = '';
+            img.className = 'agent-avatar';
+            img.width = 40;
+            img.height = 40;
+            img.onerror = function() {
+              var span = createElement('span', 'agent-emoji', agent.emoji);
+              this.parentNode.replaceChild(span, this);
+            };
+            header.appendChild(img);
+          } else {
+            header.appendChild(createElement('span', 'agent-emoji', agent.emoji));
+          }
+          header.appendChild(createElement('span', 'agent-callsign', agent.callsign));
+          var statusLabel = agent.status === 'active' ? 'Active' : agent.status === 'ready' ? 'Ready' : 'Inactive';
+          var dot = createElement('span', 'agent-status');
+          if (agent.status === 'ready') {
+            dot.style.background = 'var(--accent-warm)';
+            dot.style.boxShadow = '0 0 8px var(--accent-warm)';
+          }
+          dot.setAttribute('role', 'img');
+          dot.setAttribute('aria-label', statusLabel);
+          dot.title = statusLabel;
+          header.appendChild(dot);
+          card.appendChild(header);
+
+          // Vendor badge
+          if (agent.vendor) {
+            var vendorBadge = createElement('div', 'agent-vendor', agent.vendor);
+            card.appendChild(vendorBadge);
+          }
+
+          card.appendChild(createElement('div', 'agent-role', agent.name));
+          card.appendChild(createElement('div', 'agent-summary', agent.summary));
+
+          if (agent.bus_identity && agent.bus_identity.length > 0) {
+            var busLabel = createElement('div', 'agent-bus-label', 'Handles');
+            card.appendChild(busLabel);
+            var bus = createElement('div', 'agent-bus');
+            agent.bus_identity.forEach(function(id) {
+              bus.appendChild(createElement('span', 'agent-bus-id', '@' + id));
+            });
+            card.appendChild(bus);
+          }
+          primary.appendChild(card);
+        });
+
+        // Roster
+        var rosterTitle = document.getElementById('roster-title');
+        var agents = ROSTER_AGENTS.filter(function(a) { return a.type === 'agent'; });
+        var teams = ROSTER_AGENTS.filter(function(a) { return a.type === 'team'; });
+        rosterTitle.textContent = 'Extended Roster (' + ROSTER_AGENTS.length + ' agents & teams)';
+
+        var rosterGrid = document.getElementById('roster-grid');
+        rosterGrid.replaceChildren();
+
+        ROSTER_AGENTS.forEach(function(agent) {
+          var item = createElement('div', 'roster-item');
+          item.title = agent.summary;
+          item.appendChild(createElement('span', 'roster-item-emoji', agent.emoji));
+          item.appendChild(createElement('span', 'roster-item-name', agent.name));
+          item.appendChild(createElement('span', 'roster-item-type', agent.type));
+          rosterGrid.appendChild(item);
+        });
+      }
+
+      // ── Section nav ──
+      function initSectionNav() {
+        var sections = ['showcase', 'sandbox', 'safety', 'agents'];
+        var navBtns = document.querySelectorAll('.section-nav-btn');
+        var isScrolling = false;
+
+        document.querySelector('.section-nav').addEventListener('click', function(e) {
+          var btn = e.target.closest('.section-nav-btn');
+          if (!btn) return;
+          var target = btn.dataset.target;
+          navBtns.forEach(function(b) {
+            b.classList.toggle('active', b === btn);
+            b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+          });
+          var el = document.getElementById(target);
+          if (el) {
+            isScrolling = true;
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Re-enable scroll tracking after animation settles
+            setTimeout(function() { isScrolling = false; }, 800);
+          }
+        });
+
+        // Update active nav on scroll using scroll position
+        function updateActiveSection() {
+          if (isScrolling) return;
+          var navHeight = document.querySelector('.section-nav').offsetHeight + 20;
+          var active = sections[0];
+          for (var i = 0; i < sections.length; i++) {
+            var el = document.getElementById(sections[i]);
+            if (el && el.getBoundingClientRect().top <= navHeight + 100) {
+              active = sections[i];
+            }
+          }
+          navBtns.forEach(function(b) {
+            var isActive = b.dataset.target === active;
+            b.classList.toggle('active', isActive);
+            b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+        }
+
+        var scrollTimer;
+        window.addEventListener('scroll', function() {
+          if (scrollTimer) cancelAnimationFrame(scrollTimer);
+          scrollTimer = requestAnimationFrame(updateActiveSection);
+        }, { passive: true });
+      }
+
+      // ── Init ──
+      function init() {
+        // Render static sections
+        renderShowcaseTabs();
+        renderSafetyLayers();
+        renderAgents();
+        renderHistory();
+
+        // Bind events
+        document.getElementById('sandbox-btn').addEventListener('click', runSandbox);
+        document.getElementById('validator-btn').addEventListener('click', runValidator);
+        document.getElementById('share-btn').addEventListener('click', shareQuery);
+        document.getElementById('sandbox-input').addEventListener('input', updateShareButton);
+        initResultTabs();
+        initSectionNav();
+        initExamples();
+        initKeyboardShortcuts();
+
+        // Fetch live stats in background
+        fetchSafetyStats();
+
+        // Select first scenario
+        selectScenario(0);
+
+        // Check URL params for pre-filled query
+        var urlQuery = getQueryParam('q');
+        if (urlQuery) {
+          document.getElementById('sandbox-input').value = urlQuery;
+          updateShareButton();
+          // Scroll to sandbox and auto-run
+          var sandboxSection = document.getElementById('sandbox');
+          if (sandboxSection) {
+            sandboxSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Highlight sandbox nav
+            document.querySelectorAll('.section-nav-btn').forEach(function(b) {
+              var isSandbox = b.dataset.target === 'sandbox';
+              b.classList.toggle('active', isSandbox);
+              b.setAttribute('aria-selected', isSandbox ? 'true' : 'false');
+            });
+            setTimeout(runSandbox, 500);
+          }
+        }
+      }
+
+      init();
+    </script>
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>

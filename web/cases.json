@@ -1,0 +1,68 @@
+[
+  {
+    "id": "scaling-startup-team",
+    "category": "Growth",
+    "title": "Scaling a Startup Team",
+    "problem": "I need to scale my startup team from 5 to 50 people while maintaining culture and productivity.",
+    "models": ["CO2 Chunking", "P13 Spatial Framing", "SY8 Homeostasis", "SY15 Multi-Scale Alignment"],
+    "workflow": "Team Performance",
+    "insight": "Base120 identified that scaling isn't just about hiring \u2014 it's about chunking the organization into manageable units (CO2), understanding the spatial dynamics of team topology (P13), maintaining cultural homeostasis during rapid change (SY8), and ensuring alignment operates at multiple scales simultaneously (SY15).",
+    "source": "hummbl",
+    "date": "2026-02-15"
+  },
+  {
+    "id": "strategic-pivot",
+    "category": "Strategy",
+    "title": "Strategic Pivot Decision",
+    "problem": "We have good retention but terrible acquisition. Should we pivot our go-to-market strategy?",
+    "models": ["P4 Lens Shifting", "SY5 Systems Archetypes", "RE5 Fractal Reasoning", "DE7 Pareto Analysis"],
+    "workflow": null,
+    "insight": "Instead of a binary pivot/no-pivot answer, Base120 recommended examining the problem through multiple lenses (P4), identifying which systems archetype is at play \u2014 likely \"Fixes that Fail\" or \"Shifting the Burden\" (SY5), checking if the retention/acquisition gap is fractal across segments (RE5), and focusing on the 20% of channels driving 80% of results (DE7).",
+    "source": "hummbl",
+    "date": "2026-02-14"
+  },
+  {
+    "id": "production-crisis",
+    "category": "Engineering",
+    "title": "Production Crisis",
+    "problem": "Our database is failing intermittently under load. We've tried adding replicas but the problem keeps coming back.",
+    "models": ["DE1 Root Cause Analysis", "IN2 Premortem", "DE7 Pareto", "IN12 Failure First"],
+    "workflow": "Root Cause Analysis, Crisis Response",
+    "insight": "The API matched this to two workflows immediately. Root Cause Analysis (DE1) prevents symptom-chasing, Premortem (IN2) asks \"what if we assume the replicas will also fail?\", Pareto (DE7) focuses on which queries cause 80% of the load, and Failure First (IN12) designs for the failure mode rather than the happy path.",
+    "source": "hummbl",
+    "date": "2026-02-12"
+  },
+  {
+    "id": "founder-burnout",
+    "category": "Leadership",
+    "title": "Founder Burnout",
+    "problem": "I'm working 80-hour weeks, making every decision myself, and my co-founder just left. How do I survive this?",
+    "models": ["P1 First Principles Framing", "P5 Empathy Mapping", "CO2 Chunking", "SY8 Homeostasis"],
+    "workflow": null,
+    "insight": "Base120 reframes burnout as a systems problem, not a willpower problem. First Principles (P1) strips away \"founder myths\" to ask what actually needs your attention. Empathy Mapping (P5) applied to yourself reveals the gap between what you think you need and what you actually need. Chunking (CO2) breaks the overwhelming whole into survivable pieces. Homeostasis (SY8) identifies which stabilizing loops have broken.",
+    "source": "hummbl",
+    "date": "2026-02-10"
+  },
+  {
+    "id": "ai-agent-coordination",
+    "category": "AI / Multi-Agent",
+    "title": "AI Agent Coordination",
+    "problem": "We have 5 different AI agents but they keep duplicating work and contradicting each other. How do we coordinate them?",
+    "models": ["SY3 Feedback Loops", "CO5 Coordination Protocols", "P2 Stakeholder Mapping", "SY15 Multi-Scale Alignment"],
+    "workflow": null,
+    "insight": "This is literally the problem HUMMBL was built to solve. Feedback Loops (SY3) identify where agents are amplifying each other's errors. Coordination Protocols (CO5) establish rules of engagement. Stakeholder Mapping (P2) clarifies each agent's role and authority. Multi-Scale Alignment (SY15) ensures local agent decisions serve global objectives.",
+    "source": "hummbl",
+    "date": "2026-02-08"
+  },
+  {
+    "id": "market-entry",
+    "category": "Product",
+    "title": "Market Entry",
+    "problem": "We're a B2B SaaS entering a crowded market with 15+ established competitors. How do we differentiate?",
+    "models": ["P4 Lens Shifting", "IN1 Subtractive Thinking", "P8 Narrative Framing", "DE7 Pareto"],
+    "workflow": null,
+    "insight": "Lens Shifting (P4) reframes \"crowded market\" as \"validated demand.\" Subtractive Thinking (IN1) asks what features competitors have that customers don't actually want. Narrative Framing (P8) builds a story that positions your absence from the market as intentional timing. Pareto (DE7) identifies the underserved 20% of the market that represents 80% of unmet need.",
+    "source": "hummbl",
+    "date": "2026-02-05"
+  }
+]

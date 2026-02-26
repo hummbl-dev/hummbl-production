@@ -1,0 +1,1300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HUMMBL Docs - Base120 API Documentation</title>
+    <meta
+      name="description"
+      content="API documentation for the HUMMBL Base120 mental models platform. REST endpoints, examples, SDKs, and integration guides."
+    />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://hummbl-api.hummbl.workers.dev https://cloudflareinsights.com; frame-ancestors 'none'; form-action 'self';"
+    />
+
+    <!-- SEO -->
+    <link rel="canonical" href="https://hummbl.io/docs.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HUMMBL Docs - Base120 API Documentation" />
+    <meta property="og:description" content="API documentation for the HUMMBL Base120 mental models platform. REST endpoints, examples, SDKs, and integration guides." />
+    <meta property="og:url" content="https://hummbl.io/docs.html" />
+    <meta property="og:image" content="https://hummbl.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="HUMMBL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HUMMBL Docs - Base120 API Documentation" />
+    <meta name="twitter:description" content="API documentation for the HUMMBL Base120 mental models platform. REST endpoints, examples, and SDKs." />
+    <meta name="twitter:image" content="https://hummbl.io/og-image.png" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "name": "HUMMBL Base120 API Documentation",
+      "description": "API documentation for the HUMMBL Base120 mental models platform. REST endpoints, examples, SDKs, and integration guides.",
+      "url": "https://hummbl.io/docs.html",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "HUMMBL",
+        "url": "https://hummbl.io"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "HUMMBL",
+        "url": "https://hummbl.io"
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Performance -->
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="preconnect" href="https://hummbl-api.hummbl.workers.dev" crossorigin />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Crimson+Pro:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="shared.css" />
+
+    <style>
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Header */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border-subtle);
+        margin-bottom: 48px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .logo-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: 0.1em;
+      }
+
+      .logo-badge {
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: var(--accent-cyan);
+        color: var(--bg-primary);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* Docs layout */
+      .docs-layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 48px;
+        min-height: calc(100vh - 200px);
+      }
+
+      /* Sidebar */
+      .docs-sidebar {
+        position: sticky;
+        top: 24px;
+        align-self: start;
+        max-height: calc(100vh - 48px);
+        overflow-y: auto;
+        padding-bottom: 48px;
+      }
+
+      .docs-sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .docs-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .docs-sidebar::-webkit-scrollbar-thumb {
+        background: var(--border-subtle);
+        border-radius: 2px;
+      }
+
+      .sidebar-section {
+        margin-bottom: 24px;
+      }
+
+      .sidebar-title {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      .sidebar-link {
+        display: block;
+        padding: 6px 12px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        border-left: 2px solid transparent;
+        transition: all 0.2s;
+        line-height: 1.4;
+      }
+
+      .sidebar-link:hover {
+        color: var(--text-primary);
+        border-left-color: var(--border-subtle);
+      }
+
+      .sidebar-link.active {
+        color: var(--accent-cyan);
+        border-left-color: var(--accent-cyan);
+      }
+
+      .sidebar-link.indent {
+        padding-left: 24px;
+        font-size: 12px;
+      }
+
+      /* Main content */
+      .docs-content {
+        min-width: 0;
+        padding-bottom: 80px;
+      }
+
+      .docs-content h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--text-primary);
+      }
+
+      .docs-content .subtitle {
+        font-size: 15px;
+        color: var(--text-secondary);
+        margin-bottom: 48px;
+        font-family: var(--font-serif);
+        line-height: 1.6;
+      }
+
+      .docs-section {
+        margin-bottom: 56px;
+        scroll-margin-top: 24px;
+      }
+
+      .docs-section h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .docs-section h3 {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        margin-top: 24px;
+      }
+
+      .docs-section p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+        line-height: 1.7;
+      }
+
+      .docs-section ul,
+      .docs-section ol {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+        padding-left: 20px;
+        line-height: 1.7;
+      }
+
+      .docs-section li {
+        margin-bottom: 6px;
+      }
+
+      .docs-section code {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        background: var(--bg-elevated);
+        padding: 2px 6px;
+        border-radius: 3px;
+        color: var(--accent-cyan);
+      }
+
+      /* Code blocks */
+      .code-block-wrapper {
+        position: relative;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border-subtle);
+      }
+
+      .code-block-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        background: var(--bg-elevated);
+        border-bottom: 1px solid var(--border-subtle);
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+
+      .code-block-lang {
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .copy-btn {
+        background: none;
+        border: 1px solid var(--border-subtle);
+        color: var(--text-tertiary);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        padding: 2px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .copy-btn:hover {
+        color: var(--accent-cyan);
+        border-color: var(--border-prominent);
+      }
+
+      .copy-btn.copied {
+        color: var(--accent-cyan);
+        border-color: var(--accent-cyan);
+      }
+
+      .code-block {
+        background: var(--bg-secondary);
+        padding: 16px;
+        overflow-x: auto;
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--text-primary);
+      }
+
+      .code-block::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      .code-block::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .code-block::-webkit-scrollbar-thumb {
+        background: var(--border-subtle);
+        border-radius: 2px;
+      }
+
+      .code-block pre {
+        margin: 0;
+        white-space: pre;
+        font-family: var(--font-mono);
+      }
+
+      /* JSON syntax highlighting */
+      .json-key { color: #7ec8e3; }
+      .json-string { color: #a8cc8c; }
+      .json-number { color: #dbab79; }
+      .json-bool { color: #dbab79; }
+      .json-null { color: var(--text-tertiary); }
+      .json-comment { color: var(--text-tertiary); font-style: italic; }
+      .bash-comment { color: var(--text-tertiary); }
+
+      /* Endpoint cards */
+      .endpoint-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 32px;
+        transition: border-color 0.2s;
+      }
+
+      .endpoint-card:hover {
+        border-color: var(--border-prominent);
+      }
+
+      .endpoint-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .method-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 4px;
+        letter-spacing: 0.05em;
+        flex-shrink: 0;
+      }
+
+      .method-get {
+        background: rgba(0, 255, 136, 0.15);
+        color: var(--accent-cyan);
+        border: 1px solid rgba(0, 255, 136, 0.3);
+      }
+
+      .method-post {
+        background: rgba(0, 200, 255, 0.1);
+        color: #00c8ff;
+        border: 1px solid rgba(0, 200, 255, 0.3);
+      }
+
+      .endpoint-path {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .endpoint-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .endpoint-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .endpoint-section {
+        margin-top: 20px;
+      }
+
+      /* Base URL display */
+      .base-url-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-prominent);
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+      }
+
+      .base-url-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-tertiary);
+        flex-shrink: 0;
+      }
+
+      .base-url-value {
+        font-size: 14px;
+        color: var(--accent-cyan);
+        word-break: break-all;
+      }
+
+      /* Status badge */
+      .status-badge {
+        display: inline-block;
+        font-size: 11px;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+      }
+
+      .status-beta {
+        background: rgba(255, 107, 53, 0.15);
+        color: var(--accent-warm);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+      }
+
+      .status-free {
+        background: rgba(0, 255, 136, 0.1);
+        color: var(--accent-cyan);
+        border: 1px solid rgba(0, 255, 136, 0.2);
+      }
+
+      /* Rate limit table */
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-bottom: 16px;
+      }
+
+      .info-table th {
+        text-align: left;
+        padding: 10px 16px;
+        background: var(--bg-elevated);
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .info-table td {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border-subtle);
+        color: var(--text-secondary);
+      }
+
+      .info-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .info-table .code-val {
+        color: var(--accent-cyan);
+        font-size: 12px;
+      }
+
+      /* SDK cards */
+      .sdk-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .sdk-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        padding: 20px;
+        transition: border-color 0.2s;
+      }
+
+      .sdk-card:hover {
+        border-color: var(--border-prominent);
+      }
+
+      .sdk-card-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
+
+      .sdk-card-desc {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      .sdk-card-link {
+        font-size: 12px;
+        color: var(--accent-cyan);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+
+      .sdk-card-link:hover {
+        opacity: 0.7;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 20px;
+        }
+
+        .docs-layout {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+
+        .docs-sidebar {
+          position: relative;
+          top: 0;
+          max-height: none;
+          padding-bottom: 24px;
+          margin-bottom: 32px;
+          border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .docs-content h1 {
+          font-size: 22px;
+        }
+
+        .endpoint-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .base-url-box {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
+
+        .sdk-grid {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          margin-bottom: 32px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 16px;
+        }
+
+        .endpoint-card {
+          padding: 16px;
+        }
+
+        .code-block {
+          font-size: 11px;
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <div class="container">
+      <header>
+        <a href="index.html" class="logo">
+          <span class="logo-text">HUMMBL</span>
+          <span class="logo-badge">Docs</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="header-links" id="nav-menu">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <div class="docs-layout" id="main">
+        <!-- Sidebar TOC -->
+        <aside class="docs-sidebar" id="docs-sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-title">Getting Started</div>
+            <a href="#getting-started" class="sidebar-link active">Introduction</a>
+            <a href="#base-url" class="sidebar-link">Base URL</a>
+            <a href="#authentication" class="sidebar-link">Authentication</a>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">Endpoints</div>
+            <a href="#endpoint-health" class="sidebar-link">GET /health</a>
+            <a href="#endpoint-models" class="sidebar-link">GET /v1/models</a>
+            <a href="#endpoint-model-code" class="sidebar-link">GET /v1/models/:code</a>
+            <a href="#endpoint-recommend" class="sidebar-link">POST /v1/recommend</a>
+            <a href="#endpoint-workflows" class="sidebar-link">POST /v1/workflows/match</a>
+            <a href="#endpoint-validate" class="sidebar-link">POST /security/validate</a>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">Reference</div>
+            <a href="#rate-limits" class="sidebar-link">Rate Limits</a>
+            <a href="#error-handling" class="sidebar-link">Error Handling</a>
+            <a href="#sdks-tools" class="sidebar-link">SDKs &amp; Tools</a>
+          </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="docs-content">
+          <h1>API Documentation</h1>
+          <p class="subtitle">
+            Complete reference for the HUMMBL Base120 REST API. 120 mental models across 6 transformations, designed for AI agents and human developers alike.
+          </p>
+
+          <!-- Getting Started -->
+          <section class="docs-section" id="getting-started">
+            <h2>Getting Started</h2>
+            <p>
+              HUMMBL Base120 is a REST API providing 120 mental models for AI agents. The API is organized around standard HTTP methods and returns JSON responses. No authentication is required during beta.
+            </p>
+            <p>
+              <span class="status-badge status-beta">Beta</span>
+              <span class="status-badge status-free">Free</span>
+            </p>
+            <h3>Quick Start</h3>
+            <p>Fetch all 120 models with a single request:</p>
+            <div class="code-block-wrapper">
+              <div class="code-block-header">
+                <span class="code-block-lang">bash</span>
+                <button class="copy-btn" data-copy="curl https://hummbl-api.hummbl.workers.dev/v1/models">Copy</button>
+              </div>
+              <div class="code-block"><pre>curl https://hummbl-api.hummbl.workers.dev/v1/models</pre></div>
+            </div>
+            <p>Get model recommendations for a specific problem:</p>
+            <div class="code-block-wrapper">
+              <div class="code-block-header">
+                <span class="code-block-lang">bash</span>
+                <button class="copy-btn" data-copy='curl -X POST https://hummbl-api.hummbl.workers.dev/v1/recommend \
+  -H "Content-Type: application/json" \
+  -d &apos;{"problem": "How do I prioritize features?"}&apos;'>Copy</button>
+              </div>
+              <div class="code-block"><pre>curl -X POST https://hummbl-api.hummbl.workers.dev/v1/recommend \
+  -H "Content-Type: application/json" \
+  -d '{"problem": "How do I prioritize features?"}'</pre></div>
+            </div>
+          </section>
+
+          <!-- Base URL -->
+          <section class="docs-section" id="base-url">
+            <h2>Base URL</h2>
+            <p>All API requests are made to the following base URL:</p>
+            <div class="base-url-box">
+              <span class="base-url-label">Base URL</span>
+              <span class="base-url-value">https://hummbl-api.hummbl.workers.dev</span>
+            </div>
+            <p>The API is served over HTTPS from Cloudflare Workers. All endpoints return <code>application/json</code> responses with CORS headers enabled for browser access.</p>
+          </section>
+
+          <!-- Authentication -->
+          <section class="docs-section" id="authentication">
+            <h2>Authentication</h2>
+            <p>No authentication is required during the beta period. All endpoints are publicly accessible. When authentication is introduced, this section will be updated with instructions for API key management.</p>
+          </section>
+
+          <!-- Endpoints -->
+          <section class="docs-section" id="endpoints">
+            <h2>Endpoints</h2>
+
+            <!-- GET /health -->
+            <div class="endpoint-card" id="endpoint-health">
+              <div class="endpoint-header">
+                <span class="method-badge method-get">GET</span>
+                <span class="endpoint-path">/health</span>
+              </div>
+              <p class="endpoint-desc">Health check endpoint. Returns API status, version, model count, rate limit status, and security event summary.</p>
+              <div class="code-block-wrapper">
+                <div class="code-block-header">
+                  <span class="code-block-lang">bash</span>
+                  <button class="copy-btn" data-copy="curl https://hummbl-api.hummbl.workers.dev/health">Copy</button>
+                </div>
+                <div class="code-block"><pre>curl https://hummbl-api.hummbl.workers.dev/health</pre></div>
+              </div>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Response 200</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{
+  "status": "healthy",
+  "version": "1.0.0",
+  "timestamp": "2026-02-25T16:00:26.510Z",
+  "models_count": 120,
+  "rate_limit_status": {
+    "active_ips": 1,
+    "window_ms": 60000,
+    "max_requests_per_minute": 100
+  },
+  "security": {
+    "total_events": 0,
+    "recent_critical": 0,
+    "by_severity": {}
+  }
+}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"status"</span>: <span class="json-string">"healthy"</span>,
+  <span class="json-key">"version"</span>: <span class="json-string">"1.0.0"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2026-02-25T16:00:26.510Z"</span>,
+  <span class="json-key">"models_count"</span>: <span class="json-number">120</span>,
+  <span class="json-key">"rate_limit_status"</span>: {
+    <span class="json-key">"active_ips"</span>: <span class="json-number">1</span>,
+    <span class="json-key">"window_ms"</span>: <span class="json-number">60000</span>,
+    <span class="json-key">"max_requests_per_minute"</span>: <span class="json-number">100</span>
+  },
+  <span class="json-key">"security"</span>: {
+    <span class="json-key">"total_events"</span>: <span class="json-number">0</span>,
+    <span class="json-key">"recent_critical"</span>: <span class="json-number">0</span>,
+    <span class="json-key">"by_severity"</span>: {}
+  }
+}</pre></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- GET /v1/models -->
+            <div class="endpoint-card" id="endpoint-models">
+              <div class="endpoint-header">
+                <span class="method-badge method-get">GET</span>
+                <span class="endpoint-path">/v1/models</span>
+              </div>
+              <p class="endpoint-desc">List all 120 mental models. Returns the complete Base120 catalog with codes, names, definitions, and priority levels.</p>
+              <div class="code-block-wrapper">
+                <div class="code-block-header">
+                  <span class="code-block-lang">bash</span>
+                  <button class="copy-btn" data-copy="curl https://hummbl-api.hummbl.workers.dev/v1/models">Copy</button>
+                </div>
+                <div class="code-block"><pre>curl https://hummbl-api.hummbl.workers.dev/v1/models</pre></div>
+              </div>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Response 200</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{
+  "success": true,
+  "data": [
+    {
+      "code": "P1",
+      "name": "First Principles Framing",
+      "definition": "Reduce complex problems to foundational truths that cannot be further simplified",
+      "priority": 1
+    }
+  ]
+}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"code"</span>: <span class="json-string">"P1"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"First Principles Framing"</span>,
+      <span class="json-key">"definition"</span>: <span class="json-string">"Reduce complex problems to foundational truths that cannot be further simplified"</span>,
+      <span class="json-key">"priority"</span>: <span class="json-number">1</span>
+    }
+    <span class="json-comment">// ... 119 more models</span>
+  ]
+}</pre></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- GET /v1/models/:code -->
+            <div class="endpoint-card" id="endpoint-model-code">
+              <div class="endpoint-header">
+                <span class="method-badge method-get">GET</span>
+                <span class="endpoint-path">/v1/models/:code</span>
+              </div>
+              <p class="endpoint-desc">Get a single model by its Base120 code. Codes follow the pattern: P1-P20 (Perspective), IN1-IN20 (Inversion), CO1-CO20 (Composition), DE1-DE20 (Decomposition), RE1-RE20 (Recursion), SY1-SY20 (Systems).</p>
+              <div class="code-block-wrapper">
+                <div class="code-block-header">
+                  <span class="code-block-lang">bash</span>
+                  <button class="copy-btn" data-copy="curl https://hummbl-api.hummbl.workers.dev/v1/models/P1">Copy</button>
+                </div>
+                <div class="code-block"><pre>curl https://hummbl-api.hummbl.workers.dev/v1/models/P1</pre></div>
+              </div>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Response 200</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{
+  "success": true,
+  "data": {
+    "code": "P1",
+    "name": "First Principles Framing",
+    "definition": "Reduce complex problems to foundational truths that cannot be further simplified",
+    "priority": 1
+  }
+}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"code"</span>: <span class="json-string">"P1"</span>,
+    <span class="json-key">"name"</span>: <span class="json-string">"First Principles Framing"</span>,
+    <span class="json-key">"definition"</span>: <span class="json-string">"Reduce complex problems to foundational truths that cannot be further simplified"</span>,
+    <span class="json-key">"priority"</span>: <span class="json-number">1</span>
+  }
+}</pre></div>
+                </div>
+              </div>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Response 404</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{"success": false, "error": "Model not found: X99"}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"success"</span>: <span class="json-bool">false</span>,
+  <span class="json-key">"error"</span>: <span class="json-string">"Model not found: X99"</span>
+}</pre></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- POST /v1/recommend -->
+            <div class="endpoint-card" id="endpoint-recommend">
+              <div class="endpoint-header">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/v1/recommend</span>
+              </div>
+              <p class="endpoint-desc">Get model recommendations for a problem description. The API analyzes keywords and patterns to suggest the most relevant mental models.</p>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Request Body</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{"problem": "How do I prioritize features?"}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"problem"</span>: <span class="json-string">"How do I prioritize features?"</span>
+}</pre></div>
+                </div>
+              </div>
+              <div class="code-block-wrapper">
+                <div class="code-block-header">
+                  <span class="code-block-lang">bash</span>
+                  <button class="copy-btn" data-copy='curl -X POST https://hummbl-api.hummbl.workers.dev/v1/recommend \
+  -H "Content-Type: application/json" \
+  -d &apos;{"problem": "How do I prioritize features?"}&apos;'>Copy</button>
+                </div>
+                <div class="code-block"><pre>curl -X POST https://hummbl-api.hummbl.workers.dev/v1/recommend \
+  -H "Content-Type: application/json" \
+  -d '{"problem": "How do I prioritize features?"}'</pre></div>
+              </div>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Response 200</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{
+  "success": true,
+  "data": [
+    {
+      "code": "P1",
+      "name": "First Principles Framing",
+      "definition": "Reduce complex problems to foundational truths...",
+      "priority": 1
+    },
+    {
+      "code": "P2",
+      "name": "Stakeholder Mapping",
+      "definition": "Identify all parties with interest, influence, or impact...",
+      "priority": 1
+    }
+  ],
+  "meta": {
+    "matchedPatterns": ["Decomposition"],
+    "keywordsAnalyzed": 2
+  }
+}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"code"</span>: <span class="json-string">"P1"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"First Principles Framing"</span>,
+      <span class="json-key">"definition"</span>: <span class="json-string">"Reduce complex problems to foundational truths..."</span>,
+      <span class="json-key">"priority"</span>: <span class="json-number">1</span>
+    },
+    {
+      <span class="json-key">"code"</span>: <span class="json-string">"P2"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"Stakeholder Mapping"</span>,
+      <span class="json-key">"definition"</span>: <span class="json-string">"Identify all parties with interest, influence, or impact..."</span>,
+      <span class="json-key">"priority"</span>: <span class="json-number">1</span>
+    }
+  ],
+  <span class="json-key">"meta"</span>: {
+    <span class="json-key">"matchedPatterns"</span>: [<span class="json-string">"Decomposition"</span>],
+    <span class="json-key">"keywordsAnalyzed"</span>: <span class="json-number">2</span>
+  }
+}</pre></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- POST /v1/workflows/match -->
+            <div class="endpoint-card" id="endpoint-workflows">
+              <div class="endpoint-header">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/v1/workflows/match</span>
+              </div>
+              <p class="endpoint-desc">Find matching workflows for a problem description. Workflows are curated sequences of mental models designed for common scenarios.</p>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Request Body</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{"problem": "How do I prioritize features?"}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"problem"</span>: <span class="json-string">"How do I prioritize features?"</span>
+}</pre></div>
+                </div>
+              </div>
+              <div class="code-block-wrapper">
+                <div class="code-block-header">
+                  <span class="code-block-lang">bash</span>
+                  <button class="copy-btn" data-copy='curl -X POST https://hummbl-api.hummbl.workers.dev/v1/workflows/match \
+  -H "Content-Type: application/json" \
+  -d &apos;{"problem": "How do I prioritize features?"}&apos;'>Copy</button>
+                </div>
+                <div class="code-block"><pre>curl -X POST https://hummbl-api.hummbl.workers.dev/v1/workflows/match \
+  -H "Content-Type: application/json" \
+  -d '{"problem": "How do I prioritize features?"}'</pre></div>
+              </div>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Response 200</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{
+  "success": true,
+  "data": [],
+  "count": 0
+}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: [],
+  <span class="json-key">"count"</span>: <span class="json-number">0</span>
+}</pre></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- POST /security/validate -->
+            <div class="endpoint-card" id="endpoint-validate">
+              <div class="endpoint-header">
+                <span class="method-badge method-post">POST</span>
+                <span class="endpoint-path">/security/validate</span>
+              </div>
+              <p class="endpoint-desc">Validate and sanitize input. Checks for PII, injection attempts, and other security concerns. Returns sanitized output with a validation report.</p>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Request Body</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{"input": "Hello world"}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"input"</span>: <span class="json-string">"Hello world"</span>
+}</pre></div>
+                </div>
+              </div>
+              <div class="code-block-wrapper">
+                <div class="code-block-header">
+                  <span class="code-block-lang">bash</span>
+                  <button class="copy-btn" data-copy='curl -X POST https://hummbl-api.hummbl.workers.dev/security/validate \
+  -H "Content-Type: application/json" \
+  -d &apos;{"input": "Hello world"}&apos;'>Copy</button>
+                </div>
+                <div class="code-block"><pre>curl -X POST https://hummbl-api.hummbl.workers.dev/security/validate \
+  -H "Content-Type: application/json" \
+  -d '{"input": "Hello world"}'</pre></div>
+              </div>
+              <div class="endpoint-section">
+                <div class="endpoint-label">Response 200</div>
+                <div class="code-block-wrapper">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">json</span>
+                    <button class="copy-btn" data-copy='{
+  "success": true,
+  "validation": { "valid": true },
+  "sanitized": "Hello world",
+  "pii": {
+    "found": false,
+    "types": [],
+    "matches": []
+  }
+}'>Copy</button>
+                  </div>
+                  <div class="code-block"><pre>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"validation"</span>: { <span class="json-key">"valid"</span>: <span class="json-bool">true</span> },
+  <span class="json-key">"sanitized"</span>: <span class="json-string">"Hello world"</span>,
+  <span class="json-key">"pii"</span>: {
+    <span class="json-key">"found"</span>: <span class="json-bool">false</span>,
+    <span class="json-key">"types"</span>: [],
+    <span class="json-key">"matches"</span>: []
+  }
+}</pre></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Rate Limits -->
+          <section class="docs-section" id="rate-limits">
+            <h2>Rate Limits</h2>
+            <p>The API enforces rate limits to ensure fair usage and service stability.</p>
+            <table class="info-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Requests per minute</td>
+                  <td class="code-val">100</td>
+                </tr>
+                <tr>
+                  <td>Window</td>
+                  <td class="code-val">60 seconds (sliding)</td>
+                </tr>
+                <tr>
+                  <td>Scope</td>
+                  <td class="code-val">Per IP address</td>
+                </tr>
+                <tr>
+                  <td>Exceeded response</td>
+                  <td class="code-val">429 Too Many Requests</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>When the rate limit is exceeded, the API returns a <code>429</code> status code. Wait for the current window to expire before retrying. The <code>/health</code> endpoint includes live rate limit status in its response.</p>
+          </section>
+
+          <!-- Error Handling -->
+          <section class="docs-section" id="error-handling">
+            <h2>Error Handling</h2>
+            <p>The API uses standard HTTP status codes and returns a consistent error format for all failure cases.</p>
+            <div class="code-block-wrapper">
+              <div class="code-block-header">
+                <span class="code-block-lang">json</span>
+                <button class="copy-btn" data-copy='{"success": false, "error": "Error description"}'>Copy</button>
+              </div>
+              <div class="code-block"><pre>{
+  <span class="json-key">"success"</span>: <span class="json-bool">false</span>,
+  <span class="json-key">"error"</span>: <span class="json-string">"Error description"</span>
+}</pre></div>
+            </div>
+            <table class="info-table">
+              <thead>
+                <tr>
+                  <th>Status Code</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="code-val">200</td>
+                  <td>Success</td>
+                </tr>
+                <tr>
+                  <td class="code-val">400</td>
+                  <td>Bad request -- invalid or missing parameters</td>
+                </tr>
+                <tr>
+                  <td class="code-val">404</td>
+                  <td>Not found -- resource does not exist</td>
+                </tr>
+                <tr>
+                  <td class="code-val">429</td>
+                  <td>Rate limited -- too many requests</td>
+                </tr>
+                <tr>
+                  <td class="code-val">500</td>
+                  <td>Server error -- unexpected internal failure</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- SDKs & Tools -->
+          <section class="docs-section" id="sdks-tools">
+            <h2>SDKs &amp; Tools</h2>
+            <p>Multiple ways to integrate with the Base120 API.</p>
+            <div class="sdk-grid">
+              <div class="sdk-card">
+                <div class="sdk-card-title">MCP Server</div>
+                <div class="sdk-card-desc">
+                  Use Base120 models directly from Claude, Cursor, or any MCP-compatible AI client. Install via npm and configure your client.
+                </div>
+                <div class="code-block-wrapper" style="margin-bottom: 12px;">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">bash</span>
+                    <button class="copy-btn" data-copy="npm install @hummbl/mcp-server">Copy</button>
+                  </div>
+                  <div class="code-block"><pre>npm install @hummbl/mcp-server</pre></div>
+                </div>
+                <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener" class="sdk-card-link">View on npm &rarr;</a>
+              </div>
+              <div class="sdk-card">
+                <div class="sdk-card-title">REST API</div>
+                <div class="sdk-card-desc">
+                  Works with any HTTP client. No SDK required. Use curl, fetch, axios, httpx, or your language's built-in HTTP library.
+                </div>
+                <div class="code-block-wrapper" style="margin-bottom: 12px;">
+                  <div class="code-block-header">
+                    <span class="code-block-lang">javascript</span>
+                    <button class="copy-btn" data-copy="const res = await fetch('https://hummbl-api.hummbl.workers.dev/v1/models');
+const data = await res.json();
+console.log(data.data.length); // 120">Copy</button>
+                  </div>
+                  <div class="code-block"><pre><span class="json-key">const</span> res = <span class="json-key">await</span> fetch(<span class="json-string">'https://hummbl-api.hummbl.workers.dev/v1/models'</span>);
+<span class="json-key">const</span> data = <span class="json-key">await</span> res.json();
+console.log(data.data.length); <span class="json-comment">// 120</span></pre></div>
+                </div>
+                <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener" class="sdk-card-link">Open API &rarr;</a>
+              </div>
+              <div class="sdk-card">
+                <div class="sdk-card-title">Playground</div>
+                <div class="sdk-card-desc">
+                  Try the API live in your browser. Curated demos, interactive sandbox, and the full safety stack visualization.
+                </div>
+                <a href="playground.html" class="sdk-card-link">Open Playground &rarr;</a>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <footer>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="explorer.html">Explorer</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="cases.html">Cases</a>
+          <a href="blog.html">Blog</a>
+          <a href="changelog.html">Changelog</a>
+          <a href="https://github.com/hummbl-dev" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://hummbl-api.hummbl.workers.dev" target="_blank" rel="noopener">API</a>
+          <a href="https://www.npmjs.com/package/@hummbl/mcp-server" target="_blank" rel="noopener">MCP Server</a>
+          <a href="https://cal.com/hummbl/30min" target="_blank" rel="noopener">Contact</a>
+          <a href="status.html">Status</a>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+        </nav>
+        <p>HUMMBL Base120 &copy; 2026</p>
+      </footer>
+    </div>
+
+    <script>
+      // Copy buttons
+      document.querySelectorAll('.copy-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var text = btn.getAttribute('data-copy');
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+              btn.textContent = 'Copied';
+              btn.classList.add('copied');
+              setTimeout(function() {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+              }, 2000);
+            });
+          } else {
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            btn.textContent = 'Copied';
+            btn.classList.add('copied');
+            setTimeout(function() {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }
+        });
+      });
+
+      // Sidebar active state on scroll
+      var sidebarLinks = document.querySelectorAll('.sidebar-link');
+      var sections = [];
+      sidebarLinks.forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          var target = document.getElementById(href.substring(1));
+          if (target) {
+            sections.push({ link: link, target: target });
+          }
+        }
+      });
+
+      function updateActiveSection() {
+        var scrollPos = window.scrollY + 80;
+        var active = null;
+        for (var i = sections.length - 1; i >= 0; i--) {
+          if (sections[i].target.offsetTop <= scrollPos) {
+            active = sections[i];
+            break;
+          }
+        }
+        sidebarLinks.forEach(function(link) {
+          link.classList.remove('active');
+        });
+        if (active) {
+          active.link.classList.add('active');
+        }
+      }
+
+      window.addEventListener('scroll', updateActiveSection, { passive: true });
+      updateActiveSection();
+
+      // Smooth scroll for sidebar links
+      sidebarLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          var href = link.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            e.preventDefault();
+            var target = document.getElementById(href.substring(1));
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              history.replaceState(null, '', href);
+            }
+          }
+        });
+      });
+    </script>
+    <script src="shared.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d4c7ab1e70144a83b295e60ccbcf1226"}'></script>
+  </body>
+</html>
